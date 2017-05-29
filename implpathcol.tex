@@ -107,7 +107,128 @@ ZZZ
 \end{abstract}
 
 
-\textbf{TEXT OF PAPER GOES HERE} %!!!
+\section{Introduction}
+
+All graphs will be finite, simple, and undirected.
+
+A \defterm{path coloring} of a graph $G$ is a vertex coloring
+(not necessarily proper) of $G$ so that each color class induces
+a \defterm{linear forest}, that is, a forest of maximum degree at most $2$,
+or, equivalently, a disjoint union of paths.
+A graph $G$ is \defterm{path $k$-colorable} if $G$
+admits a path coloring using $k$ colors.
+
+Broere \& Mynhardt conjectured~\cite[Conj.~16]{BrMy1985}
+that every planar graph is path $3$-colorable.
+This was proven independently by Poh~\cite[Thm.~2]{Poh1990}
+and by Goddard~\cite[Thm.~1]{God1991}.
+
+\begin{theorem}[Poh 1990, Goddard 1991] \label{T:planar3c}
+Let $G$ be a planar graph.
+Then $G$ is path $3$-colorable.\ggcnopf\end{theorem}
+
+Hartman~\cite[Thm.~4.1]{Har1997}
+(see also Chappell \& Hartman~\cite[Thm.~2.1]{ChHa2017prep})
+proved a list-coloring generalization of Theorem~\ref{T:planar3c}.
+A graph $G$ is \defterm{path $k$-choosable} if,
+whenever each vertex of $G$ is assigned a list of $k$ colors,
+there exists a path coloring of $G$ in which each vertex receives
+a color from its list.
+
+\begin{theorem}[Hartman 1997] \label{T:planar3}
+Let $G$ be a planar graph.
+Then $G$ is path $3$-choosable.\ggcnopf\end{theorem}
+
+A slightly weaker result was proven by
+\v{S}krekovski~\cite[Thm.~2.2b]{Skr1999}
+using essentially the same technique.
+
+\medskip
+
+We discuss two efficient path-coloring algorithms
+based on proofs of the above results.
+
+Section~2 covers an algorithm
+based on Poh's proof of Theorem~\ref{T:planar3c}.
+The algorithm is given a planar graph;
+it produces a path coloring of the given graph
+using three colors.
+
+Section~3 covers an algorithm
+based Hartman's proof of Theorem~\ref{T:planar3},
+along with a similar proof of a weaker result by \v{S}krekovski.
+The algorithm is given a planar graph
+and an assignment of a list of three colors to each vertex;
+it produces a path coloring of the given graph
+in which each vertex receives a color from its list.
+
+Implementations of both algorithms are available;
+see Bross~\cite{Bro2017}.
+
+
+\section{Path Coloring: the Poh Algorithm}
+
+ZZZ
+
+
+\section{Path List Coloring: the Hartman-\v{S}krekovski Algorithm}
+
+ZZZ
+
+
+\begin{thebibliography}{99}
+
+\bibitem{BrMy1985}
+I.~Broere and C.~M.~Mynhardt,
+Generalized colorings of outerplanar and planar graphs,
+\textit{Graph theory with applications to algorithms and computer science}
+ (Kalamazoo, Mich., 1984),
+151--161,
+Wiley-Intersci. Publ., Wiley, New York, 1985.
+
+\bibitem{Bro2017}
+A.~Bross,
+\textit{Path coloring algorithms on plane graphs},
+Masters project,
+University of Alaska Fairbanks,
+2017,
+available from\hfil\break
+\texttt{http://github.com/permutationlock/path\_coloring\_bgl}.
+
+\bibitem{ChHa2017prep}
+G.~G.~Chappell and C.~Hartman,
+Path choosabiility of planar graphs,
+in preparation.
+
+\bibitem{God1991}
+W.~Goddard,
+Acyclic colorings of planar graphs,
+\textit{Discrete Math.}
+\textbf{91} (1991), no. 1,
+91--94.
+
+\bibitem{Har1997}
+C.~M.~Hartman,
+\textit{Extremal Problems in Graph Theory},
+Ph.D. Thesis,
+University of Illinois,
+1997.
+
+\bibitem{Poh1990}
+K.~S.~Poh,
+On the linear vertex-arboricity of a planar graph,
+\textit{J. Graph Theory}
+\textbf{14} (1990), no. 1,
+73--75.
+
+\bibitem{Skr1999}
+R.~\v{S}krekovski,
+List improper colourings of planar graphs,
+\textit{Combin. Probab. Comput.}
+\textbf{8} (1999), no. 3,
+293--299.
+
+\end{thebibliography}
 
 \end{document}
 

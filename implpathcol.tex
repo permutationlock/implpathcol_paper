@@ -103,7 +103,28 @@ Chris Hartman\\
  Path coloring, list coloring, algorithm.}
 
 \begin{abstract}
-ZZZ
+A \abstdefterm{path coloring} of a graph $G$ is a vertex coloring
+of $G$ so that each color class induces a disjoint union of paths.
+We discuss implementations of two algorithms that construct
+path colorings of planar graphs.
+
+The first algorithm, based on a proof
+by Poh~\cite{Poh1990},
+is given a planar graph;
+it produces a path coloring of the given graph
+using three colors.
+
+The second algorithm performs a list-coloring generalization
+of the above.
+It is based on two similar proofs:
+one by Hartman~\cite{Har1997},
+the other by \v{S}krekovski~\cite{Skr1999}.
+The algorithm is given a planar graph and an assignment of lists of
+three colors to each vertex;
+it produces a path coloring of the given graph
+in which each vertex receives a color from its list.
+
+Links to implementations of the two algorithms are provided.
 \end{abstract}
 
 

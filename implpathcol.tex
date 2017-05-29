@@ -1,0 +1,109 @@
+%QQQ Below: "10pt" prints in 10-point. "12pt" prints in larger 12-point.
+\documentclass[12pt,letterpaper]{article}
+\usepackage{amsthm,amssymb,amsmath}
+\usepackage[pdftex]{hyperref}
+%QQQ To print single-spaced, comment out the line below (precede it with a "%").
+%QQQ To print double-spaced, remove the "%" at the beginning of the line.
+%\renewcommand{\baselinestretch}{2}
+
+% MARGINS
+
+\setlength{\textwidth}{6.3in}
+\setlength{\textheight}{8.7in}
+\setlength{\topmargin}{0pt}
+\setlength{\headsep}{0pt}
+\setlength{\headheight}{0pt}
+\setlength{\oddsidemargin}{0pt}
+\setlength{\evensidemargin}{0pt}
+
+% SET UP SECTION NUMBERING
+
+\setcounter{secnumdepth}{1}
+% Number sections, but not subsections
+
+% DEFINE THEOREM-LIKE STRUCTURES
+
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]           % L:
+%\newtheorem{lemma}{Lemma}                    % L:
+\newtheorem{proposition}[lemma]{Proposition} % P:
+\newtheorem{theorem}[lemma]{Theorem}         % T:
+\newtheorem{corollary}[lemma]{Corollary}     % C:
+\newtheorem{conjecture}[lemma]{Conjecture}   % J:
+\newtheorem{question}[lemma]{Question}       % Q:
+\newtheorem{problem}[lemma]{Problem}         % B:
+
+\newtheorem{observation}[lemma]{Observation} % O:
+\newtheorem{remark}[lemma]{Remark}           % R:
+
+\theoremstyle{definition}
+\newtheorem{definition}[lemma]{Definition}   % D:
+\newtheorem{example}[lemma]{Example}         % E:
+\newtheorem{algorithm}[lemma]{Algorithm}     % A:
+
+% Also: Section = S:, Figure = Fig:, Item = It:, Equation = Eq:
+
+% CHANGE APPEARANCE OF ENUMERATED LISTS
+
+\renewcommand{\labelenumi}{(\roman{enumi})} % Labels (i), (ii), etc.
+
+% CHANGE QED-RELATED COMMANDS
+
+\renewcommand{\qed}{}
+\newcommand{\ggcqedsymbol}{$\square$}
+\newcommand{\ggcqed}{\hbox{}\nobreak\hbox{\quad\ggcqedsymbol}}
+\newcommand{\ggcendpf}{\ggcqed}
+%\newcommand{\ggcnopf}{}
+\newcommand{\ggcnopf}{\ggcqed}
+%\newcommand{\ggcendexample}{}
+\newcommand{\ggcendexample}{\ggcqed}
+
+% SET STYLE FOR DEFINED TERMS
+
+\newcommand{\defterm}[1]{\emph{#1}} % Defined term
+\newcommand{\abstdefterm}[1]{#1} % Defined term in abstract
+\newcommand{\localdefterm}[1]{\emph{#1}} % Defined term used only nearby
+
+% RUN-IN HEADINGS
+
+\newcommand{\runinhead}[1]{\vskip0.1in\noindent\textbf{#1}} % Run-in heading
+% This should be used at the start of a paragraph,
+%  with no space between it and the first word of the paragraph.
+
+% DEFINITIONS SPECIFIC TO THIS DOCUMENT
+
+% (NONE)
+
+\date{May 29, 2017}
+
+\title{Implementing Path-Coloring Algorithms for Planar Graphs}
+
+\author{Aven Bross\\
+\small Department of Computer Science\\
+\small University of Alaska\\
+\small Fairbanks, AK 99775-6670\\
+\small\texttt{dabross{@}alaska.edu} \and
+Glenn G.~Chappell\\
+\small Department of Computer Science\\
+\small University of Alaska\\
+\small Fairbanks, AK 99775-6670\\
+\small\texttt{chappellg{@}member.ams.org} \and
+Chris Hartman\\
+\small Department of Computer Science\\
+\small University of Alaska\\
+\small Fairbanks, AK 99775-6670\\
+\small\texttt{cmhartman{@}alaska.edu}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+ZZZ
+\end{abstract}
+
+
+\textbf{TEXT OF PAPER GOES HERE} %!!!
+
+\end{document}
+

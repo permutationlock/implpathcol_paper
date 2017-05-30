@@ -170,36 +170,26 @@ Essentially the same technique was used by
 \v{S}krekovski~\cite[Thm.~2.2b]{Skr1999}
 to prove a result slightly weaker than Theorem~\ref{T:planar3}.
 
-We distinguish between a \defterm{planar} graph---one that
-can be drawn in the plane without crossing edges---and
-a \defterm{plane} graph---a graph with a given embedding
-in the plane.
-A plane graph will generally be specified via
-a \defterm{rotation scheme}, which is a circular ordering,
-for each vertex $v$, of the edges incident with $v$.
-When the circular ordering of the edges around each vertex $v$
-is the order in which they appear---clockwise, say---around $v$
-in the plane,
-then the rotation scheme completely specifies the combinatorial
-embedding of the graph.
-Rotation schemes are particularly convenient when we represent a graph
-using adjacency lists;
-we simply order the adjacency
-list for each vertex $v$ in clockwise order around $v$,
-and no additional data structures are required.
 
 \medskip
 
 We discuss two efficient path-coloring algorithms
 based on proofs of the above theorems.
+We distinguish between a \defterm{planar} graph---one that
+can be drawn in the plane without crossing edges---and
+a \defterm{plane} graph---a graph with a given embedding
+in the plane.
 
-Section~2 covers an algorithm
+In Section~2 we outline our graph representations
+and the basis for our computations of time complexity.
+
+Section~3 covers an algorithm
 based on Poh's proof of Theorem~\ref{T:planar3c}.
 The algorithm is given a plane graph;
 it produces a path coloring of the given graph
 using three colors.
 
-Section~3 covers an algorithm
+Section~4 covers an algorithm
 based Hartman's proof of Theorem~\ref{T:planar3},
 along with the proof of \v{S}krekovski mentioned above.
 The algorithm is given a plane graph
@@ -210,6 +200,30 @@ in which each vertex receives a color from its list.
 Implementations of both algorithms are available;
 see Bross~\cite{Bro2017}.
 
+
+\section{Graph Representatons and Time Complexity}
+
+We will represent a graph via \textit{adjacency lists}:
+a list, for each vertex $v$, of the neighbors of $v$.
+A vertex can be represented by an integer $0\dots n-1$,
+where $n$ is the order of the graph.
+
+A plane graph will be specified via
+a \defterm{rotation scheme}:
+a circular ordering,
+for each vertex $v$, of the edges incident with $v$,
+in the order they appear around $v$ in the plane embedding;
+this completely specifies
+the combinatorial embedding of the graph.
+Rotation schemes are convenient when we represent a graph
+using adjacency lists;
+we simply order the adjacency
+list for each vertex $v$ in clockwise order around $v$;
+no additional data structures are required.
+
+ZZZ Time Complexity ZZZ
+
+ZZZ Augmented Adjacency Lists ZZZ
 
 \section{Path Coloring: the Poh Algorithm}
 

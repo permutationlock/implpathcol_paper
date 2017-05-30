@@ -76,7 +76,7 @@
 
 \date{May 30, 2017}
 
-\title{Path-Coloring Algorithms for Planar Graphs}
+\title{Path-Coloring Algorithms for Plane Graphs}
 
 \author{Aven Bross\\
 \small Department of Computer Science\\
@@ -106,10 +106,10 @@ Chris Hartman\\
 A \abstdefterm{path coloring} of a graph $G$ is a vertex coloring
 of $G$ such that each color class induces a disjoint union of paths.
 We present two efficient algorithms
-to construct a path coloring of a planar graph.
+to construct a path coloring of a plane graph.
 
 The first algorithm, based on a proof of Poh~\cite{Poh1990},
-is given a planar graph;
+is given a plane graph;
 it produces a path coloring of the given graph
 using three colors.
 
@@ -118,7 +118,7 @@ based on similar proofs
 by Hartman~\cite{Har1997}
 and \v{S}krekovski~\cite{Skr1999},
 performs a list-coloring generalization of the above.
-The algorithm is given a planar graph and an assignment of lists of
+The algorithm is given a plane graph and an assignment of lists of
 three colors to each vertex;
 it produces a path coloring of the given graph
 in which each vertex receives a color from its list.
@@ -162,6 +162,24 @@ Essentially the same technique was used by
 \v{S}krekovski~\cite[Thm.~2.2b]{Skr1999}
 to prove a result slightly weaker than Theorem~\ref{T:planar3}.
 
+We distinguish between a \defterm{planar} graph---one that
+can be drawn in the plane without crossing edges---and
+a \defterm{plane} graph---a graph with a given embedding
+in the plane.
+A plane graph will generally be specified via
+a \defterm{rotation scheme}, which is a circular ordering,
+for each vertex $v$, of the edges incident with $v$.
+When the circular ordering of the edges around each vertex $v$
+is the order in which they appear---clockwise, say---around $v$
+in the plane,
+then the rotation system completely specifies the combinatorial
+embedding of the graph.
+Rotation systems are particularly convenient when we represent a graph
+using adjacency lists;
+we simply order the adjacency
+list for each vertex $v$ in clockwise order around $v$,
+and no additional data structures are required.
+
 \medskip
 
 We discuss two efficient path-coloring algorithms
@@ -169,14 +187,14 @@ based on proofs of the above theorems.
 
 Section~2 covers an algorithm
 based on Poh's proof of Theorem~\ref{T:planar3c}.
-The algorithm is given a planar graph;
+The algorithm is given a plane graph;
 it produces a path coloring of the given graph
 using three colors.
 
 Section~3 covers an algorithm
 based Hartman's proof of Theorem~\ref{T:planar3},
 along with the proof of \v{S}krekovski mentioned above.
-The algorithm is given a planar graph
+The algorithm is given a plane graph
 and an assignment of a list of three colors to each vertex;
 it produces a path coloring of the given graph
 in which each vertex receives a color from its list.

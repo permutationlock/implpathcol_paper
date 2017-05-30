@@ -105,26 +105,25 @@ Chris Hartman\\
 \begin{abstract}
 A \abstdefterm{path coloring} of a graph $G$ is a vertex coloring
 of $G$ so that each color class induces a disjoint union of paths.
-We discuss implementations of two algorithms that construct
-path colorings of planar graphs.
+We present two efficient algorithms
+to construct a path coloring of a planar graph.
 
-The first algorithm, based on a proof
-by Poh~\cite{Poh1990},
+The first algorithm, based on a proof of Poh~\cite{Poh1990},
 is given a planar graph;
 it produces a path coloring of the given graph
 using three colors.
 
-The second algorithm performs a list-coloring generalization
-of the above.
-It is based on two similar proofs:
-one by Hartman~\cite{Har1997},
-the other by \v{S}krekovski~\cite{Skr1999}.
+The second algorithm,
+based on similar proofs
+by Hartman~\cite{Har1997}
+and \v{S}krekovski~\cite{Skr1999},
+performs a list-coloring generalization of the above.
 The algorithm is given a planar graph and an assignment of lists of
 three colors to each vertex;
 it produces a path coloring of the given graph
 in which each vertex receives a color from its list.
 
-Links to implementations of the two algorithms are provided.
+Implementations of both algorithms are available.
 \end{abstract}
 
 
@@ -134,8 +133,7 @@ All graphs will be finite, simple, and undirected.
 
 A \defterm{path coloring} of a graph $G$ is a vertex coloring
 (not necessarily proper) of $G$ so that each color class induces
-a \defterm{linear forest}, that is, a forest of maximum degree at most $2$,
-or, equivalently, a disjoint union of paths.
+a disjoint union of paths.
 A graph $G$ is \defterm{path $k$-colorable} if $G$
 admits a path coloring using $k$ colors.
 
@@ -160,14 +158,14 @@ a color from its list.
 Let $G$ be a planar graph.
 Then $G$ is path $3$-choosable.\ggcnopf\end{theorem}
 
-A slightly weaker result was proven by
+Essentially the same technique was used by
 \v{S}krekovski~\cite[Thm.~2.2b]{Skr1999}
-using essentially the same technique.
+to prove a result slightly weaker than Theorem~\ref{T:planar3}.
 
 \medskip
 
 We discuss two efficient path-coloring algorithms
-based on proofs of the above results.
+based on proofs of the above theorems.
 
 Section~2 covers an algorithm
 based on Poh's proof of Theorem~\ref{T:planar3c}.
@@ -177,7 +175,7 @@ using three colors.
 
 Section~3 covers an algorithm
 based Hartman's proof of Theorem~\ref{T:planar3},
-along with a similar proof of a weaker result by \v{S}krekovski.
+along with the proof of \v{S}krekovski mentioned above.
 The algorithm is given a planar graph
 and an assignment of a list of three colors to each vertex;
 it produces a path coloring of the given graph

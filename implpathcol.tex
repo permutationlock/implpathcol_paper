@@ -234,7 +234,7 @@ we simply order the adjacency
 list for each vertex $v$ in clockwise order around $v$;
 no additional data structures are required.
 
-We will assume an integer RAM model of computation The input for each algorithm
+We will assume an integer RAM model of computation. The input for each algorithm
 will be a connected planar graph with $n$ vertices and $m$ edges, represented
 via adjacency lists. The input size will be $n$, the number of vertices. Note
 that $\mathcal{O}(m)=\mathcal{O}(n)$.
@@ -251,7 +251,7 @@ the following algorithm.
 \begin{algorithm} \label{A:augment}
 \textbf{Input:} An adjacency list representation Adj of a graph $G$
 
-\textbf{Step 1:} Construct an augmented adjacency list Adj' copy of Adj with
+\textbf{Step 1:} Construct an augmented adjacency list copy Adj' of Adj with
 the reference portion of each entry uninitialized.
 
 \textbf{Step 2:} For each vertex $v$ construct an array Wrk[$v$] storing

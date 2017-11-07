@@ -21,6 +21,18 @@
 \setcounter{secnumdepth}{1}
 % Number sections, but not subsections
 
+% BREAK THEOREM STYLE
+
+\newtheoremstyle{break}% name
+  {}%         Space above, empty = `usual value'
+  {}%         Space below
+  {}% Body font
+  {}%         Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}% Thm head font
+  {.}%        Punctuation after thm head
+  {\newline}% Space after thm head: \newline = linebreak
+  {}%         Thm head spec
+
 % DEFINE THEOREM-LIKE STRUCTURES
 
 \theoremstyle{plain}
@@ -39,6 +51,8 @@
 \theoremstyle{definition}
 \newtheorem{definition}[lemma]{Definition}   % D:
 \newtheorem{example}[lemma]{Example}         % E:
+
+\theoremstyle{break}
 \newtheorem{algorithm}[lemma]{Algorithm}     % A:
 
 % Also: Section = S:, Figure = Fig:, Item = It:, Equation = Eq:

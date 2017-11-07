@@ -234,9 +234,45 @@ we simply order the adjacency
 list for each vertex $v$ in clockwise order around $v$;
 no additional data structures are required.
 
-ZZZ Time Complexity ZZZ
+We will assume an integer RAM model of computation The input for each algorithm
+will be a connected planar graph with $n$ vertices and $m$ edges, represented
+via adjacency lists. The input size will be $n$, the number of vertices. Note
+that $\mathcal{O}(m)=\mathcal{O}(n)$.
 
-ZZZ Augmented Adjacency Lists ZZZ
+In Section~4, given an edge $uv$, we will need an efficient operation to
+find $v$'s entry in $u$'s adjacency list from $u$'s entry in $v$'s list.
+An \defterm{augmented adjacency list} is an adjacency list such that for
+any edge $uv$, a reference to $v$'s entry in
+$u$'s list is stored in $u$'s entry in $v$'s list, and vice versa. Given an
+adjacency list representation of a graph, an augmented
+adjacency list representation may be constructed in $\mathcal{O}(m)$ time via
+the following algorithm.
+
+\begin{algorithm} \label{A:augment}
+\textbf{Input:} An adjacency list representation Adj of a graph $G$
+
+\textbf{Step 1:} Construct an augmented adjacency list Adj' copy of Adj with
+the reference portion of each entry uninitialized.
+
+\textbf{Step 2:} For each vertex $v$ construct an array Wrk[$v$] storing
+vertex-reference pairs. For each $v$ from $0$ to $n-1$ iterate through
+Adj'[$v$]. For each neighbor $u$ in Adj'[$v$] let
+$r_{v,u}$ be a reference to $u$'s entry in Adj'[$v$] and append the pair
+$(v,r_{v,u})$ to Wrk[$u$].
+
+\textbf{Step 3:} For each $v$ from $n-1$ to $0$ iterate through Wrk[$v$]. At
+the pair $(u,r_{u,v})$ in Wrk[$v$] note that the last element of Wrk[$u$] is
+$(v,r_{v,u})$. Look up and assign references for the edge $uv$ in Adj'. Remove
+$(v,r_{v,u})$ from the back of Wrk[$u$].
+\end{algorithm}
+
+After completing Step 2 in Algorithm \ref{A:augment} the array Wrk[$v$] contains
+a pair $(u,r_{u,v})$ for each neighbor of $v$, sorted in increasing order of by
+the neighbor $u$. At a given vertex $v$ in Step 3 in Algorithm \ref{A:augment},
+for each edge $uw\in E(G)$ such that
+$u<w$ and $v<w$, we shall have the initialized references for $uw$ in Adj'[$u$]
+and Adj'[$w$] and removed the pair $(w,r_{w,u})$ from Wrk[$u$]. The next
+iteration of Step 3 will handle edges $uv$ with $v>u$.
 
 \section{Path Coloring: the Poh Algorithm}
 

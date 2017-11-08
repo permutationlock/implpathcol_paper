@@ -260,22 +260,25 @@ the reference portion of each entry uninitialized.
 \textbf{Step 2:} For each vertex $v$ construct an array Wrk[$v$] storing
 vertex-reference pairs. For each $v$ from $0$ to $n-1$ iterate through
 Adj'[$v$]. For each neighbor $u$ in Adj'[$v$] let
-$r_{v,u}$ be a reference to $u$'s entry in Adj'[$v$] and append the pair
-$(v,r_{v,u})$ to Wrk[$u$].
+$r(v,u)$ be a reference to $u$'s entry in Adj'[$v$] and append the pair
+$(v,r(v,u))$ to Wrk[$u$].
 
 \textbf{Step 3:} For each $v$ from $n-1$ to $0$ iterate through Wrk[$v$]. At
-the pair $(u,r_{u,v})$ in Wrk[$v$] note that the last element of Wrk[$u$] is
-$(v,r_{v,u})$. Look up and assign references for the edge $uv$ in Adj'. Remove
-$(v,r_{v,u})$ from the back of Wrk[$u$].
+the pair $(u,r(u,v))$ in Wrk[$v$] note that the last element of Wrk[$u$] is
+$(v,r(v,u))$. Look up and assign references for the edge $uv$ in Adj'. Remove
+$(v,r(v,u))$ from the back of Wrk[$u$].
 \end{algorithm}
 
 After completing Step 2 in Algorithm \ref{A:augment} the array Wrk[$v$] contains
-a pair $(u,r_{u,v})$ for each neighbor of $v$, sorted in increasing order of by
-the neighbor $u$. During Step 3 in Algorithm \ref{A:augment} suppose we reach
-the vertex $v$. For every edge $uw\in E(G)$ such that
-$u<w$ and $v<w$, we shall have initialized the references for $uw$ in Adj'[$u$]
-and Adj'[$w$], as well as removed the pair $(w,r_{w,u})$ from Wrk[$u$]. The
-subsequent iteration through Wrk[$v$] will handle all edges $uv$ with $v>u$.
+a pair $(u,r(u,v))$ for each neighbor of $v$, sorted in increasing order of by
+the neighbor $u$.
+
+At a given iteration of Step 3 in Algorithm \ref{A:augment} let $v$ be the
+current vertex. For each edge $uw\in E(G)$ such that
+$u<w$ and $v<w$, prior iterations of Step 3 will have initialized the
+references for $uw$ in Adj'[$u$] and Adj'[$w$], and also removed the pair
+$(w,r(w,u))$ from Wrk[$u$]. The current iteration will handle all edges
+$uv\in E(G)$ with $v>u$.
 
 \section{Path Coloring: the Poh Algorithm}
 

@@ -251,19 +251,19 @@ the following algorithm.
 \begin{algorithm} \label{A:augment}
 \textbf{Input:} An adjacency list representation Adj of a graph $G$.
 
-\textbf{Output:} An augmented adjacency list representation Adj' of $G$ with
+\noindent\textbf{Output:} An augmented adjacency list representation Adj' of $G$ with
 the same rotation scheme as Adj.
 
-\textbf{Step 1:} Construct an augmented adjacency list copy Adj' of Adj with
+\noindent\textbf{Step 1:} Construct an augmented adjacency list copy Adj' of Adj with
 the reference portion of each entry uninitialized.
 
-\textbf{Step 2:} For each vertex $v$ construct an array Wrk[$v$] storing
+\noindent\textbf{Step 2:} For each vertex $v$ construct an array Wrk[$v$] storing
 vertex-reference pairs. For each $v$ from $0$ to $n-1$ iterate through
 Adj'[$v$]. For each neighbor $u$ in Adj'[$v$] let
 $r(v,u)$ be a reference to $u$'s entry in Adj'[$v$] and append the pair
 $(v,r(v,u))$ to Wrk[$u$].
 
-\textbf{Step 3:} For each $v$ from $n-1$ to $0$ iterate through Wrk[$v$]. At
+\noindent\textbf{Step 3:} For each $v$ from $n-1$ to $0$ iterate through Wrk[$v$]. At
 the pair $(u,r(u,v))$ in Wrk[$v$] note that the last element of Wrk[$u$] is
 $(v,r(v,u))$. Look up and assign references for the edge $uv$ in Adj'. Remove
 $(v,r(v,u))$ from the back of Wrk[$u$].
@@ -292,14 +292,14 @@ cycle $C=v_1,v_2,\ldots, v_k$ and a $2$-coloring of $C$ such
 that each color class induces a path, $P_1=v_1,v_2,\ldots, v_l$ and
 $P_2=v_{l+1},v_{l+2},\ldots, v_k$ respectively.
 
-\textbf{Output:} An extension of the $2$-coloring of $C$ to a path
+\noindent\textbf{Output:} An extension of the $2$-coloring of $C$ to a path
 $3$-coloring of $G$ such that no vertex in $G-C$ receives the same color as a
 neighbor of that vertex in $C$.
 
-\textbf{Step 1:} If $G=C$ then $G$ is already path $3$-colored and we
+\noindent\textbf{Step 1:} If $G=C$ then $G$ is already path $3$-colored and we
 are done. Otherwise there are two cases to consider.
 
-\textbf{Case 1.1:} Suppose $C$ is an induced subgraph of $G$. Let
+\noindent\textbf{Case 1.1:} Suppose $C$ is an induced subgraph of $G$. Let
 $u,w\in V(G)-V(C)$ such that $uv_1v_k$ and $wv_lv_{l+1}$ are faces; note that
 $u$ and $w$ are unique, but may not be distinct. Since $C$ is induced and
 $G\ne C$, $G-C$ is connected.
@@ -308,12 +308,12 @@ Color each vertex of $P_3$ with the third color not used in the $2$-coloring of
 $C$. Let $C_1=v_1v_2\ldots v_lu_ru_{r-1}\ldots u_1$ and
 $C_2=u_1u_2\ldots u_rv_{l+1}v_{l+2}\ldots v_k$.
 
-\textbf{Case 1.2:} Suppose $C$ is not an induced subgraph. Then there
+\noindent\textbf{Case 1.2:} Suppose $C$ is not an induced subgraph. Then there
 exists an edge $v_iv_j\in E(G)-E(C)$ such that $i\le l < j$. Let
 $C_1=v_1v_2\ldots v_iv_jv_{j+1}\ldots v_k$
 and $C_2=v_iv_{i+1}\ldots v_j$.
 
-\textbf{Step 2:} Apply Algorithm \ref{A:planar3} to
+\noindent\textbf{Step 2:} Apply Algorithm \ref{A:planar3} to
 Int$(C_1)$ and Int$(C_2)$.
 \end{algorithm}
 

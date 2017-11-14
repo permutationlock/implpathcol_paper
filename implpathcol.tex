@@ -251,33 +251,32 @@ the following algorithm.
 \begin{algorithm} \label{A:augment}
 \textbf{Input:} An adjacency list representation Adj of a graph $G$.
 
-\noindent\textbf{Output:} An augmented adjacency list representation Adj' of $G$ with
-the same rotation scheme as Adj.
+\noindent\textbf{Output:} An augmented adjacency list representation Adj' of $G$
+with the same rotation scheme as Adj.
 
-\noindent\textbf{Step 1:} Construct an augmented adjacency list copy Adj' of Adj with
-the reference portion of each entry uninitialized.
+\noindent\textbf{Step 1:} Construct an augmented adjacency list copy Adj' of Adj
+with the reference portion of each entry uninitialized.
 
-\noindent\textbf{Step 2:} For each vertex $v$ construct an array Wrk[$v$] storing
-vertex-reference pairs. For each $v$ from $0$ to $n-1$ iterate through
-Adj'[$v$]. For each neighbor $u$ in Adj'[$v$] let
-$r(v,u)$ be a reference to $u$'s entry in Adj'[$v$] and append the pair
-$(v,r(v,u))$ to Wrk[$u$].
+\noindent\textbf{Step 2:} For each vertex $v$ construct an array Wrk[$v$]
+storing vertex-reference pairs. For each $v$ from $0$ to $n-1$ iterate through
+Adj'[$v$]. For each neighbor $u$ in Adj'[$v$] append the pair $(v,r_v(u))$ to
+Wrk[$u$] where $r_v(u)$ is a reference to $u$'s entry in Adj'[$v$].
 
-\noindent\textbf{Step 3:} For each $v$ from $n-1$ to $0$ iterate through Wrk[$v$]. At
-the pair $(u,r(u,v))$ in Wrk[$v$] note that the last element of Wrk[$u$] is
-$(v,r(v,u))$. Look up and assign references for the edge $uv$ in Adj'. Remove
-$(v,r(v,u))$ from the back of Wrk[$u$].
+\noindent\textbf{Step 3:} For each $v$ from $n-1$ to $0$ iterate through
+Wrk[$v$]. At the pair $(u,r_u(v))$ in Wrk[$v$] note that the last element of
+Wrk[$u$] is $(v,r_v(u))$. Look up and assign references for the edge $uv$ in
+Adj'. Remove $(v,r_v(u))$ from the back of Wrk[$u$].
 \end{algorithm}
 
 After completing Step 2 in Algorithm \ref{A:augment} the array Wrk[$v$] contains
-a pair $(u,r(u,v))$ for each neighbor of $v$, sorted in increasing order of by
+a pair $(u,r_u(v))$ for each neighbor of $v$, sorted in increasing order of by
 the neighbor $u$.
 
 At a given iteration of Step 3 in Algorithm \ref{A:augment} let $v$ be the
 current vertex. For each edge $uw\in E(G)$ such that
 $u<w$ and $v<w$, prior iterations of Step 3 will have initialized the
 references for $uw$ in Adj'[$u$] and Adj'[$w$], and also removed the pair
-$(w,r(w,u))$ from Wrk[$u$]. The current iteration will handle all edges
+$(w,r_w(u))$ from Wrk[$u$]. The current iteration will handle all edges
 $uv\in E(G)$ with $v>u$.
 
 \section{Path Coloring: the Poh Algorithm}
@@ -320,6 +319,10 @@ Int$(C_1)$ and Int$(C_2)$.
 Note that in Algorithm \ref{A:planar3} the graph $G$ is finite and the recursive
 step applies the algorithm to two proper subgraphs of $G$. Therefore Algorithm
 \ref{A:planar3} must terminate.
+
+Let $G$ be a plane graph. We may add edges to $G$ until it is triangulated
+and path $2$-color the outer triangle. Applying Poh's algorithm computes a path
+$3$-coloring of $G$.
 
 
 \section{Path List Coloring: the Hartman-\v{S}krekovski Algorithm}

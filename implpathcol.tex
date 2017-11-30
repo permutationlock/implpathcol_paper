@@ -299,18 +299,19 @@ neighbor of that vertex in $C$.
 are done. Otherwise there are two cases to consider.
 
 \noindent\textbf{Case 1.1:} Suppose $C$ is an induced subgraph of $G$. Let
-$u,w\in V(G)-V(C)$ such that $uv_1v_k$ and $wv_lv_{l+1}$ are faces; note that
+$u,w\in V(G)-V(C)$ such that the cycles $u,v_1,v_k$ and $w,v_l,v_{l+1}$ each
+exist and are faces of $G$; note that
 $u$ and $w$ are unique, but may not be distinct. Since $C$ is induced and
 $G\ne C$, $G-C$ is connected.
-Let $P_3=u_1u_2\ldots u_r$ be a shortest $u,w$-path in $G-C$.
+Let $P_3=u_1,u_2,\ldots,u_r$ be a shortest $u,w$-path in $G-C$.
 Color each vertex of $P_3$ with the third color not used in the $2$-coloring of
-$C$. Let $C_1=v_1v_2\ldots v_lu_ru_{r-1}\ldots u_1$ and
-$C_2=u_1u_2\ldots u_rv_{l+1}v_{l+2}\ldots v_k$.
+$C$. Let $C_1=v_1,v_2,\ldots,v_l,u_r,u_{r-1},\ldots,u_1$ and
+$C_2=u_1,u_2,\ldots,u_r,v_{l+1},v_{l+2},\ldots,v_k$.
 
 \noindent\textbf{Case 1.2:} Suppose $C$ is not an induced subgraph. Then there
 exists an edge $v_iv_j\in E(G)-E(C)$ such that $i\le l < j$. Let
-$C_1=v_1v_2\ldots v_iv_jv_{j+1}\ldots v_k$
-and $C_2=v_iv_{i+1}\ldots v_j$.
+$C_1=v_1,v_2,\ldots,v_i,v_j,v_{j+1},\ldots,v_k$
+and $C_2=v_i,v_{i+1},\ldots,v_j$.
 
 \noindent\textbf{Step 2:} Apply Algorithm \ref{A:planar3} to
 Int$(C_1)$ and Int$(C_2)$.

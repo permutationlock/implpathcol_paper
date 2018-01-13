@@ -263,8 +263,8 @@ Adj'[$v$]. For each neighbor $u$ in Adj'[$v$] append the pair $(v,r_v(u))$ to
 Wrk[$u$] where $r_v(u)$ is a reference to $u$'s entry in Adj'[$v$].
 
 \noindent\textbf{Step 3:} For each $v$ from $n-1$ to $0$ iterate through
-Wrk[$v$]. At the pair $(u,r_u(v))$ in Wrk[$v$] note that the last element of
-Wrk[$u$] is $(v,r_v(u))$. Look up and assign references for the edge $uv$ in
+Wrk[$v$]. At the pair $(u,r_u(v))$ in Wrk[$v$] the last element of
+Wrk[$u$] will be $(v,r_v(u))$ (see below). Look up and assign references for the edge $uv$ in
 Adj'. Remove $(v,r_v(u))$ from the back of Wrk[$u$].
 \end{algorithm}
 

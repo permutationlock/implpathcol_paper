@@ -235,9 +235,10 @@ list for each vertex $v$ in clockwise order around $v$;
 no additional data structures are required.
 
 We will assume an integer RAM model of computation. The input for each algorithm
-will be a connected plane graph with $n$ vertices and $m$ edges, represented
+will be a triangulated plane graph with $n$ vertices and $m$ edges, represented
 via adjacency lists. The input size will be $n$, the number of vertices. Note
-that $\mathcal{O}(m)=\mathcal{O}(n)$.
+that $\mathcal{O}(m)=\mathcal{O}(n)$, so it is equivalen to take the input size
+to be $m$, the number of edges.
 
 In Section~4, given an edge $uv$, we will need an efficient operation to
 find $v$'s entry in $u$'s adjacency list from $u$'s entry in $v$'s list.
@@ -264,8 +265,8 @@ Wrk[$u$] where $r_v(u)$ is a reference to $u$'s entry in Adj'[$v$].
 
 \noindent\textbf{Step 3:} For each $v$ from $n-1$ to $0$ iterate through
 Wrk[$v$]. At the pair $(u,r_u(v))$ in Wrk[$v$] the last element of
-Wrk[$u$] will be $(v,r_v(u))$ (see below). Look up and assign references for the edge $uv$ in
-Adj'. Remove $(v,r_v(u))$ from the back of Wrk[$u$].
+Wrk[$u$] will be $(v,r_v(u))$; for details on why this is, see below. Look up and assign references for the
+edge $uv$ in Adj'. Remove $(v,r_v(u))$ from the back of Wrk[$u$].
 \end{algorithm}
 
 After completing Step 2 in Algorithm \ref{A:augment} the array Wrk[$v$] contains
@@ -282,8 +283,6 @@ $uv\in E(G)$ with $v>u$.
 \section{Path Coloring: the Poh Algorithm}
 
 We will first describe Poh's algorithm for path $3$-coloring plane graphs.
-If $C$ is a cycle in a plane graph $G$ we will use Int$(C)$ to denote
-the subgraph of $G$ consisting of $C$ and all interior vertices and edges.
 
 \begin{algorithm}[Poh 1990] \label{A:planar3}
 \textbf{Input:} A weakly triangulated plane graph $G$ with outer face a
@@ -313,17 +312,17 @@ exists an edge $v_iv_j\in E(G)-E(C)$ such that $i\le l < j$. Let
 $C_1=v_1,v_2,\ldots,v_i,v_j,v_{j+1},\ldots,v_k$
 and $C_2=v_i,v_{i+1},\ldots,v_j$.
 
-\noindent\textbf{Step 2:} Apply Algorithm \ref{A:planar3} to
-Int$(C_1)$ and Int$(C_2)$.
+\noindent\textbf{Step 2:} Apply Algorithm \ref{A:planar3} separately to the
+subgraph bounded by $C_1$ and the subgraph bounded by $C_2$.
 \end{algorithm}
 
-Note that in Algorithm \ref{A:planar3} the graph $G$ is finite and the recursive
+Note that the graph $G$ is finite and the recursive
 step applies the algorithm to two proper subgraphs of $G$. Therefore Algorithm
 \ref{A:planar3} must terminate.
 
-Let $G$ be a plane graph. We may add edges to $G$ until it is triangulated
-and path $2$-color the outer triangle. Applying Poh's algorithm computes a path
-$3$-coloring of $G$.
+Let $G$ be a triangulated plane graph. We may trivially path $2$-color the outer
+triangle. Applying Poh's algorithm extends this coloring to a path $3$-coloring
+of $G$.
 
 
 \section{Path List Coloring: the Hartman-\v{S}krekovski Algorithm}

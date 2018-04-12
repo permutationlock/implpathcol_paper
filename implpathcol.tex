@@ -2,9 +2,21 @@
 \documentclass[12pt,letterpaper]{article}
 \usepackage{amsthm,amssymb,amsmath}
 \usepackage[pdftex]{hyperref}
+\usepackage{tikz}
 %QQQ To print single-spaced, comment out the line below (precede it with a "%").
 %QQQ To print double-spaced, remove the "%" at the beginning of the line.
 %\renewcommand{\baselinestretch}{2}
+
+% TIKZ
+
+\pgfdeclarelayer{bg}    % declare background layer
+\pgfsetlayers{bg,main}  % set the order of the layers
+
+\tikzset{every label/.append style={fill=white}}
+\tikzset{
+    every node/.style={circle, fill, draw, minimum size=1mm, scale=.6,
+    	font=\LARGE}
+}
 
 % MARGINS
 
@@ -54,6 +66,7 @@
 
 \theoremstyle{break}
 \newtheorem{algorithm}[lemma]{Algorithm}     % A:
+\newtheorem{implementation}[lemma]{Implementation}     % A:
 
 % Also: Section = S:, Figure = Fig:, Item = It:, Equation = Eq:
 
@@ -238,7 +251,9 @@ We will assume an integer RAM model of computation. The input for each algorithm
 will be a triangulated plane graph with $n$ vertices and $m$ edges, represented
 via adjacency lists. The input size will be $n$, the number of vertices. Note
 that $\mathcal{O}(m)=\mathcal{O}(n)$, so it is equivalen to take the input size
-to be $m$, the number of edges.
+to be $m$, the number of edges. Moreover, arbitrary simple planar graphs may be
+plane embedded and triangulated in $\mathcal{O}(n)$ time, see
+\cite{BoMy2004}.
 
 In Section~4, given an edge $uv$, we will need an efficient operation to
 find $v$'s entry in $u$'s adjacency list from $u$'s entry in $v$'s list.
@@ -247,9 +262,9 @@ any edge $uv$, a reference to $v$'s entry in
 $u$'s list is stored in $u$'s entry in $v$'s list, and vice versa. Given an
 adjacency list representation of a graph, an augmented
 adjacency list representation may be constructed in $\mathcal{O}(m)$ time via
-the following algorithm.
+the following procedure.
 
-\begin{algorithm} \label{A:augment}
+\begin{implementation} \label{A:augment}
 \textbf{Input:} An adjacency list representation Adj of a graph $G$.
 
 \noindent\textbf{Output:} An augmented adjacency list representation Adj' of $G$
@@ -265,9 +280,10 @@ Wrk[$u$] where $r_v(u)$ is a reference to $u$'s entry in Adj'[$v$].
 
 \noindent\textbf{Step 3:} For each $v$ from $n-1$ to $0$ iterate through
 Wrk[$v$]. At the pair $(u,r_u(v))$ in Wrk[$v$] the last element of
-Wrk[$u$] will be $(v,r_v(u))$; for details on why this is, see below. Look up and assign references for the
-edge $uv$ in Adj'. Remove $(v,r_v(u))$ from the back of Wrk[$u$].
-\end{algorithm}
+Wrk[$u$] will be $(v,r_v(u))$; for details on why this is, see below. Use
+$r_u(v)$ and $r_v(u)$ to look up and assign references for the edge $uv$ in
+Adj'$[u]$ and Adj'$[v]$. Remove $(v,r_v(u))$ from the back of Wrk[$u$].
+\end{implementation}
 
 After completing Step 2 in Algorithm \ref{A:augment} the array Wrk[$v$] contains
 a pair $(u,r_u(v))$ for each neighbor of $v$, sorted in increasing order of by
@@ -324,6 +340,101 @@ Let $G$ be a triangulated plane graph. We may trivially path $2$-color the outer
 triangle. Applying Poh's algorithm extends this coloring to a path $3$-coloring
 of $G$.
 
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}[scale=1.2]
+  \node (t1) at (0cm, 3.5cm) {};
+  \node (t2) at (2.45cm, 0cm) {};
+  \node (t3) at (-2.45cm, 0cm) {};
+
+  \node (k1) [label=below:$1$, label=above left:$1$] at (-1.25cm, 0.65cm) {};
+  \node (k2) [label=below:$2$]  at (-0.5cm, 0.65cm) {};
+  \node (k3) [label=below:$3$]  at (0.25cm, 0.65cm) {};
+  \node (kn) [label=below:$k$]  at (1.25cm, 0.65cm) {};
+
+  \node (l1) [label=above left:$2$]  at (-0.88cm, 1.15cm) {};
+  \node (l2) at (-0.12cm, 1.15cm) {};
+  \node (ln) at (0.88cm, 1.15cm) {};
+
+  \node (j1) [label=above left:$3$] at (-0.5cm, 1.65cm) {};
+  \node (jn) at (0.5cm, 1.65cm) {};
+
+  \node (p) [label=above left:$k$]  at (0cm, 2.4cm) {};
+
+  \begin{pgfonlayer}{bg}
+	  \draw (t1) edge (t2); \draw (t3) edge (t2); \draw (t1) edge (t3);
+	  \draw (k1) edge (k2); \draw (k3) edge (k2);
+	  \draw (k3) edge (kn) [dashed];
+
+	  \draw (l1) edge (l2);
+	  \draw (l2) edge (ln) [dashed];
+
+	  \draw (j1) edge (jn) [dashed];
+
+	  \draw (j1) edge (p) [dashed];
+	  \draw (jn) edge (p) [dashed];
+
+	  \draw (t1) edge (k1); \draw (t1) edge (kn);
+	  \draw (t1) edge (l1); \draw (t1) edge (ln);
+	  \draw (t1) edge (p);
+	  \draw (t2) edge (kn); \draw (t3) edge (k1);
+
+	  \draw (k1) edge (l1); \draw (k2) edge (l1);
+	  \draw (k2) edge (l2); \draw (k3) edge (l2);
+	  \draw (kn) edge (ln);
+
+	  \draw (l1) edge (j1); \draw (l2) edge (j1);
+	  \draw (jn) edge (ln);
+
+	  \draw (j1) edge (t1); \draw (jn) edge (t1);
+
+	  \draw (t3) edge (k1); \draw (t3) edge (k2);
+	  \draw (t3) edge (k3); \draw (t3) edge (kn);
+  \end{pgfonlayer}
+
+\end{tikzpicture}
+
+\caption{The collection of graphs $\{G_k\}_{k\in\mathbb{N}}$ on which Poh
+performs poorly.}
+\label{F:poh_bad_graph_collection}
+\end{center}
+\end{figure}
+
+A natural way to implement Poh's algorithm is to use a breadth-first search to
+construct the shortest path in Case 1.1. However, this method unfortunately
+results in an algorithm that is not linear. To see this consider the family of
+graphs $\{G_k\}_{k\in\mathbb{N}}$ depicted in
+Figure \ref{F:poh_bad_graph_collection}. Fix $k\in\mathbb{N}$ and note that
+$n=n(G_k)=k(k+1)/2+3$. Assume
+that the outer triangle $2$-colored such that the top vertex
+assigned a color distinct from the bottom two. At iteration $i$ of Poh's
+algorithm, the shortest path through the interior will be the path of length
+$l=k-i+1$ directly along the base of the inner triangle. A breadth-first search
+of this inner triangle will hit all $(l)(l+1)/2$ vertices in order to find this
+path. Therefore the total number of operations performed will be
+\[
+    \Theta\left( \sum_{l=1}^k\frac{l(l+1)}{2} \right)=\Theta(n^{3/2}).
+\]
+So Poh's algorithm with breadth-first search is $\Omega(n^{3/2})$.
+
+Howeveer, the correctness of Poh's algorithm did not rely on
+locating the shortest $uw$-path, only on locating some induced $uw$-path.
+Modifying Poh's algorithm to locate induced paths will allow us produce a
+linear time implementation.
+
+The general strategy will be to walk clockwise along the colored path
+$P_1=v_1,v_2,\ldots,v_l$ in the outer cycle $C$, marking those vertices
+interior to $C$ that have a neighbor in $P_1$. We will then construct an
+induced path $P_3=u_1,u_2,\ldots,u_d$, consisting only of marked vertices,
+such that $C_1=P_1\cup P_3\cup\{u_1v_1,u_dv_l\}$ is a cycle and all marked
+vertices are contained in the subgraph of $G$ bounded by $C_1$. 
+
+If $C=v_1,v_2,\ldots,v_k$ is a cycle,
+then we will treat vertex indices mod $k$. That is, $v_i=v_{i+k}$ for any
+$i\in\mathbb{Z}$.
+
+
+
 
 \section{Path List Coloring: the Hartman-\v{S}krekovski Algorithm}
 
@@ -331,6 +442,13 @@ ZZZ
 
 
 \begin{thebibliography}{99}
+
+\bibitem{BoMy2004}
+J.~Boyer and W.~Myrvod, On the cutting edge: simplified $O(n)$ planarity by edge
+addition,
+\textit{J. Graph Algorithms Appl.}
+\textbf{8} (2004),
+241--273.
 
 \bibitem{BrMy1985}
 I.~Broere and C.~M.~Mynhardt,

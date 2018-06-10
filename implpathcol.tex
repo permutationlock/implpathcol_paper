@@ -250,7 +250,7 @@ no additional data structures are required.
 We will assume an integer RAM model of computation. The input for each algorithm
 will be a triangulated plane graph with $n$ vertices and $m$ edges, represented
 via adjacency lists. The input size will be $n$, the number of vertices. Note
-that $\mathcal{O}(m)=\mathcal{O}(n)$, so it is equivalen to take the input size
+that $\mathcal{O}(m)=\mathcal{O}(n)$, so it is equivalent to take the input size
 to be $m$, the number of edges. Moreover, arbitrary simple planar graphs may be
 plane embedded and triangulated in $\mathcal{O}(n)$ time, see
 \cite{BoMy2004}.
@@ -298,7 +298,11 @@ $uv\in E(G)$ with $v>u$.
 
 \section{Path Coloring: the Poh Algorithm}
 
-We will first describe Poh's algorithm for path $3$-coloring plane graphs.
+We will first describe Poh's algorithm for path $3$-coloring plane graphs. When
+denoting vertices in a $k$-cycle $C=v_1,v_2,\ldots,v_k$ we will always treat
+vertex indices mod $(k+1)$ and always select representatives in
+$\{1,2,\ldots,k\}$. That is, if we have $v_i\in C$ we will assume $1\le i\le k$
+and $v_i=v_{i+k}$.
 
 \begin{algorithm}[Poh 1990] \label{A:planar3}
 \textbf{Input:} A weakly triangulated plane graph $G$ with outer face a
@@ -401,26 +405,27 @@ performs poorly.}
 \end{figure}
 
 A natural way to implement Poh's algorithm is to use a breadth-first search to
-construct the shortest path in Case 1.1. However, this method unfortunately
-results in an algorithm that is not linear. To see this consider the family of
+to attempt to construct the shortest path of Case 1.1 and in the process locate
+a chord edge of Case 1.2 if no such path is possible. Unfortunately this method
+results in an algorithm that is not linear. To see this, consider the family of
 graphs $\{G_k\}_{k\in\mathbb{N}}$ depicted in
 Figure \ref{F:poh_bad_graph_collection}. Fix $k\in\mathbb{N}$ and note that
 $n=n(G_k)=k(k+1)/2+3$. Assume
-that the outer triangle $2$-colored such that the top vertex
+that the outer triangle is path $2$-colored such that the top vertex
 assigned a color distinct from the bottom two. At iteration $i$ of Poh's
 algorithm, the shortest path through the interior will be the path of length
 $l=k-i+1$ directly along the base of the inner triangle. A breadth-first search
-of this inner triangle will hit all $(l)(l+1)/2$ vertices in order to find this
+of this inner triangle will hit all $l(l+1)/2$ vertices in order to find this
 path. Therefore the total number of operations performed will be
 \[
     \Theta\left( \sum_{l=1}^k\frac{l(l+1)}{2} \right)=\Theta(n^{3/2}).
 \]
 So Poh's algorithm with breadth-first search is $\Omega(n^{3/2})$.
 
-Howeveer, the correctness of Poh's algorithm did not rely on
+However, the correctness of Poh's algorithm did not rely on
 locating the shortest $uw$-path, only on locating some induced $uw$-path.
-Modifying Poh's algorithm to locate induced paths will allow us produce a
-linear time implementation.
+Below we will see that modifying Poh's algorithm to locate induced paths will
+allow us produce a linear time implementation.
 
 The general strategy will be to walk clockwise along the colored path
 $P_1=v_1,v_2,\ldots,v_l$ in the outer cycle $C$, marking those vertices
@@ -428,12 +433,6 @@ interior to $C$ that have a neighbor in $P_1$. We will then construct an
 induced path $P_3=u_1,u_2,\ldots,u_d$, consisting only of marked vertices,
 such that $C_1=P_1\cup P_3\cup\{u_1v_1,u_dv_l\}$ is a cycle and all marked
 vertices are contained in the subgraph of $G$ bounded by $C_1$. 
-
-If $C=v_1,v_2,\ldots,v_k$ is a cycle,
-then we will treat vertex indices mod $k$. That is, $v_i=v_{i+k}$ for any
-$i\in\mathbb{Z}$.
-
-
 
 
 \section{Path List Coloring: the Hartman-\v{S}krekovski Algorithm}
@@ -444,7 +443,7 @@ ZZZ
 \begin{thebibliography}{99}
 
 \bibitem{BoMy2004}
-J.~Boyer and W.~Myrvod, On the cutting edge: simplified $O(n)$ planarity by edge
+J.~Boyer and W.~Myrvold, On the cutting edge: simplified $O(n)$ planarity by edge
 addition,
 \textit{J. Graph Algorithms Appl.}
 \textbf{8} (2004),

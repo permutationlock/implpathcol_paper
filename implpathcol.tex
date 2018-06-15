@@ -264,7 +264,7 @@ adjacency list representation of a graph, an augmented
 adjacency list representation may be constructed in $\mathcal{O}(m)$ time via
 the following procedure.
 
-\begin{implementation} \label{A:augment}
+\begin{algorithm} \label{A:augment}
 \textbf{Input:} An adjacency list representation Adj of a graph $G$.
 
 \noindent\textbf{Output:} An augmented adjacency list representation Adj' of $G$
@@ -279,17 +279,22 @@ Adj'[$v$]. For each neighbor $u$ in Adj'[$v$] append the pair $(v,r_v(u))$ to
 Wrk[$u$] where $r_v(u)$ is a reference to $u$'s entry in Adj'[$v$].
 
 \noindent\textbf{Step 3:} For each $v$ from $n-1$ to $0$ iterate through
-Wrk[$v$]. At the pair $(u,r_u(v))$ in Wrk[$v$] the last element of
-Wrk[$u$] will be $(v,r_v(u))$; for details on why this is, see below. Use
+Wrk[$v$]. Upon reaching each pair $(u,r_u(v))$ in Wrk[$v$] the last element of
+Wrk[$u$] will be $(v,r_v(u))$; for details on why this is, see the paragraphs
+below. Use
 $r_u(v)$ and $r_v(u)$ to look up and assign references for the edge $uv$ in
 Adj'$[u]$ and Adj'$[v]$. Remove $(v,r_v(u))$ from the back of Wrk[$u$].
-\end{implementation}
+\end{algorithm}
 
-After completing Step 2 in Algorithm \ref{A:augment} the array Wrk[$v$] contains
+After completing Step $2$ in Implementation \ref{A:augment} the array Wrk[$v$] contains
 a pair $(u,r_u(v))$ for each neighbor of $v$, sorted in increasing order of by
 the neighbor $u$.
 
-At a given iteration of Step 3 in Algorithm \ref{A:augment} let $v$ be the
+Let $v$ be a vertex in $G$. Suppose that for each edge $uw\in E(G)$ such that
+$u<w$ and $v<w$, references have been initialized for $uw$ in Adj'[$u$] and
+Adj'[$w$], and the pair $(w,r_w(u))$ has been removed from Wrk[$u$].
+
+At a given iteration of Step $3$ in Implementation \ref{A:augment} let $v$ be the
 current vertex. For each edge $uw\in E(G)$ such that
 $u<w$ and $v<w$, prior iterations of Step 3 will have initialized the
 references for $uw$ in Adj'[$u$] and Adj'[$w$], and also removed the pair
@@ -298,11 +303,7 @@ $uv\in E(G)$ with $v>u$.
 
 \section{Path Coloring: the Poh Algorithm}
 
-We will first describe Poh's algorithm for path $3$-coloring plane graphs. When
-denoting vertices in a $k$-cycle $C=v_1,v_2,\ldots,v_k$ we will always treat
-vertex indices mod $(k+1)$ and always select representatives in
-$\{1,2,\ldots,k\}$. That is, if we have $v_i\in C$ we will assume $1\le i\le k$
-and $v_i=v_{i+k}$.
+We will first describe Poh's algorithm for path $3$-coloring plane graphs.
 
 \begin{algorithm}[Poh 1990] \label{A:planar3}
 \textbf{Input:} A weakly triangulated plane graph $G$ with outer face a
@@ -333,7 +334,8 @@ $C_1=v_1,v_2,\ldots,v_i,v_j,v_{j+1},\ldots,v_k$
 and $C_2=v_i,v_{i+1},\ldots,v_j$.
 
 \noindent\textbf{Step 2:} Apply Algorithm \ref{A:planar3} separately to the
-subgraph bounded by $C_1$ and the subgraph bounded by $C_2$.
+maximal subgraph of $G$ with outer face $C_1$ and to the maximal subgraph with outer face
+$C_2$.
 \end{algorithm}
 
 Note that the graph $G$ is finite and the recursive
@@ -406,14 +408,46 @@ performs poorly.}
 
 A natural way to implement Poh's algorithm is to use a breadth-first search to
 to attempt to construct the shortest path of Case 1.1 and in the process locate
-a chord edge of Case 1.2 if no such path is possible. Unfortunately this method
-results in an algorithm that is not linear. To see this, consider the family of
+a chord edge of Case 1.2 if no such path is possible.
+
+\begin{algorithm}\label{A:poh_bfs}
+\textbf{Input:} A cycle $C=v_1,v_2,\ldots,v_k$ in a triangulated plane
+graph $G$, where $G$ is represented by adjacency lists, and a $2$-coloring of $C$ such
+that each color class induces a path, respectively $P_1=v_1,v_2,\ldots,v_l$ and
+$P_2=v_l,v_{l+1},\ldots,v_k$.
+
+\noindent\textbf{Output:} An extension of the $2$-coloring of $C$ to a path
+$3$-coloring of the maximal subgraph of $G$ with outer face $C$.
+
+\noindent\textbf{Step 1:} Iterate Adj[$v_1$] to locate the vertex $u$
+immediately following $v_k$. Note that since $G$ is triangulated, $v_1,u,v_k$ is
+a face of $G$.
+
+\noindent\textbf{Case 1.1:} If $u\in C$, then $u=v_{k-1}$, since $G$ is
+triangulated, and $C$ is not an induced cycle. We then
+apply Algorithm \ref{A:poh_bfs} to the cycle $C'=v_1,v_2,\ldots,v_{k-1}$.
+
+\noindent\textbf{Case 1.2:} Perform a breadth-first of the maximal subgraph of
+$G$ with outer face $C$, starting from the
+vertex $u$. Terminate the search upon locating a vertex $w$ with adjacent
+neighbors $v_i\in P_1$ and $v_j\in P_2$ such that $i\ne 1$ or $j\ne k$.
+Backtrack along the breadth-first search
+to construct a minimal $u,w$-path $P_3=u_1,u_2,\ldots,u_r$. Let
+$C_1=v_1,v_2,\ldots,v_i,u_r,u_{r-1},\ldots,u_1$ and
+$C_2=u_1,u_2,\ldots,u_r,v_j,v_{j-1},\ldots,v_k$. Apply Algorithm \ref{A:poh_bfs}
+separately to $C_1$ and $C_2$. If $i=l$ and $j={l+1}$ then $C$ was an induced
+cycle and we are done. Otherwise, also apply Algorithm \ref{A:poh_bfs} to
+$C_3=v_i,v_{i+1},\ldots,v_j$.
+\end{algorithm}
+
+Unfortunately Algorithm \ref{A:poh_bfs}
+is not linear. To see this, consider the family of
 graphs $\{G_k\}_{k\in\mathbb{N}}$ depicted in
 Figure \ref{F:poh_bad_graph_collection}. Fix $k\in\mathbb{N}$ and note that
 $n=n(G_k)=k(k+1)/2+3$. Assume
-that the outer triangle is path $2$-colored such that the top vertex
+that the outer triangle is path $2$-colored such that the top vertex is
 assigned a color distinct from the bottom two. At iteration $i$ of Poh's
-algorithm, the shortest path through the interior will be the path of length
+algorithm the shortest path through the interior will be the path of length
 $l=k-i+1$ directly along the base of the inner triangle. A breadth-first search
 of this inner triangle will hit all $l(l+1)/2$ vertices in order to find this
 path. Therefore the total number of operations performed will be
@@ -422,17 +456,23 @@ path. Therefore the total number of operations performed will be
 \]
 So Poh's algorithm with breadth-first search is $\Omega(n^{3/2})$.
 
-However, the correctness of Poh's algorithm did not rely on
+However, the correctness of Poh's algorithm does not rely on
 locating the shortest $uw$-path, only on locating some induced $uw$-path.
-Below we will see that modifying Poh's algorithm to locate induced paths will
+Below we will observe that modifying Poh's algorithm to locate induced paths will
 allow us produce a linear time implementation.
 
 The general strategy will be to walk clockwise along the colored path
 $P_1=v_1,v_2,\ldots,v_l$ in the outer cycle $C$, marking those vertices
 interior to $C$ that have a neighbor in $P_1$. We will then construct an
 induced path $P_3=u_1,u_2,\ldots,u_d$, consisting only of marked vertices,
-such that $C_1=P_1\cup P_3\cup\{u_1v_1,u_dv_l\}$ is a cycle and all marked
-vertices are contained in the subgraph of $G$ bounded by $C_1$. 
+such that $C_1=P_1\cup P_3\cup\{u_1v_1,u_dv_l\}$ is a cycle, and all marked
+vertices are contained in the maximal subgraph of $G$ with outer face $C_1$.
+
+When denoting vertices in a $k$-cycle
+it will be a useful convention to treat
+vertex indices mod $(k+1)$. From now on if we have a cycle
+$C=v_1,v_2,\ldots,v_k$, then for any $i\in\mathbb{Z}$ we will define
+$v_i=v_j$ where $j\in\{1,\ldots,k\}$ and $j\equiv i\mod (k+1)$.
 
 
 \section{Path List Coloring: the Hartman-\v{S}krekovski Algorithm}

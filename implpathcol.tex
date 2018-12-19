@@ -273,33 +273,31 @@ with the same rotation scheme as Adj.
 \noindent\textbf{Step 1:} Construct an augmented adjacency list copy Adj' of Adj
 with the reference portion of each entry uninitialized.
 
-\noindent\textbf{Step 2:} For each vertex $v$ construct an array Wrk[$v$]
+\noindent\textbf{Step 2:} For each vertex $v$ construct an array $\text{Wrk}[v]$
 storing vertex-reference pairs. For each $v$ from $0$ to $n-1$ iterate through
-Adj'[$v$]. For each neighbor $u$ in Adj'[$v$] append the pair $(v,r_v(u))$ to
-Wrk[$u$] where $r_v(u)$ is a reference to $u$'s entry in Adj'[$v$].
+$\text{Adj}'[v]$. For each neighbor $u$ in $\text{Adj}'[v]$ append the pair $(v,r_v(u))$ to
+$\text{Wrk}[u]$ where $r_v(u)$ is a reference to $u$'s entry in $\text{Adj}'[v]$.
 
 \noindent\textbf{Step 3:} For each $v$ from $n-1$ to $0$ iterate through
-Wrk[$v$]. Upon reaching each pair $(u,r_u(v))$ in Wrk[$v$] the last element of
-Wrk[$u$] will be $(v,r_v(u))$; for details on why this is, see the paragraphs
+$\text{Wrk}[v]$. Upon reaching each pair $(u,r_u(v))$ in $\text{Wrk}[v]$ the last element of
+$\text{Wrk}[u]$ will be $(v,r_v(u))$; for details on why this is, see the paragraphs
 below. Use
 $r_u(v)$ and $r_v(u)$ to look up and assign references for the edge $uv$ in
-Adj'$[u]$ and Adj'$[v]$. Remove $(v,r_v(u))$ from the back of Wrk[$u$].
+Adj'$[u]$ and Adj'$[v]$. Remove $(v,r_v(u))$ from the back of $\text{Wrk}[u]$.
 \end{algorithm}
 
-After completing Step $2$ in Implementation \ref{A:augment} the array Wrk[$v$] contains
+After completing Step $2$ in Algorithm \ref{A:augment} the array $\text{Wrk}[v]$ contains
 a pair $(u,r_u(v))$ for each neighbor of $v$, sorted in increasing order of by
 the neighbor $u$.
 
-Let $v$ be a vertex in $G$. Suppose that for each edge $uw\in E(G)$ such that
-$u<w$ and $v<w$, references have been initialized for $uw$ in Adj'[$u$] and
-Adj'[$w$], and the pair $(w,r_w(u))$ has been removed from Wrk[$u$].
-
-At a given iteration of Step $3$ in Implementation \ref{A:augment} let $v$ be the
-current vertex. For each edge $uw\in E(G)$ such that
+Let $v$ be the current vertex at a given iteration of Step $3$ in
+Algorithm \ref{A:augment}. For each edge $uw\in E(G)$ such that
 $u<w$ and $v<w$, prior iterations of Step 3 will have initialized the
-references for $uw$ in Adj'[$u$] and Adj'[$w$], and also removed the pair
-$(w,r_w(u))$ from Wrk[$u$]. The current iteration will handle all edges
-$uv\in E(G)$ with $v>u$.
+references for $uw$ in $\text{Adj}'[u]$ and $\text{Adj}'[w]$, and also removed the pair
+$(w,r_w(u))$ from $\text{Wrk}[u]$. Therefore for each $(u,r_u(v))$ in
+$\text{Wrk}[v]$, the array $\text{Wrk}[u]$ will contain only entries for
+vertices $w$ where $w\le v$. Hence, since $\text{Wrk}[u]$ is sorted in
+increasing order, the last element of $\text{Wrk}[u]$ must be $(v,r_v(u))$.
 
 \section{Path Coloring: the Poh Algorithm}
 
@@ -323,7 +321,7 @@ $u,w\in V(G)-V(C)$ such that the cycles $u,v_1,v_k$ and $w,v_l,v_{l+1}$ each
 exist and are faces of $G$; note that
 $u$ and $w$ are unique, but may not be distinct. Since $C$ is induced and
 $G\ne C$, $G-C$ is connected.
-Let $P_3=u_1,u_2,\ldots,u_r$ be a shortest $u,w$-path in $G-C$.
+Let $P_3=u_1,u_2,\ldots,u_r$ be an induced $u,w$-path in $G-C$.
 Color each vertex of $P_3$ with the third color not used in the $2$-coloring of
 $C$. Let $C_1=v_1,v_2,\ldots,v_l,u_r,u_{r-1},\ldots,u_1$ and
 $C_2=u_1,u_2,\ldots,u_r,v_{l+1},v_{l+2},\ldots,v_k$.
@@ -406,9 +404,12 @@ performs poorly.}
 \end{center}
 \end{figure}
 
-A natural way to implement Poh's algorithm is to use a breadth-first search to
-to attempt to construct the shortest path of Case 1.1 and in the process locate
-a chord edge of Case 1.2 if no such path is possible.
+In Poh's original proof he picked the induced $u,w$-path in Case 1.1 to be the
+shortest $u,w$-path.
+Thus a natural way to implement Poh's algorithm is to first locate $u$ and $w$,
+and then use a breadth-first search to
+to either construct a $u,w$-path or locate
+a chord edge if no such path is possible.
 
 \begin{algorithm}\label{A:poh_bfs}
 \textbf{Input:} A cycle $C=v_1,v_2,\ldots,v_k$ in a triangulated plane
@@ -429,7 +430,7 @@ apply Algorithm \ref{A:poh_bfs} to the cycle $C'=v_1,v_2,\ldots,v_{k-1}$.
 
 \noindent\textbf{Case 1.2:} Perform a breadth-first of the maximal subgraph of
 $G$ with outer face $C$, starting from the
-vertex $u$. Terminate the search upon locating a vertex $w$ with adjacent
+vertex $u$. Terminate the search upon locating a vertex $w\not\in C$ with adjacent
 neighbors $v_i\in P_1$ and $v_j\in P_2$ such that $i\ne 1$ or $j\ne k$.
 Backtrack along the breadth-first search
 to construct a minimal $u,w$-path $P_3=u_1,u_2,\ldots,u_r$. Let
@@ -456,10 +457,10 @@ path. Therefore the total number of operations performed will be
 \]
 So Poh's algorithm with breadth-first search is $\Omega(n^{3/2})$.
 
-However, the correctness of Poh's algorithm does not rely on
-locating the shortest $uw$-path, only on locating some induced $uw$-path.
-Below we will observe that modifying Poh's algorithm to locate induced paths will
-allow us produce a linear time implementation.
+However, the correctness of Poh's algorithm only relied on
+locating some induced $u,w$-path.
+We will show below that there exists a linear time implementation of Poh's
+algorithm so long as we do not always find the shortest $u,w$-path.
 
 The general strategy will be to walk clockwise along the colored path
 $P_1=v_1,v_2,\ldots,v_l$ in the outer cycle $C$, marking those vertices
@@ -474,6 +475,62 @@ vertex indices mod $(k+1)$. From now on if we have a cycle
 $C=v_1,v_2,\ldots,v_k$, then for any $i\in\mathbb{Z}$ we will define
 $v_i=v_j$ where $j\in\{1,\ldots,k\}$ and $j\equiv i\mod (k+1)$.
 
+\begin{algorithm}\label{A:poh_linear}
+\textbf{Input:} An induced cycle $C=v_1,v_2,\ldots,v_k$ in a triangulated plane
+graph $G$, where $G$ is represented by adjacency lists, and a $2$-coloring of $C$ such
+that each color class induces a path, respectively $P_1=v_1,v_2,\ldots,v_l$ and
+$P_2=v_l,v_{l+1},\ldots,v_k$. Additionally, suppose that all vertices in $G-C$
+with neighbors in $P_1$ are marked; denote this set of vertices
+$N(P_1)$.
+
+\noindent\textbf{Output:} An extension of the $2$-coloring of $C$ to a path
+$3$-coloring of the maximal subgraph of $G$ with outer face $C$.
+
+\noindent\textbf{Step 1:} If $S=\emptyset$ then $G-C$ is empty and thus $G$ is
+already path $3$-colored.
+    
+Suppose that $S\ne\emptyset$. Let $u,w$ be the vertices in $S$ such that $v_1, v_k, u$
+and $v_l,v_{l+1}, w$ are
+cycles in $G$. Observe there must exist a $u,v$-path in $G-C$ consisting of
+vertices in $S$. We will inductively construct
+an induced path $P_3=t_1,\ldots,t_r$ such that $t_1=u$, $t_r=w$, $t_1,\ldots,t_r\in
+S$, and all vertices in $S$ are contained in the maximal subgraph of $G$ with
+outer face $P_1\cup P_3\cup \{v_1u,v_lw\}$. Concurrently, we will
+also mark all vertices in $G-C-P_3$ with neighbors in $P_3$ and note any
+edges between vertices in $P_3$ and vertices in $P_1$ or $P_2$.
+
+Initialize $t_1=u$. We will also denote $v_k$ as $t_0$ so that
+$t_{i-1}$ is defined for $i=1$.
+
+Let $t_1,\ldots,t_i$ be the the induced path constructed so far. Iterate
+through $\text{Adj}[t_i]$ clockwise starting from $t_{i-1}$ until we reach a
+vertex $t_{i+1}\in S$ distinct from $t_{i-1}$ or we reach a vertex in $P_1$. If
+we reach a vertex in $P_1$ first then $t_i$ must be $w$ or there wouldn't be a
+$u,w$-path in $G$ consisting of vertices in $S$, a contradiction. If we reach a
+vertex $t_{i+1}\in S$ we add it to the path and continue.
+    
+While iterating
+through $\text{Adj}[t_i]$, let us also mark all neighbors between $t_{i-1}$ and
+$t_{i+1}$ to track vertices in $G-C-S$ with neighbors in $P_3$. Additionally record
+edges between $t_i$ and vertices in $P_1$ and $P_2$.
+
+\noindent\textbf{Step 2:} Color the vertices on the path $P_3$ with the
+remaining color not used on vertices in $P_1$ or $P_2$. Define the cycles
+$C_1=P_1\cup P_3\cup\{v_1u,v_lw\}$ and $C_2=P_3\cup
+P_2\cup\{v_ku,v_{l+1}w\}$. In step 1 we recorded all chords of $C_1$ and
+$C_2$. Moreover, we have also marked vertices with neighbors in $P_1,P_3$.
+Therefore we may decompose $C_1,C_2$ into induced cycles and recursively apply
+Algorithm \ref{A:poh_linear} to each.
+\end{algorithm}
+
+Suppose that $G$ is a triangulated plane graph. We may path $2$-color the outer
+triangle, mark all vertices with neighbors in one of the colored paths, and
+then apply Algorithm \ref{A:poh_linear} to extend this to a path
+$3$-coloring of $G$.
+
+Note that while executing Algorithm \ref{A:poh_linear} we only iterate through
+the adjacency list a vertex precisely when it is colored and added
+to a path. Therefore the algorithm is linear in the number of vertices.
 
 \section{Path List Coloring: the Hartman-\v{S}krekovski Algorithm}
 

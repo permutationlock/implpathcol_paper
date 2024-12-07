@@ -103,7 +103,7 @@
 
 % (NONE)
 
-\date{June 1, 2017}
+\date{December 5, 2024}
 
 \title{Path-Coloring Algorithms for Plane Graphs}
 
@@ -225,9 +225,9 @@ and an assignment of a list of three colors to each vertex;
 it produces a path coloring of the given graph
 in which each vertex receives a color from its list.
 
-Section~5 provides expiremental benchmarks for implementations of both
-algorithms~\cite{Bro2017}. It also
-discusses how both algorithms may be modified to benefit from parallelism.
+Section~5 provides benchmark results for implementations of both
+algorithms~\cite{Bro2017}. The section also
+discusses how each algorithm may be modified to benefit from parallelism.
 
 \section{Graph Representations and Time Complexity}
 
@@ -252,10 +252,10 @@ no additional data structures are required.
 We will assume that both forward and backward iteration in adjacency lists
 is constant time. In terms of plane graphs: given the entry for an edge in a
 rotation scheme ordered adjacency list, we assume that it is a
-constant time operation to retrieve entries corresponding to the
+constant time operation to retrieve the entries corresponding to the
 immediately clockwise and counter-clockwise edges. The provided
 C implementation uses adjacency arrays, but a doubly linked list
-would also suffice.
+would also suffice~\cite{Bro2017}.
 
 The input for each algorithm will be a weakly triangulated plane graph with
 $n$ vertices and $m$ edges, represented
@@ -319,47 +319,59 @@ $\text{Wrk}[u]$ must be $(v,r_v(u))$.
 
 \section{Path Coloring: the Poh Algorithm}
 
-We will first describe Poh's path $3$-coloring algorithm.
+We will first describe Poh's path $3$-coloring proof strategy.
 Given a cycle $C$ in a plane graph $G$ we define $\text{Int}(C)$ to
 be the subgraph of $G$ consisting of $C$ and all vertices and edges interior to
 $C$. Equivalently, $\text{Int}(C)$ is the maximal subgraph of $G$ which has
 outer face $C$.
 
-\begin{algorithm}[Poh 1990]\label{A:planar3}
-\textbf{Input:} Let $G$ be a weakly triangulated plane graph with outer face a
+\begin{lemma}[Poh 1990]\label{L:planar3c}
+If $G$ is a weakly triangulated plane graph with outer face a
+cycle $C$ and $c$ is a $2$-coloring of $C$ such
+that each color class induces a path, then there exists an extension of
+$c$ to a path $3$-coloring of $G$ such that for all $v\in G-C$, if $vu\in
+E(G)$ with $u\in C$, then $c(v)\ne c(u)$.
+\end{lemma}
+
+\begin{proof}
+If $n(G)=3$, then $G=C$ and the path $2$-coloring of $C$ is a path
+$3$-coloring of $G$. We proceed by induction on $n$. Let $n>3$ and suppose
+that the lemma is true for all $G$ with $3\le n(G)<n$.
+
+Let $G$ be a weakly triangulated plane graph with $n(G)=n$ and with outer face a
 cycle $C=v_1,v_2,\ldots, v_k$. Let $c$ be a $2$-coloring of $C$ such
 that each color class induces a path, $P_1=v_1,v_2,\ldots, v_\ell$ and
 $P_2=v_{l+1},v_{l+2},\ldots, v_k$ respectively.
 
-\textbf{Output:} An extension of the $2$-coloring $c$ of $C$ to a path
-$3$-coloring of $G$ such that no vertex in $G-C$ receives the same color as a
-neighbor of that vertex in $C$.
-
-\textbf{Step 1:} If $G=C$ then $G$ is already path $3$-colored and we
-are done. Otherwise there are two cases to consider.
-
-\textbf{Case 1.1:} Suppose $C$ is an induced subgraph of $G$. Let
-$u,w\in V(G)-V(C)$ such that the cycles $u,v_1,v_k$ and $w,v_\ell,v_{\ell+1}$ each
-exist and are faces of $G$; note that
+Suppose $C$ is an induced subgraph of $G$. Let
+$u,w\in V(G)-V(C)$ such that the cycles $u,v_1,v_k$ and $w,v_\ell,v_{\ell+1}$
+are faces of $G$; note that
 $u$ and $w$ are uniquely determined, but it may be the case that $u=w$. Since
-$C$ is an induced cycle in $G$ and
-$G\ne C$, $G-C$ is connected.
+$C$ is an induced cycle in $G$ and $G\ne C$, $G-C$ is connected.
 Let $P_3=u_1,u_2,\ldots,u_r$ be an induced $u,w$-path in $G-C$.
 Color each vertex of $P_3$ with the third color not used in the $2$-coloring of
 $C$. Let $C_1=v_1,v_2,\ldots,v_\ell,u_r,u_{r-1},\ldots,u_1$ and
-$C_2=u_1,u_2,\ldots,u_r,v_{\ell+1},v_{l+2},\ldots,v_k$.
+$C_2=u_1,u_2,\ldots,u_r,v_{\ell+1},v_{l+2},\ldots,v_k$. The subgraphs
+$\text{Int}(C_1)$ and $\text{Int}(C_2)$ together with the coloring $c$
+each satisfy the requirements of the lemma. Since $n(\text{Int}(C_1))<n$
+and $n(\text{Int}(C_2))<n$, there exists an extension of $c$ to a path
+$3$-coloring of $\text{Int}(C_1)$ and a path $3$-coloring of $\text{Int}(C_2)$.
+Since $\text{Int}(C_1)$ and $\text{Int}(C_2)$ only share the vertices in $P_3$
+on their respective outer faces, the colorings agree and form a path
+$3$-coloring of $G$.
 
-\textbf{Case 1.2:} Suppose $C$ is not an induced subgraph. Then there
+Suppose $C$ is not an induced subgraph. Then there
 exists an edge $v_iv_j\in E(G)-E(C)$ such that $i\le \ell < j$. Let
 $C_1=v_1,v_2,\ldots,v_i,v_j,v_{j+1},\ldots,v_k$
 and $C_2=v_i,v_{i+1},\ldots,v_j$.
+Since $n(\text{Int}(C_1))<n$
+and $n(\text{Int}(C_2))<n$, there exists an extension of $c$ to a path
+$3$-coloring of $\text{Int}(C_1)$ and $\text{Int}(C_2)$. Again
+the subgraphs only share vertices on their outer faces, and thus the
+colorings agree and combine form a path $3$-coloring of $G$.\ggcnopf
+\end{proof}
 
-\textbf{Step 2:} Apply Algorithm~\ref{A:planar3} separately to $\text{Int}(C_1)$
-and $\text{Int}(C_2)$. The resulting path $3$-colorings agree and extend to
-a path $3$-coloring of $G$. 
-\end{algorithm}
-
-\begin{figure}[h]
+\begin{figure}[ht]
 \begin{center}
 \begin{tikzpicture}[scale=1.2]
     \node (p0)[minimum size=7.5mm] at (160:1.5cm) {$v_1$};
@@ -404,35 +416,37 @@ $\qquad$
   \draw (pn) edge (qn);
   \draw (p1) edge (q1);
 \end{tikzpicture}
-\caption{Algorithm~\ref{A:planar3} Case 1.1 (left) and Case 1.2 (right).}
+\caption{Lemma~\ref{L:planar3c} the case $C$ is induced (left) and the case
+of a chord (right).}
 \label{poh_figure}
 \end{center}
 \end{figure}
 
-Note that the graph $G$ is finite and the recursive
-step applies the algorithm to two proper subgraphs of $G$. Therefore
-Algorithm~\ref{A:planar3} must terminate.
-
 Let $G$ be a triangulated plane graph. We may trivially path $2$-color the outer
-triangle. Applying Poh's algorithm extends this coloring to a path $3$-coloring
-of $G$.
+triangle. Applying Lemma~\ref{L:planar3c} extends this coloring to a path
+$3$-coloring of $G$.
 
-In Poh's original proof he picked the induced $u,w$-path in Case 1.1 to be the
-shortest $u,w$-path.
-Thus a natural way to implement Poh's algorithm is to first locate $u$ and $w$,
+For an arbitrary plane graph $G$ we may add edges
+to produce a triangulated plane graph $G'$. Any path $3$-coloring of
+$G'$ will also be a path $3$-coloring of $G$. Thus Lemma~\ref{L:planar3c}
+proves Theorem~\ref{T:planar3c}.
+
+In the construction of the path $P_3$ in Poh's original proof, the
+induced $u,w$-path was picked to be the shortest $u,w$-path.
+Thus a natural way to implement Poh's algorithm is to locate $u$,
 and then use a breadth-first search to
-to either construct a $u,w$-path or locate
-a chord edge if no such path is possible.
+to construct a $u,w$-path and/or locate
+a chord edge.
 
 \begin{algorithm}\label{A:poh_bfs}
 \textbf{Input:} Let $C=v_1,v_2,\ldots,v_k$ be a cycle in a weakly triangulated plane
 graph $G$ with adjacency list representation $\text{Adj}$. Let 
-$c$ be an array of colors repreenting a $2$-coloring of $C$ such
+$c$ be an array of colors representing a $2$-coloring of $C$ such
 that each color class induces a single path, respectively labelled
 $P_1=v_1,v_2,\ldots,v_\ell$ and $P_2=v_\ell,v_{\ell+1},\ldots,v_k$. Assume that
 $c[v]=0$ for all $v\in\text{Int}(C)-C$.
 
-\textbf{Output:} Each vertex $v\in\text{Int}(C)-C$ a nonzero color will be
+\textbf{Output:} For each vertex $v\in\text{Int}(C)-C$, a nonzero color will be
 assigned to $c[v]$ such that $c$ represents a path $3$-coloring of
 $\text{Int}(C)$ extending the original $2$-coloring of $C$.
 
@@ -457,7 +471,7 @@ cycle and we are done. Otherwise, also apply Algorithm~\ref{A:poh_bfs} to
 $C_3=v_i,v_{i+1},\ldots,v_j$.
 \end{algorithm}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \begin{center}
 \begin{tikzpicture}[scale=1.2]
   \node (t1) at (0cm, 3.5cm) {};
@@ -511,8 +525,8 @@ $C_3=v_i,v_{i+1},\ldots,v_j$.
 
 \end{tikzpicture}
 
-\caption{The collection of graphs $\{G_k\}_{k\in\mathbb{N}}$ on which Poh
-performs poorly.}\label{F:poh_bad_graph_collection}
+\caption{The collection of graphs $\{G_k\}_{k\in\mathbb{N}}$ on which
+Algorithm~\ref{A:poh_bfs} performs poorly.}\label{F:poh_bad_graph_collection}
 \end{center}
 \end{figure}
 
@@ -534,15 +548,14 @@ So Poh's algorithm with breadth-first search is $\Omega(n^{3/2})$.
 
 However, the correctness of Poh's algorithm only relied on
 locating some induced $u,w$-path.
-We will show below that there exists a linear time implementation of Poh's
+We will show that there exists a linear time implementation of Poh's
 algorithm so long as we do not always find the shortest $u,w$-path.
 
-Let $N(P_1)$ be the set of vertices with a neighbor in $P_1$. The
-strategy will be to construct a
-path $P_3=u_1,u_2,\ldots,u_d$ consisting of vertices in $N(P_1)$
-such that $C_1=P_1\cup P_3\cup\{u_1v_1,u_dv_l\}$ is a cycle of minimal length.
+For any subgraph $H$ of $G$, let $N(H)$ be the set of vertices in $V(G)$ with a
+neighbor in $V(H)$. Our strategy will be to construct an induced
+path $P_3=u_1,u_2,\ldots,u_d$ consisting of vertices in $N(P_1)$.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \begin{center}
 \begin{tikzpicture}[scale=1.2]
     \node (v1) [label=above:${1,1}$] at (-1cm, 1.5cm) {$v_1$};
@@ -622,9 +635,9 @@ such that $C_1=P_1\cup P_3\cup\{u_1v_1,u_dv_l\}$ is a cycle of minimal length.
     \node (v5b) [label=below:${0,2}$] at (4.5cm, -1.5cm) {$v_5$};
     \node (v6b) [label=below:${0,2}$] at (2.5cm, -1.0cm) {$v_6$};
 
-    \node (u1b) [label=below:${2,3}$] at (3cm, 0.0cm) {$u_0$};
-    \node (u2b) [label=below:${2,3}$] at (4.0cm, 0.0cm) {$u_1$};
-    \node (u3b) [label=right:${2,3}$] at (5cm, 0.0cm) {$u_2$};
+    \node (u1b) [label=below:${2,3}$] at (3cm, 0.0cm) {$u_1$};
+    \node (u2b) [label=below:${2,3}$] at (4.0cm, 0.0cm) {$u_2$};
+    \node (u3b) [label=right:${2,3}$] at (5cm, 0.0cm) {$u_3$};
 
     \node (p1b) [label=left:${2,0}$] at (3.5cm, 1.0cm) {};
     \node (p2b) [label=above:${2,0}$] at (4.0cm, 1.0cm) {};
@@ -991,7 +1004,7 @@ Finally, let $S$ be an array of integer marks and let $m_{P_1}$ be an integer
 such that for each $v\in\text{Int}(C)-C$ we have $S[v]=m_{P_1}$ if and only if
 $v\in N(P_1)$.
 
-\textbf{Output:} Each vertex $v\in\text{Int}(C)-C$, a nonzero color will be
+\textbf{Output:} For each vertex $v\in\text{Int}(C)-C$, a nonzero color will be
 assigned to $c[v]$ such that $c$ represents a path $3$-coloring of
 $\text{Int}(C)$ extending the original $2$-coloring of $C$.
 
@@ -1004,7 +1017,7 @@ $u\not\in C$.
 \textbf{Step 2:} Let us color an induced path $P_3$ in $\text{Int}(C)-C$ with the
 color $c_{P_3}$ distinct
 from the two colors used on
-$P_1$ and $P_2$. The new path will start at $u$ and end at the unique verterx
+$P_1$ and $P_2$. The new path will start at $u$ and end at the unique vertex
 $w\in\text{Int}(C)-C$ such that $w,v_i,v_{i+1}$ is a face. Note that the vertex $w$ is
 guaranteed to exist, but in practice we will not a priori
 know $w$ before constructing the path $P_3$.
@@ -1016,7 +1029,7 @@ Suppose
 that we have colored an induced path
 $P_3=u_1,u_2,\ldots,u_j$ such that $u_1=u$ and $S[u_\ell]=m_{P_1}$ for each
 $\ell\in\{1,2,\ldots,j\}$. Moreover, for each $\ell<j$ assume that no neighbor $y$ of $u_\ell$
-between $u_{\ell-1}$ and $u_{\ell +1}$ counter-clocwise satisfies
+between $u_{\ell-1}$ and $u_{\ell +1}$ counter-clockwise satisfies
 $S[y]=m_{P_1}$ (consider $u_0=v_k$). Iterate through the neighbors of $u_j$ starting from $u_{j-1}$ until
 encountering a neighbor $y$ with $S[y]=m_{P_1}$ or $c[y]=c_{P_1}$.
 
@@ -1037,7 +1050,7 @@ Thus if an edge $yu_\ell$ were to exist, it would have to
 be between $u_{\ell-1}$ and $u_{\ell+1}$ counter-clockwise in
 $\text{Adj}[u_\ell]$, a contradiction
 unless $\ell=j$. Therefore we may assign $u_{j+1}\leftarrow y$, color
-$c[y]=c_{P_3}$, and continue coloring the path $P_3$.
+$c[y]\leftarrow c_{P_3}$, and continue constructing the path $P_3$.
 
 \textbf{Step 3:} So far we have colored an induced path
 $P_3=u_1,u_2,\ldots,u_j$ such that
@@ -1050,12 +1063,12 @@ To path $3$-color $\text{Int}(C_2)$ let us iterate through the vertices of
 $P_3$ starting from $u_1$.
 We will keep track of an edge $u_rv_s$ by storing $u_r$ and the entry
 for $v_s$ in
-$\text{Adj}[u_r]$. Initialize $u_r = u_1$ and $v_s=v_k$. Additinally,
+$\text{Adj}[u_r]$. Initialize $u_r = u_1$ and $v_s=v_k$. Additionally,
 pick $m_{P_3}$ to be a new unique integer mark to identify vertices in
 $N(P_3)$.
 
 Let $u_\ell$ be the current vertex and let $u_rv_s$ be the last edge
-between $P_3$ and $P_2$ that we have encounterd. Iterate through the neighbors of $u_\ell$
+between $P_3$ and $P_2$ that we have encountered. Iterate through the neighbors of $u_\ell$
 starting from $u_{\ell-1}$ ($v_k$ when $\ell=1$) and stopping at $u_{\ell+1}$
 ($v_{i+1}$ when $\ell=j$). For each neighbor $y$ of $u_\ell$ we assign
 $S[y]=m_{P_3}$. Each time we encounter a neighbor $y$ with
@@ -1065,49 +1078,11 @@ have also marked all vertices in $\text{Int}(C_{r,\ell,s,t})$ in $N(P_3)$
 with the unique mark $m_{P_3}$. Make a recursive call to path $3$-color
 $\text{Int}(C_{r,\ell,s,t})$ and assign $u_rv_s\leftarrow u_\ell v_t$.
 
-To path $3$-color $\text{Int}(C_1)$ we can follow the same procedure we used
-to color $\text{Int}(C_2)$, but instead iterate through $P_3$ backwards from
-$u_j$. At each
-vertex $u_\ell\in P_3$ we will iterate through the neighbors in
+To path $3$-color $\text{Int}(C_1)$ we follow the same procedure used
+to color $\text{Int}(C_2)$, but iterate through the vertices of $P_3$
+backwards from $u_j$. At each
+vertex $u_\ell\in P_3$ iterate through the neighbors in
 counter-clockwise order from $u_{\ell+1}$ up to $u_{\ell - 1}$.
-
-%\textbf{Step 1:} If $N(P_1)=\emptyset$, then $G-C$ is empty and thus $G$ is
-%already path $3$-colored.
-%    
-%Suppose that $N(P_1)\ne\emptyset$. Let $u,w$ be the vertices in $N(P_1)$ such that $v_1, v_k, u$
-%and $v_l,v_{l+1}, w$ are faces of $G$. We will construct
-%an induced path $P_3=u_1,\ldots,u_r$ such that $u_1=u$, $u_r=w$, and $u_1,\ldots,u_r\in
-%N(P_1)$. Concurrently, we will
-%mark all vertices interior to the cycle $C_2=P_3\cup P_2\cup\{v_ku,v_{l+1}w\}$
-%with neighbors in $P_3$ and record all
-%edges between vertices in $P_3$ and vertices in $P_1$ or $P_2$.
-%
-%Initialize $u_1=u$. We will also define $u_0$ to be $v_k$ so that
-%$u_{i-1}$ is defined when $i=1$.
-%
-%Let $u_1,\ldots,u_i$ be the the induced path constructed so far. Iterate
-%through $\text{Adj}[u_i]$ clockwise starting from $u_{i-1}$ until we reach a
-%vertex $u_{i+1}\in N(P_1)$ distinct from $u_{i-1}$ or we reach a vertex in $P_1$. If
-%we reach a vertex in $P_1$ first then $u_i$ must be $w$ or there wouldn't exist
-%a
-%$u,w$-path in $G$ consisting of vertices in $N(P_1)$. If we reach a
-%vertex $u_{i+1}\in N(P_1)$ we add it to the path and continue.
-%    
-%While iterating
-%through $\text{Adj}[u_i]$ let us also mark all neighbors between $u_{i-1}$ and
-%$u_{i+1}$ to indicate which vertices interior to $C_2$ have neighbors in $P_3$.
-%We also record all edges between $u_i$ and vertices in $P_1$ and $P_2$.
-%
-%\textbf{Step 2:} Color the vertices on the path $P_3$ with the
-%remaining color not used on vertices in $P_1$ or $P_2$. Define the cycles
-%$C_1=P_1\cup P_3\cup\{v_1u,v_lw\}$ and $C_2=P_3\cup
-%P_2\cup\{v_ku,v_{l+1}w\}$. In step 1 we recorded all chords of $C_1$ and
-%$C_2$, and also marked all vertices interior to $C_2$ that are in $N(P_3)$.
-%Moreover, the vertex marking from the input distinguishes those
-%interior to $C_1$ that are in $N(P_1)$; in fact all vertices interior to $C_1$ will be in
-%$N(P_1)$. 
-%Therefore we may decompose $C_1,C_2$ into induced cycles and apply
-%Algorithm~\ref{A:poh_linear} to each.
 \end{algorithm}
 
 Note that while executing Algorithm~\ref{A:poh_linear} we only iterate through
@@ -1137,24 +1112,29 @@ define $C(u,v)$ to be the clockwise path
 from $u$ to $v$ around $C$. If $n(G)<3$ then we define $C(u,v)=C$ if
 $u\ne v$, and $C(u,u)=u$.
 
-\begin{figure}[h]
+Given a graph $G$ and a coloring $c$ of $G$, for each $v\in V(G)$ we
+define $\text{deg}_c(v)$ to be the number of neighbors of $v$ that share a color
+with $v$. Equivalently, $\text{deg}_c(v)$ is the degree of $v$ in the subgraph
+of $G$ induced by the color class of $c(v)$.
+
+\begin{figure}[ht]
 \begin{center}
 \begin{tikzpicture}[scale=1.2]
     \node (z) [label=above:$1$] at (0.0cm, 1.5cm) {$z$};
-    \node (u0) [label=above:${2,3}$] at (-2.0cm, 1.5cm) {$u_0$};
+    \node (u0) [label=above:${2,3}$] at (-2.0cm, 1.5cm) {$u_1$};
     \node (v0) [label=above:${2,4,5}$] at (-1.5cm, 1.0cm) {};
-    \node (u1) [label=left:${4,5}$] at (-2.0cm, 0.5cm) {$u_1$};
+    \node (u1) [label=left:${4,5}$] at (-2.0cm, 0.5cm) {$u_2$};
     \node (v1) [label=above:${1,5,7}$] at (-0.5cm, 0.5cm) {};
     \node (v2) [label=left:$3$] at (-2.0cm, -0.5cm) {$x$};
     \node (v3) [label=above:${2,4,6}$] at (-1.5cm, -0.5cm) {};
     \node (v4) [label=above right:${3,4,5}$] at (-1.0cm, -0.5cm) {};
-    \node (u2) [label=below:${1,2}$] at (-0.5cm, -1.5cm) {$u_2$};
+    \node (u2) [label=below:${1,2}$] at (-0.5cm, -1.5cm) {$u_3$};
     \node (v5) [label=above:${1,2,3}$] at (0.0cm, -0.5cm) {};
-    \node (u3) [label=below:${1,2}$] at (0.5cm, -1.5cm) {$u_3$};
+    \node (u3) [label=below:${1,2}$] at (0.5cm, -1.5cm) {$u_4$};
     \node (v6) [label=right:$1$] at (1.0cm, -0.5cm) {$y$};
     \node (v7) [label=above:${2,6,7}$] at (0.75cm, 0.0cm) {};
-    \node (u4) [label=right:${1,6}$] at (1.5cm, 0.5cm) {$u_4$};
-    \node (u5) [label=above:${1,7}$] at (1.5cm, 1.5cm) {$u_5$};
+    \node (u4) [label=right:${1,6}$] at (1.5cm, 0.5cm) {$u_5$};
+    \node (u5) [label=above:${1,7}$] at (1.5cm, 1.5cm) {$u_6$};
 
     \begin{pgfonlayer}{bg} 
         \draw (z) edge (u0);
@@ -1196,12 +1176,12 @@ $u\ne v$, and $C(u,u)=u$.
         \draw (v6) edge (v7);
     \end{pgfonlayer}
 
-    \node (H0) [draw=none, scale=1.5] at (3.7cm, 1.5cm) {$H_0$};
+    \node (H0) [draw=none, scale=1.5] at (3.7cm, 1.5cm) {$H_1$};
     \node (u0a) [label=above:${2,3}$] at (4.0cm, 2.0cm) {};
     \node (v0a) [label=above:${2,4,5}$] at (4.5cm, 1.5cm) {};
     \node (u1a) [label=left:${4,5}$] at (4.0cm, 1.0cm) {$z_0$};
 
-    \node (H1) [draw=none, scale=1.5] at (4.5cm, -1.25cm) {$H_1$};
+    \node (H1) [draw=none, scale=1.5] at (4.5cm, -1.25cm) {$H_2$};
     \node (u1b) [label=left:${4,5}$] at (4.0cm, 0.5cm) {};
     \node (v1b) [label=above:${5,7}$] at (5.5cm, 0.5cm) {};
     \node (v2b) [label=left:$3$] at (4.0cm, -0.5cm) {$z_1$};
@@ -1209,12 +1189,12 @@ $u\ne v$, and $C(u,u)=u$.
     \node (v4b) [label=above right:${3,4,5}$] at (5.0cm, -0.5cm) {};
     \node (u2b) [label=below:$2$] at (5.5cm, -1.5cm) {$y_1$};
 
-    \node (H2) [draw=none, scale=1.5] at (6.5cm, -1.8cm) {$H_2$};
+    \node (H2) [draw=none, scale=1.5] at (6.5cm, -1.8cm) {$H_3$};
     \node (u2c) [label=below:$2$] at (6.0cm, -1.5cm) {$z_2$}; 
     \node (v5c) [label=above:${2,3}$] at (6.5cm, -0.5cm) {};
     \node (u3c) [label=below:$2$] at (7.0cm, -1.5cm) {$y_2$};
 
-    \node (H3) [draw=none, scale=1.5] at (8.25cm, -1.0cm) {$H_3$};
+    \node (H3) [draw=none, scale=1.5] at (8.25cm, -1.0cm) {$H_4$};
     \node (u3d) [label=below:$2$] at (7.5cm, -1.5cm) {$x_3$};
     \node (v6d) [label=right:$1$] at (8.0cm, -0.5cm) {$y_3$};
     \node (v7d) [label=above:${2,6,7}$] at (7.75cm, 0.0cm) {};
@@ -1265,15 +1245,16 @@ $u\ne v$, and $C(u,u)=u$.
         \draw (u4e) edge (u5e);
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{A step of Algorithm~\ref{A:hartman3} (if $z_\ell=x_\ell$
+\caption{A step in the proof of Lemma~\ref{L:hartman3} (if $z_\ell=x_\ell$
 and/or $z_\ell=y_\ell$, only $z_\ell$ is labelled).}
+\label{F:hartman3}
 \end{center}
 \end{figure}
 
-\begin{algorithm}[Hartman 1997, \v{S}krekovski 1999]\label{A:hartman3}
-\textbf{Input:} Let $G$ be a weakly triangulated plane graph with outer face
+\begin{lemma}\label{L:hartman3}
+Let $G$ be a weakly triangulated plane graph with outer face
 $C$. Let $x,y,z\in C$ be vertices (not necessarily distinct) such that
-$z\in C(x,y)$. Finally, let $L:V(G)\to P_{<\aleph_0}(\mathbb{N})$ be a
+$z\in C(x,y)$. Let $L:V(G)\to P_{<\aleph_0}(\mathbb{N})$ be a
 function assigning a finite list of colors to
 each vertex such that
 \begin{align*}
@@ -1281,242 +1262,220 @@ each vertex such that
     |L(v)| &\ge 2 \text{ for } v\in C-\{x,y,z\} \\
     |L(v)| &\ge 3 \text{ for } v\in G-C,
 \end{align*}
-    and if $u\in C(x,z)-z$, then $L(u)\cap L(z)=\emptyset$.
+and if $v\in C(x,z)-z$, then $L(v)\cap L(z)=\emptyset$.
 
-\textbf{Output:} A path $3$-coloring $c:V(G)\to\mathbb{N}$ of $G$ such
-    that $c(v)\in L(v)$ for all $v\in G$ and $\text{deg}_c(x)\le 1$,
-    $\text{deg}_c(y)\le 1$, and $\text{deg}_c(z)\le 1$. Furthermore, if
-    $v\in G-C(z,y)$ is a neighbor of $z$, then $c(z)\ne c(v)$.
- 
-    \textbf{Step 1:} For each $v\in\{x,y,z\}$ assign
-    $c(v)$ to be a color in $L(v)$. If $x,y,z$ are the only vertices in
-    $G$, then we are done. If $n(G)=2$ and $x=y=z$, then the remaining
-    vertex $v\in G-x$ satisfies $|L(v)-c(z)|\ge2$
-    and we may choose $c(v)$ to be an arbitrary color in $L(v)-c(z)$.
-    From now on assume that $n(G)>2$ and the outer
-    face $C$ is a cycle.
+There exists a path coloring $c:V(G)\to\mathbb{N}$ of $G$ such
+that $c(v)\in L(v)$ for all $v\in G$ and $\text{deg}_c(x)\le 1$,
+$\text{deg}_c(y)\le 1$, and $\text{deg}_c(z)\le 1$. The coloring
+$c$ is called a path $L$-choosing of $G$.
+\end{lemma}
 
-    \textbf{Step 2:}
-    We will recursively apply the algorithm to path $L$-choose
-    the $2$-connected components of $G-z$. Note that each cut-vertex of $G-z$
-    must be a neighbor of $z$ in $C$. Therefore each cut-vertex will
-    exist in at most
-    two $2$-connected components and the ``graph of $2$-connected
-    components'' of $G-z$ is a path. Let us label these
-    $2$-connected components $H_1,H_2,\ldots,H_{k-1}$ in counter-clockwise
-    order from $z$ around $C$. Let us similarly label the neighbors
-    of $z$ in counter-clockwise order as $u_1,\ldots,u_{k}$. Note that
-    the neighgors $u_2,\ldots,u_{k-1}$ are the cut-vertices of $G-z$ and each
-    $u_\ell$ is contained in $H_{\ell-1}$ and $H_{\ell}$.
+\begin{proof}
+Suppose that $n(G)\le 2$ and therefore $G=C$.
+Arbitrarily pick $c(x)\in L(x)$ and $c(y)\in L(y)$.
+If $n(G)=1$ then $x=y$ and $G$ is colored.
+If $n(G)= 2$ and $x\ne y$, then $C=x,y$ and $G$ is colored.
+If $n(G)=2$ and $x=y$, then the remaining vertex
+$v\in G-C(x,y)$ satisfies $|L(v)|\ge 2$. Choose $c(v)\in L(v)-c(x)$.
 
-    Suppose that $u_1=y$. Then since $z\in C(x,y)$, it must be that $x=z$.
-    We may re-label $x'=y$, $z'=y$, $y'=z$ and apply the algorithm to path
-    $L$-choose $G$ with the same color degree guarantees on $x$, $y$, and
-    $z$. Thus we may assume that $u_1\ne y$. 
+We proceed by induction on $n$. Let $n>2$ and suppose that the lemma
+holds for any graph $G$ with $n(G)<n$.
+Suppose that $G$ is a weakly triangulated plane graph with outer face $C$ and
+$n(G)=n$. If $L$ and $x,y,z\in C$
+satisfy the statement of the lemma, then we will show that
+the there exists a path $L$-choosing $c$ of $G$ such that
+$\text{deg}_c(x)\le 1$, $\text{deg}_c(y)\le 1$, and $\text{deg}_c(z)\le 1$.
 
-    If $z\ne x$ then let $H_i$ be the $2$-connected
-    component containing $x$; if $x=u_i$ is a cut-vertex, and is therfore
-    contained two components $H_i$ and $H_{i+1}$, we
-    single out the component $H_i$.
-    If $z=x$, define $i=1$.
+The strategy will be to apply the lemma
+to path $L$-choose the $2$-connected components of $G-z$.
+Note that each cut-vertex of $G-z$
+must be a neighbor of $z$ in $C$. Therefore each cut-vertex will
+exist in at most
+two $2$-connected components and the ``graph of $2$-connected
+components'' of $G-z$ is a path. Let us label these
+$2$-connected components $H_1,H_2,\ldots,H_{k-1}$ in counter-clockwise
+order from $z$ around $C$. Let us similarly label the neighbors
+of $z$ in counter-clockwise order as $u_1,\ldots,u_{k}$. Note that
+the neighbors $u_2,\ldots,u_{k-1}$ are the cut-vertices of $G-z$; each
+$u_\ell$ is contained in $H_{\ell-1}$ and $H_{\ell}$. See
+Figure~\ref{F:hartman3} for an example.
 
-    Similarly, if $z\ne y$ define $H_j$ to be the
-    component containing $y$; if $y=u_{j+1}$ is a cut-vertex, then pick
-    the component $H_j$ ($j>0$ since $u_1\ne y$).
-    If $z = y$ then define $j=k$.
-    Observe that $1\le i\le j\le k$.
+Suppose that $u_1=y$. Then since $z\in C(x,y)$, it must be that $x=z$.
+Note that if we re-label $x'=y$, $z'=y$, $y'=z$, then the lemma provides the
+same color guarantees on $x,y,z$. Thus assume that $u_1\ne y$.
 
-    For any $a,b\in\{1,2,\ldots,k\}$ such that $a\le b$ define
+If $z\ne x$ then let $H_i$ be the $2$-connected
+component containing $x$; if $x=u_i$ is a cut-vertex, and is therefore
+contained two components $H_i$ and $H_{i+1}$, we
+single out the component $H_i$.
+If $z=x$, define $i=1$.
 
-    $$ G_{a,b}=G\left[\{z\}\cup V(H_a)\cup V(H_{a+1})\cup \ldots\cup V(H_b)\right].$$ 
+Similarly, if $z\ne y$ define $H_j$ to be the
+component containing $y$; if $y=u_{j+1}$ is a cut-vertex, then pick
+the component $H_j$ ($j>0$ since $u_1\ne y$).
+If $z = y$ then define $j=k-1$. In all cases $1\le i\le j< k$.
 
-    We will $L$-choose the $2$-connected components of $G-z$ in the order
+For any $a,b\in\{1,2,\ldots,k\}$
+such that $a\le b$ define
+$$ G_{a,b}=G\left[\{z\}\cup V(H_a)\cup V(H_{a+1})\cup \ldots\cup V(H_b)\right].$$ 
+In other words, $G_{a,b}$ is the induced subgraph of the set
+$\{z\}\cup \bigcup_{\ell=1}^bV(H_\ell)$ on $G$.
 
-    $$H_i,H_{i+1},\ldots,H_j,H_{i-1},H_{i-2},\ldots,H_1$$
+We will $L$-choose the $2$-connected components of $G-z$ in the order
+$$H_i,H_{i+1},\ldots,H_j,H_{i-1},H_{i-2},\ldots,H_1$$
+to produce a path $L$-choosing of $G_{1,j}$. Finally,
+if $j < k-1$, we will
+path $L$-choose $G_{j+1,k-1}$ as a separate case.
 
-    to produce a path $L$-choosing of $G_{1,j}$. Finally,
-    if $j < k$, we will
-    path $L$-choose $G_{j+1,k}$ as a separate case.
+\textbf{Step 1.} To start we will path $L$-choose $G_{i,i}$.
 
-    \textbf{Step 2.1:} To start we will path $L$-choose $G_{i,i}$.
+\textbf{Case 1.1.} Suppose that $i=j$ and therefore
+$G_{i,i}=G_{i,j}$. If $z=y$ or $c(z)\not\in L(u_{i+1})$,
+define $L_i(v)=L(v)\setminus\{c(z)\}$
+for all $v\in H_i$. If $z=y$, define
+$y_i=u_{i+1}$, otherwise $y_i=y$. Similarly, if $x=z$, define $x_i=u_i$,
+otherwise $x_i=x$. Note that either $y_i=u_{i+1}$ or $|L_i(u_{i+1})|\ge 2$.
+Define $z_i=x_i$ and apply the lemma to path
+$L_i$-choose $H_i$ with the designated vertices $x_i$, $y_i$, and $z_i$.
+The $L_i$-choosing
+extends to a path $L$-choosing of $G_{i,j}$ with
+$\text{deg}_c(x)\le 1$, $\text{deg}_c(y)\le 1$, and $\text{deg}_c(z)=0$.
 
-    \textbf{Case 2.1.1:} Suppose that $i=j$ and therefore
-    $G_{i,i}=G_{i,j}$. 
+Otherwise $z\ne y$ and $c(z)\in L(u_{i+1})$. Define
+$L_i(u_{i+1})=\{c(z)\}$ and $L(v)=L(v)\setminus\{c(z)\}$ for
+$v\in H_i-u_{i+1}$. If $x=z$, define $x_i=u_i$, otherwise define $x_i=x$.
+Define $y_i=y$ and $z_i=u_{i+1}$.
+Apply the lemma to path $L_i$-choose $H_i$ with
+$x_i$, $y_i$, and $z_i$. The $L_i$-choosing of $H_i$ extends to a path
+$L$-choosing of $G_{i,j}$ such that $\text{deg}_c(x)\le 1$,
+$\text{deg}_c(y)\le 1$, and $\text{deg}_c(z)=1$.
 
-    If $c(z)\in L(u_{i+1})$ then define
-    $L_i(u_{i+1})=\{c(z)\}$ and $L(v)=L(v)\setminus\{c(z)\}$ for
-    $v\in H_i-u_{i+1}$. Recursively path $L_i$-choose $H_i$ with $x_i=x$, $y_i=y$,
-    and $z_i=u_{i+1}$. The $L_i$-choosing of $H_i$ extends to a path
-    $L$-choosing of $G_{i,j}$ such that $\text{deg}_c(x)\le 1$,
-    $\text{deg}_c(y)\le 1$, and $\text{deg}_c(z)=1$.
+\textbf{Case 1.2.} Suppose that $i\ne j$.
+Define $L_i(v)=L(v)\setminus\{c(z)\}$ for all $v\in H_i$. Recall that
+$u_i\in C(x,z)-z$, thus $L(u_i)\cap L(z)=\emptyset$ and $L_i(u_i)=L(u_i)$. 
 
-    Otherwise, $c(z)\not\in L(u_{i+1})$. Define $L_i(v)=L(v)\setminus\{c(z)\}$
-    for all $v\in H_i$ and note that $|L_i(u_{i+1})|\ge 2$. Path
-    $L_i$-choose $H_i$ with $x_i=x$, $y_i=y$, and $z_i=x$. This $L_i$-choosing
-    extends to a path $L$-choosing of $G_{i,j}$ with
-    $\text{deg}_c(x)\le 1$, $\text{deg}_c(y)\le 1$, and $\text{deg}_c(z)=0$.
+If $z=x$ or if $x=u_i$ is a cut-vertex, then we
+define $x_i=u_i$, $z_i=u_i$, and $y_i=u_{i+1}$ and apply the lemma
+to path $L_i$-choose $H_i$. Note that if $z=x$ then $i=1$ and $x_1=u_1$
+is the vertex immediately counter-clockwise to $z$ around $C$.
 
-    \textbf{Case 2.1.2:} Suppose that $i\ne j$.
-    Define $L_i(v)=L(v)\setminus\{c(z)\}$ for all $v\in H_i$. Recall that
-    $u_i\in C(x,z)-z$, thus $L(u_i)\cap L(z)=\emptyset$ and $L_i(u_i)=L(u_i)$. 
+Otherwise $x$ is not a cut-vertex. Note that $u_i\in C(x,z) - z$ and
+therefore $|L'(u_i)|\ge 2$. Thus we may define $x_i=x$, $z_i=x$,
+$y_i=u_{i+1}$ and path $L_i$-choose $H_i$.
 
-    If $z=x$ or if $x=u_i$ is a cut-vertex, then we
-    define $x_i=u_i$, $z_i=u_i$, and $y_i=u_{i+1}$ and apply the algorithm
-    to path $L_i$-choose $H_i$. Note that if $z=x$ then $i=1$ and $x_1=u_1$
-    is the vertex immediately counter-clockwise to $z$ around $C$.
+In both cases the path $L_i$-choosing of $H_i$ extends to a path
+$L$-choosing of $G_{i,i}$ such that $\text{deg}_c(u_{i+1})\le 1$,
+$\text{deg}_c(x)\le 1$, and $\text{deg}_c(z)=0$.
 
-    Otherwise $x$ is not a cut-vertex. Note that $u_i\in C(x,z) - z$ and
-    therefore $|L'(u_i)|\ge 2$. Thus we may define $x_i=x$, $z_i=x$,
-    $y_i=u_{i+1}$ and path $L_i$-choose $H_i$.
+\textbf{Step 2.} Suppose that $\ell\in\{i+1, i+2,\ldots,j-1\}$
+and we have computed a path $L$-choosing of $G_{i,\ell-1}$ such that
+$\text{deg}_c(u_\ell)\le1$, $\text{deg}_c(x)\le 1$,
+and $\text{deg}_c(z)=0$.
 
-    In both cases the path $L_i$-choosing of $H_i$ extends to a path
-    $L$-choosing of $G_{i,i}$ such that $\text{deg}_c(u_{i+1})\le 1$,
-    $\text{deg}_c(x)\le 1$, and $\text{deg}_c(z)=0$. 
+Define $L_\ell(u_\ell)=\{c(u_\ell)\}$ and
+$L_\ell(v)=L(v)\setminus\{c(z)\}$ for
+all $v\in H_\ell-u_\ell$.
+Apply the lemma to $L_\ell$-choose $H_\ell$ with
+$x_\ell=u_\ell$, $z_\ell=u_\ell$, and
+$y_\ell=u_{\ell+1}$. We are guaranteed that the path $L$-choosing
+of $G_{i,\ell-1}$ and the path $L_\ell$-choosing of $H_\ell$ agree
+at the shared vertex $u_\ell$, and that
+$\text{deg}_c(u_\ell)\le 1$ and $\text{deg}_c(u_{\ell+1})\le 1$
+in $H_\ell$. Taken together they form a
+path $L$-list coloring of $G_{i,\ell}$ with $\text{deg}_c(u_{\ell+1})\le 1$,
+$\text{deg}_c(x)\le 1$, and $\text{deg}_c(z)=0$.
 
-    \textbf{Step 2.2:} Suppose that $\ell\in\{i+1, i+2,\ldots,j-1\}$
-    and we have computed a path $L$-choosing of $G_{i,\ell-1}$ such that
-    $\text{deg}_c(u_\ell)\le1$, $\text{deg}_c(x)\le 1$,
-    and $\text{deg}_c(z)=0$.
+\textbf{Step 3.} Suppose that $i\ne j$ and we
+have computed a path $L$-list-coloring of $G_{i,j-1}$ such that
+$\text{deg}_c(u_j)=1$, $\text{deg}_c(x)\le 1$, and $\text{deg}_c(z)=0$. 
 
-    Define $L_\ell(u_\ell)=\{c(u_\ell)\}$ and
-    $L_\ell(v)=L(v)\setminus\{c(z)\}$ for
-    all $v\in H_\ell-u_\ell$.
-    Path $L_\ell$-choose $H_\ell$ with
-    $x_\ell=u_\ell$, $z_\ell=u_\ell$, and
-    $y_\ell=u_{\ell+1}$. We are guaranteed that the path $L$-choosing
-    of $G_{i,\ell-1}$ and the path $L_\ell$-choosing of $H_\ell$ agree
-    at the shared vertex $u_\ell$, and that
-    $\text{deg}_c(u_\ell)\le 1$ and $\text{deg}_c(u_{\ell+1})\le 1$
-    in $H_\ell$. Taken together they form a
-    path $L$-list coloring of $G_{i,\ell}$ with $\text{deg}_c(u_{\ell+1})\le 1$,
-    $\text{deg}_c(x)\le 1$, and $\text{deg}_c(z)=0$.
+If $z=y$, then
+define $x_j=u_j$, $z_j=u_j$, $y_j=u_{j+1}$, and
+$L_j(v)=L(v)\setminus\{c(z)\}$ for all $v\in H_j$. Apply the lemma to
+$L_j$-choose
+$H_j$ and note that it extends to form a path
+$L$-choosing of $G_{i,j}$ with
+$\text{deg}_c(z)=0$ via the same argument from Step 2.
 
-    \textbf{Step 2.3:} Suppose that $i\ne j$ and we
-    have computed a path $L$-list-colroing of $G_{i,j-1}$ such that
-    $\text{deg}_c(u_j)=1$, $\text{deg}_c(x)\le 1$, and $\text{deg}_c(z)=0$. 
+Otherwise $z\ne y$ and $u_{j+1}$ is the furthest clockwise neighbor of $z$
+around $C$ in $C(z,y)$. If $c(z)\in L(u_{j+1})$, then define
+$L_j(u_{j+1})=\{c(z)\}$ and $L_j(v)=L(v)\setminus\{c(z)\}$ for all $v\in
+H_j-u_{j+1}$. Path $L_j$-choose $H_j$ with $x_j=u_j$,
+$z_j=u_{j+1}$, and $y_j=y$. Again the path $L_j$-choosing of $H_j$
+agrees with the path $L$-choosing
+of $G_{i,j-1}$ and both combine to a path $L$-choosing
+of $G_{i,j}$ such that $\text{deg}_c(z)=1$.
 
-    If $z=y$, then
-    define $x_j=u_j$, $z_j=u_j$, $y_j=u_{j+1}$, and
-    $L_j(v)=L(v)\setminus\{c(z)\}$ for all $v\in H_j$. Path $L_j$-choose
-    $H_j$ and note that it extends to form a path
-    $L$-choosing of $G_{i,j}$ with
-    $\text{deg}_c(z)=0$ via the same argument from Step 2.2.
+If $c(z)\not\in L(u_{j+1})$
+then define $L_j(v)=L(v)\setminus\{c(z\}$ for all $v\in H_j$. Note that
+$|L_j(u_{j+1})|\ge 2$, thus we may path $L_j$-choose $H_j$ with
+$x_j=u_j$, $z_j=u_j$, and $y_j=y$. The $L_j$-choosing extends to path
+$L$-choosing of $G_{i,j}$ with $\text{deg}_c(z)=0$.
 
-    Otherwise $z\ne y$ and $u_{j+1}$ is the furthest clockwise neighbor of $z$
-    around $C$ in $C(z,y)$. If $c(z)\in L(u_{j+1})$, then define
-    $L_j(u_{j+1})=\{c(z)\}$ and $L_j(v)=L(v)\setminus\{c(z)\}$ for all $v\in
-    H_j-u_{j+1}$. Path $L_j$-choose $H_j$ with $x_j=u_j$,
-    $z_j=u_{j+1}$, and $y_j=y$. Again the path $L_j$-choosing of $H_j$
-    agrees with the path $L$-choosing
-    of $G_{i,j-1}$ and both combine to a path $L$-choosing
-    of $G_{i,j}$ such that $\text{deg}_c(z)=1$.
+\textbf{Step 4.} We will
+now color any remaining components $H_\ell$ with
+$\ell<i$. Suppose that $\ell\in \{1,2,..,i-1\}$ and that we have
+computed a path
+$L$-choosing of $G_{\ell+1,j}$ such that $\text{deg}_c(z)\le 1$. Define
+$L_\ell(u_{\ell+1})=\{c(u_{\ell+1})\}$
+and $L_\ell(v)=L(v)\setminus\{c(z)\}$
+for all $v\in H_\ell-u_{\ell+1}$. Path $L_\ell$-choose $H_\ell$ with
+$x_\ell=u_{\ell+1}$, $y_\ell=u_{\ell+1}$, and $z_\ell=u_{\ell+1}$.
+Note that $\text{deg}_c(u_{\ell+1})=0$ in $H_\ell$ and therefore the
+$L_\ell$-choosing
+extends to a path $L$-choosing of $G_{\ell,j}$ with $\text{deg}_c(z)\le
+1$.
 
-    If $c(z)\not\in L(u_{j+1})$
-    then define $L_j(v)=L(v)\setminus\{c(z\}$ for all $v\in H_j$. Note that
-    $|L_j(u_{j+1})|\ge 2$, thus we may path $L_j$-choose $H_j$ with
-    $x_j=u_j$, $z_j=u_j$, and $y_j=y$. The $L_j$-choosing extends to path
-    $L$-choosing of $G_{i,j}$ with $\text{deg}_c(z)=0$.
+\textbf{Step 5.} If $j=k-1$, then the above steps have computed a path
+$L$-choosing of $G$. Otherwise it remains to extend the $L$-choosing of
+$G_{1,j}$ to $G_{j+1,k-1}$.
 
-    \textbf{Step 2.4:} We will
-    now color any remaining components $H_\ell$ with
-    $\ell<i$. Suppose that $\ell\in \{1,2,..,i-1\}$ and that we have
-    computed a path
-    $L$-choosing of $G_{\ell+1,j}$ such that $\text{deg}_c(z)\le 1$. Define
-    $L_\ell(u_{\ell+1})=\{c(u_{\ell+1})\}$
-    and $L_\ell(v)=L(v)\setminus\{c(z)\}$
-    for all $v\in H_\ell-u_\{\ell+1\}$. Path $L_\ell$-choose $H_\ell$ with
-    $x_\ell=u_{\ell+1}$, $y_\ell=u_{\ell+1}$, and $z_\ell=u_{\ell+1}$.
-    Note that $\text{deg}_c(u_{\ell+1})=0$ in $H_\ell$ and therefore the
-    $L_\ell$-choosing
-    extends to a path $L$-choosing of $G_{\ell,j}$ with $\text{deg}_c(z)\le
-    1$.
+Define $L'(u_{j+1})=\{c(u_{j+1})\}$, $L'(z)=\{c(z)\}$, and $L'(v)=L(v)$ for
+$v\in G_{j+1,k-1}-u_{j+1} -z$. Apply the lemma
+to path $L'$-choose $G'=G_{j+1,k-1}$ with $x'=u_{j+1}$,
+$z'=u_{j+1}$, and $y'=z$.
 
-    \textbf{Step 2.5:} If $j=k$, then the above steps have computed a path
-    $L$-choosing of $G$. Otherwise it remains to extend the $L$-choosing
-    to $G_{j+1,k}$.
+By Step 4 either $\text{deg}_c(z)=0$ in $G_{1,j}$ or
+$c(u_{j+1})=c(z)$ and $\text{deg}_c(z)=1$.
+Because
+$$V(G_{1,j})\cap V(G_{j+1,k-1})=\{z,u_{j+1}\}=\{x',y'\},$$
+the path
+$L$-choosing of $G_{1,j}$ and the path $L'$-choosing of $G_{j+1,k-1}$
+agree and extend to a path $L$-choosing of $G$ such that
+$\text{deg}_c(x)\le1$,
+$\text{deg}_c(y)\le 1$, and $\text{deg}_c(z)\le 1$.\ggcnopf
+\end{proof}
 
-    Define $L'(u_{j+1})=\{c(u_{j+1})\}$, $L'(z)=\{c(z)\}$, and $L'(v)=L(v)$ for
-    $v\in G_{j+1,k}-\{u_{j+1},z\}$. We
-    then path $L'$-choose $G'=G_{j+1,k}$ with $x'=u_{j+1}$,
-    $z'=u_{j+1}$, and $y'=z$.
-    Taking $C'$ to be the outer face of $G'$ note that
-    $C'(x',y')$ is the two vertex path $x',y'$. Therefore no neighbor of $x'$
-    other than $y'$ will be assigned the color $c(x')$.
+Any triangulated plane graph $G$ with list assignment $L$ such that
+$|L(v)|\ge 3$ for all $v\in G$ satisfies the requirements of
+Lemma~\ref{L:hartman3} with the vertices $x,y,z$ chosen arbitrarily on the
+outer face.
+Therefore Theorem~\ref{T:planar3} is a special case of
+Lemma~\ref{L:hartman3}.
 
-    By Step 2.4, either $\text{deg}_c(z)=0$ in $G_{1,j}$ or
-    $c(u_{j+1})=c(z)$ and $\text{deg}_c(z)=1$.
-    Because
-    $$V(G_{1,j})\cap V(G_{j+1,k})=\{z,u_{j+1}\}=\{x',y'\},$$
-    the path
-    $L$-choosing of $G_{1,j}$ and the path $L'$-choosing of $G_{j+1,k}$
-    agree and extend to a path $L$-choosing of $G$ such that
-    $\text{deg}_c(x)\le1$,
-    $\text{deg}_c(y)\le 1$, and $\text{deg}_c(z)\le 1$.
-\end{algorithm}
-
-%\begin{tikzpicture}
-%  \node (u0) [label=above left:$u_0$, fill] at (-1.28cm, 1.8cm) {};
-%  \node (z) [label=above:{$z$}] at (0cm, 2cm) {};
-%  \node (u7) [label=above right:$u_k$] at (1.28cm, 1.8cm) {};
-%  \node (u1) [label=left:$u_1$, fill] at (-1.97cm, 0.35cm) {};
-%  \node (u2) [label=below left:$u_i$] at (-1.73cm, -1.0cm) {};
-%    \node (u3) [label=below:$u_{i+1}$] at (-0.68cm, -1.88cm) {};
-%  \node (u4) [label=below:$u_j$] at (0.68cm, -1.88cm) {};
-%    \node (u5) [label=below right:$u_{j+1}$] at (1.73cm, -1.0cm) {};
-%    \node (u6) [label=right:$u_{k-1}$] at (1.96cm, 0.34cm) {};
-%  \node (x) [label=below left:$x$] at (-1.29cm, -1.53cm) {};
-%  \node (y) [label=below right:$y$] at (1.29cm, -1.53cm) {};
-% 
-%  \draw (z) edge (u7);
-%  \draw (u7) edge (u6) [dashed];
-%  \draw (u6) edge (u5) [dashed];
-%  \draw (u5) edge (y) [dashed];
-%  \draw (y) edge (u4) [dashed];
-%  \draw (u4) edge (u3) [dashed];
-%  \draw (u3) edge (x) [dashed];
-%  \draw (x) edge (u2) [dashed];
-%  \draw (u2) edge (u1) [dashed];
-%  \draw (u1) edge (u0) [dashed];
-%  \draw (u0) edge (z);
-%
-%  \draw (u7) to[out=190, in=130] (u6) [dashed];
-%  \draw (u6) to[out=155, in=115] (u5) [dashed];
-%  \draw (u5) to[out=125, in=95] (u4) [dashed];
-%  \draw (u4) edge [bend right=75] (u3) [dashed];
-%  \draw (u3) to[out=85, in=55] (u2) [dashed];
-%  \draw (u2) to[out=65, in=25] (u1) [dashed];
-%  \draw (u1) to[out=50, in=350] (u0) [dashed];
-%
-%  \draw (z) edge (u1);
-%  \draw (z) edge (u2);
-%  \draw (z) edge (u3);
-%  \draw (z) edge (u4);
-%  \draw (z) edge (u5);
-%  \draw (z) edge (u6);
-%\end{tikzpicture}
-
-Algorithm~\ref{A:hartman3} may be implemented for plane graphs represented by
+The proof of Lemma~\ref{L:hartman3} is a constructive algorithm that may be
+implemented for plane graphs represented by
 rotation scheme ordered augmented adjacency lists in $\mathcal{O}(n)$ time.
 For each vertex $v\in G$ the implementation will track a list $L[v]$ of up to
 three colors,
-a integer location mark $S[v]$, and a pair $N[v]=(r_1,r_2)$ of refernces to
+a integer location mark $S[v]$, and a pair $N[v]=(r_1,r_2)$ of references to
 neighbor entries in $v$'s augmented adjacency list.
 
 The pair of references to
 the adjacency list of $v\in C$
-will be the entries for the vertices preceeding and succeeding $v$ clockwise
+will be the entries for the vertices preceding and succeeding $v$ clockwise
 around $C$. The references provide a representation of $\text{Int}(C)$ and a
 quick way to walk around $C$.
  
 We can track vertex locations on the outer face by marking each vertex in
-$C_\ell(u_\ell,u_{\ell + 1})-u_{\ell+1}$ with a new unique mark.
-In Step 2.1 when $z\ne x$ we must instead
-mark the vertices in $C_i(u_i,u_{i+1})-u_{i+1}$ with the mark $S[x]$ 
+$C_\ell(u_\ell,u_{\ell + 1})$ with a new unique mark $S[u_\ell]$.
+In Step 1 when $z\ne x$ we must instead
+mark the vertices in $C_i(u_i,u_{i+1})$ with the mark $S[x]$ 
 already assigned to the vertices in $C(x,u_i)=C_i(x,u_i)$.
 
-In Step 2.1.1 or Step 2.3 when $z\ne y$ and $c(z)\not\in L(u_{j+1})$,
-the segment $C_j(z_j,y)=C_j(x_j,y)$ will consist of vertices in $G-C$
-marked with the new mark $S[u_j]$, as well as vertices in $C(u_{j+1},y)$ marked with $S[y]$.
+In Step 1, Case 1.1 or Step 3 when $z\ne y$ and $c(z)\not\in L(u_{j+1})$,
+the segment $C_j(z_j,y)=C_j(x_j,y)$ will consist of vertices
+marked with $S[u_j]$, as well as vertices in $C(u_{j+1},y)$ marked with $S[y]$.
 To proceed with the algorithm, we need these two distinct marks to compare
 equal and represent the single face segment $C(x_j,y)$.
 To accomplish this re-marking efficiently, we
@@ -2100,7 +2059,7 @@ assign $M[S[u_j]]=S[y]$.
         \draw (v6) edge (v7);
         \draw (u4) edge (v6);
         \draw (u4) edge (v7);
-    \end{pgfonlayer}{bg} 
+    \end{pgfonlayer}
 
     \node (u3a) [label=below:${6,\{2\}}$] at (5.5cm, 0.25cm) {$x$};
     \node (v6a) [label=below right:${2,\{1\}}$] at (6.0cm, 1.25cm) {$z$};
@@ -2110,21 +2069,21 @@ assign $M[S[u_j]]=S[y]$.
         \draw (u3a) edge (v6a);
         \draw (u3a) edge (v7a);
         \draw (v6a) edge (v7a);
-    \end{pgfonlayer}{bg}
+    \end{pgfonlayer}
 
     \node (u3b) [label=below:${6,\{2\}}$] at (6.75cm, 0.25cm) {$z$};
     \node (v7b) [label=above:${6,\{2,6,7\}}$] at (7.0cm, 1.75cm) {};
 
     \begin{pgfonlayer}{bg}
         \draw (u3b) edge (v7b);
-    \end{pgfonlayer}{bg}
+    \end{pgfonlayer}
 
     \node (u3c) [label=below:${6,\{2\}}$] at (7.75cm, 0.25cm) {};
     \node (v7c) [label=above:${6,\{6\}}$] at (8.0cm, 1.75cm) {};
 
     \begin{pgfonlayer}{bg}
         \draw (u3c) edge (v7c);
-    \end{pgfonlayer}{bg}
+    \end{pgfonlayer}
 
     \node (zpa) [label=above:${7, \{1\}}$] at (4.0cm, -1.0cm) {$y$};
     \node (u4pa) [label=above right:${7,\{1\}}$] at (5.5cm, -2.0cm) {$z$};
@@ -2134,14 +2093,14 @@ assign $M[S[u_j]]=S[y]$.
         \draw (zpa) edge (u4pa);
         \draw (zpa) edge (u5pa);
         \draw (u5pa) edge (u4pa);
-    \end{pgfonlayer}{bg}
+    \end{pgfonlayer}
 
     \node (zpa) [label=above:${7, \{1\}}$] at (6.5cm, -1.0cm) {$z$};
     \node (u5pa) [label=above:${8,\{7\}}$] at (8.0cm, -1.0cm) {$x$};
 
     \begin{pgfonlayer}{bg}
         \draw (zpa) edge (u5pa);
-    \end{pgfonlayer}{bg}
+    \end{pgfonlayer}
 \end{tikzpicture}
 \begin{tikzpicture}
     \node[draw=none] at (0.0cm, 1.5cm) {};
@@ -2153,7 +2112,7 @@ assign $M[S[u_j]]=S[y]$.
         \draw (u2) edge (u3);
         \draw (u2) edge (v5);
         \draw (u3) edge (v5);
-    \end{pgfonlayer}{bg}
+    \end{pgfonlayer}
 
     \node (u2a) [label=below:${9,\{2\}}$] at (8.0cm, 0.0cm) {$y$};
     \node (v5a) [label=above:${5,\{2,3\}}$] at (8.5cm, 1.0cm) {};
@@ -2163,14 +2122,14 @@ assign $M[S[u_j]]=S[y]$.
         \draw (u2a) edge (u3a);
         \draw (u2a) edge (v5a);
         \draw (u3a) edge (v5a);
-    \end{pgfonlayer}{bg}
+    \end{pgfonlayer}
     
     \node (u2) [label=below:${9,\{2\}}$] at (10.0cm, 0.0cm) {$z$};
     \node (v5) [label=above:${10,\{3\}}$] at (10.5cm, 1.0cm) {$x$};
 
     \begin{pgfonlayer}{bg}
         \draw (u2) edge (v5);
-    \end{pgfonlayer}{bg}
+    \end{pgfonlayer}
 
     \node (u1) [label=above:${4,\{4,5\}}$] at (-2.0cm, 0.5cm) {};
     \node (v1) [label=above:${4,\{5,7\}}$] at (-0.5cm, 0.5cm) {};
@@ -2335,38 +2294,6 @@ assign $M[S[u_j]]=S[y]$.
     \begin{pgfonlayer}{bg} 
         \draw (v1fp) edge (v4fp);
     \end{pgfonlayer}
-
-    %\node (u1d) [label=above:${4,\{4,5\}}$] at (6.0cm, -2.75cm) {};
-    %\node (v1d) [label=above:${12,\{5\}}$] at (7.5cm, -2.75cm) {$z$};
-    %\node (v2d) [label=below left:${11,\{3\}}$] at (6.0cm, -3.75cm) {$y$};
-    %\node (v3d) [label=above:${12,\{4,6\}}$] at (6.5cm, -3.75cm) {};
-    %\node (v4d) [label=below:${12,\{3,4,5\}}$] at (7.0cm, -3.75cm) {};
-
-    %\begin{pgfonlayer}{bg} 
-    %    \draw (u1d) edge (v2d);
-    %    \draw (u1d) edge (v1d);
-    %    \draw (u1d) edge (v3d);
-    %    \draw (v1d) edge (v3d);
-    %    \draw (v1d) edge (v4d);
-    %    \draw (v2d) edge (v3d);
-    %    \draw (v3d) edge (v4d);
-    %\end{pgfonlayer}
-
-    %\node (u1d) [label=above:${4,\{4,5\}}$] at (0.6cm, -2.75cm) {};
-    %\node (v1d) [label=above:${12,\{5\}}$] at (2.1cm, -2.75cm) {$z$};
-    %\node (v2d) [label=below left:${11,\{3\}}$] at (0.6cm, -3.75cm) {$y$};
-    %\node (v3d) [label=above:${12,\{4,6\}}$] at (1.1cm, -3.75cm) {};
-    %\node (v4d) [label=below:${12,\{3,4,5\}}$] at (1.6cm, -3.75cm) {};
-
-    %\begin{pgfonlayer}{bg} 
-    %    \draw (u1d) edge (v2d);
-    %    \draw (u1d) edge (v1d);
-    %    \draw (u1d) edge (v3d);
-    %    \draw (v1d) edge (v3d);
-    %    \draw (v1d) edge (v4d);
-    %    \draw (v2d) edge (v3d);
-    %    \draw (v3d) edge (v4d);
-    %\end{pgfonlayer}
 \end{tikzpicture}
 \begin{tikzpicture}
     \node[draw=none] at (-8.0cm, 2.25cm) {};
@@ -2451,114 +2378,117 @@ assign $M[S[u_j]]=S[y]$.
 \end{figure}
 
 \begin{algorithm}\label{A:hartman_impl}
-    \textbf{Input:} Let $C$ be a cycle in a weakly triangulated plane graph $G$
-    represented by augmented adjacency lists. Let $x,y,z\in C$ be
-    vertices such that $z\in C(x,y)$.
+\textbf{Input:} Let $C$ be a cycle or length $2$-path in a
+weakly triangulated plane graph $G$
+represented by augmented adjacency lists. Let $x,y,z\in C$ be
+vertices such that $z\in C(x,y)$.
 
-    Let $L$ be an array of lists of colors
-    such that for $v\in\{x,y,z\}$ the list $L[v]$ has length one,
-    for $v\in C-\{x,y,z\}$ the list $L[v]$ has length two
-    or three, and for $v\in \text{Int}(C)-C$ the list
-    $L[v]$ has length three. Furthermore, for all $v\in C(x,z) - z$ assume
-    that $L[v]$ does not contain the color in $L[z]$.
+Let $L$ be an array of lists of colors
+such that for $v\in\{x,y,z\}$ the list $L[v]$ has length one,
+for $v\in C-\{x,y,z\}$ the list $L[v]$ has length two
+or three, and for $v\in \text{Int}(C)-C$ the list
+$L[v]$ has length three. Furthermore, for all $v\in C(x,z) - z$ assume
+that $L[v]$ does not contain the color in $L[z]$.
 
-    Let $N$ be an array of pairs of
-    references such that for each $v\in C$ the pair $N[v]=(r_1,r_2)$ has
-    $r_1$ as a reference to the neighbor the immediately counter-clockwise
-    from $v$
-    around $C$, and $r_2$ as a reference
-    to the neighbor immediately clockwise from $v$ around $C$.
+Let $N$ be an array of pairs of
+references such that for each $v\in C$ the pair $N[v]=(r_1,r_2)$ has
+$r_1$ as a reference to the neighbor the immediately counter-clockwise
+from $v$
+around $C$, and $r_2$ as a reference
+to the neighbor immediately clockwise from $v$ around $C$.
 
-    Let $S$ be an array of
-    integers such that for all $v\in C(x,z)-z$ we have $S[v]=S[x]$ and for
-    all vertices $v\in C-C(x,z)$ we have $S[v]\ne S[x]$. Furthermore, for all
-    vertices $v\in C$ we $S[v]\ne 0$ and for all $v\in \text{Int}(C)-C$
-    we have $S[v]=0$. Finally, let $M$
-    be an array of integers such that for all vertices $v\in C(z,y)-z$ we have
-    $M[S[v]]=S[y]$, and for all vertices $v\in C-C(z,y)$ we have $M[S[v]]\ne
-    S[y]$.
+Let $S$ be an array of
+integers such that for all $v\in C(x,z)-z$ we have $S[v]=S[x]$ and for
+all vertices $v\in C-C(x,z)$ we have $S[v]\ne S[x]$. Furthermore, for all
+vertices $v\in C$ we $S[v]\ne 0$ and for all $v\in \text{Int}(C)-C$
+we have $S[v]=0$. Finally, let $M$
+be an array of integers such that for all vertices $v\in C(z,y)-z$ we have
+$M[S[v]]=S[y]$, and for all vertices $v\in C-C(z,y)$ we have $M[S[v]]\ne
+S[y]$.
 
-    \textbf{Output:} Elements will be removed from the lists in $L$ such that
-    for each $v\in\text{Int}(C)$ the list $L[v]$ consists of a single color. The
-    coloring of $\text{Int}(C)$ corresponding to the remaining
-    colors will be a path
-    coloring $c$ such that $\text{deg}_c(x)\le1$, $\text{deg}_c(y)\le1$,
-    and $\text{deg}_c(z)\le1$.
+\textbf{Output:} Elements will be removed from the lists in $L$ such that
+for each $v\in\text{Int}(C)$ the list $L[v]$ will contain a single color. The
+coloring of $\text{Int}(C)$ corresponding to the remaining
+colors will be a path
+coloring $c$ such that $\text{deg}_c(x)\le1$, $\text{deg}_c(y)\le1$,
+and $\text{deg}_c(z)\le1$.
 
-    \textbf{Procedure:} Let $N[z]=(r_1,r_2)$. Define the vertex $u_0$ to be
-    the neighbor of $z$ corresponding to $r_1$, and define $v$ to be the
-    neighbor of $z$ immediately clockwise from $u$.
-    
-    \textbf{Case 1 (Base Case):} If $r_1=r_2$ then $C=\{z,u_0\}$
-    is a $2$-vertex path. If $u_0\ne x$ and $u_0\ne y$, remove color
-    remaining in $L[z]$ from $L[u_0]$. If more than one color still remains in
-    $L[u_0]$, remove arbitrary colors until a single color remains.
+\textbf{Procedure:} Let $N[z]=(r_1,r_2)$. Define the vertex $u_1$ to be
+the neighbor of $z$ corresponding to $r_1$, and define $v$ to be the
+neighbor of $z$ immediately counter-clockwise from $u$.
 
-    \textbf{Case 2 (Recursive Step):} Suppose that $r_1\ne r_2$, and therefore $C$ is a cycle.
+\textbf{Case 1 (Base Case):} If $r_1=r_2$ then $C=\{z,u_1\}$
+is a length $2$ path. If $u_1\ne x$ and $u_1\ne y$, remove the remaining
+color in $L[z]$ from $L[u_1]$. If more than one color still remains in
+$L[u_1]$, remove arbitrary colors until a single color remains.
 
-    \textbf{Case 2.1:} Suppose that $z=x$ and $u_0=y$. Make a recursive
-    call after assigning $S[x]$ and $S[y]$ new unique marks and re-assigning
-    $y'\leftarrow z$, $z'\leftarrow u_0$, $x'\leftarrow u_0$.
+\textbf{Case 2 (Recursive Step):} Suppose that $r_1\ne r_2$, and therefore $C$ is a cycle.
 
-    \textbf{Case 2.2:} Suppose that $z=x$ and $u_0\ne y$. Make a recursive call after
-    removing the color in $L[z]$ from $L[u_0]$,
-    assigning $x'\leftarrow u_0$,
-    $y'\leftarrow y$, $z'\leftarrow z$,
-    and setting $S[u_0]$ to be a new unique mark.
+\textbf{Case 2.1:} Suppose that $z=x$ and $u_1=y$. Make a recursive
+call after assigning $S[x]$ and $S[y]$ new unique marks and re-assigning
+$y'\leftarrow z$, $z'\leftarrow u_1$, $x'\leftarrow u_1$.
 
-    \textbf{Case 2.3:} Suppose that $z\ne x$ and $S[v]=0$, that is, $v\in
-    \text{Int}(C)$. Assign $S[v]=S[x]$, remove the color in $L[z]$ from
-    $L[v]$, and remove the edge $zu_0$ by adjusting
-    $N[u_0]$ and $N[z]$. Make a recursive call and note that the new
-    ``$u_0$'' in this call will be the current vertex $v$.
+\textbf{Case 2.2:} Suppose that $z=x$ and $u_1\ne y$. Make a recursive call after
+removing the color in $L[z]$ from $L[u_1]$,
+assigning $x'\leftarrow u_1$,
+$y'\leftarrow y$, $z'\leftarrow z$,
+and setting $S[u_1]$ to be a new unique mark.
 
-    \textbf{Case 2.4:} Suppose that $z\ne x$ and $S[v]=S[x]$, in other
-    words $v\in C(x,z)$. Then we remove
-    the edge $zu_0$ and make two
-    recursive calls. The first call is with $x_1\leftarrow x$,
-    $y_1\leftarrow y$, and $z_1\leftarrow z$, 
-    but with $N[v]$ split at the edge $vz$ to only include neighbors clockwise
-    from $z$. The second recursive call is 
-    with $x_2,y_2,z_2$ all assigned equal to $v$ and $N[v]$ split at the edge
-    $vz$ to contain only the neighbors of $v$ counterclockwise from $z$.
+\textbf{Case 2.3:} Suppose that $z\ne x$ and $S[v]=0$, that is, $v\in
+\text{Int}(C)-C$. Assign $S[v]=S[x]$, remove the color in $L[z]$ from
+$L[v]$, and remove the edge $zu_1$ by adjusting
+$N[u_1]$ and $N[z]$. Make a recursive call and note that the new
+``$u_1$'' in this call will be the current vertex $v$.
 
-    \textbf{Case 2.5:} Suppose that $z\ne x$ and $M[S[v]]=S[y]$, in other words
-    $v\in C(z,y)$. There are
-    two different cases to consider.
+\textbf{Case 2.4:} Suppose that $z\ne x$ and $S[v]=S[x]$, in other
+words $v\in C(x,z)$. Then we remove
+the edge $zu_1$ and make two
+recursive calls. The first call is with $x_1\leftarrow x$,
+$y_1\leftarrow y$, and $z_1\leftarrow z$, 
+but with $N[v]$ split at the edge $vz$ to only include neighbors clockwise
+from $z$. The second recursive call is 
+with $x_2,y_2,z_2$ all assigned equal to $v$ and $N[v]$ split at the edge
+$vz$ to contain only the neighbors of $v$ counterclockwise from $z$.
 
-    \textbf{Case 2.5.1:} Suppose that the color in $L[z]$ is in $L[v]$. We
-    remove all other colors from $L[v]$, remove the edge $zu_0$, and make two
-    recursive calls. The first call will be made with $x_1\leftarrow x$,
-    $y_1\leftarrow y$, and $z_1\leftarrow v$, splitting $N[v]$ at the edge
-    $vz$ to contain only neighbors counter-clockwise from $z$. The second
-    recursive call will be made with $x_2\leftarrow v$, $y_2\leftarrow z$,
-    and $z_2\leftarrow v$, splitting $N[v]$ at the edge $vz$ to include $z$
-    and all neighbors clockwise from $z$.
+\textbf{Case 2.5:} Suppose that $z\ne x$ and $M[S[v]]=S[y]$, in other words
+$v\in C(z,y)$. There are
+two different cases to consider.
 
-    \textbf{Case 2.5.2:} Suppose that the color in $L[z]$ is not in $L[v]$.
-    We remove the edge $zu_0$, assign $M[S[x]]=S[y]$, and make two recursive
-    calls. The first call
-    will be made with $x_1\leftarrow x$,
-    $y_1\leftarrow y$, and $z_1\leftarrow x$, splitting $N[v]$ at the edge
-    $vz$ to contain only neighbors counter-clockwise from $z$. The second
-    recursive call will be made with $x_1\leftarrow v$, $y_1\leftarrow z$,
-    and $z_1\leftarrow v$, splitting $N[v]$ at the edge $vz$ to include $z$
-    and all neighbors clockwise from $z$.
+\textbf{Case 2.5.1:} Suppose that the color in $L[z]$ is in $L[v]$. We
+remove all other colors from $L[v]$, remove the edge $zu_1$, and make two
+recursive calls. The first call will be made with $x_1\leftarrow x$,
+$y_1\leftarrow y$, and $z_1\leftarrow v$, splitting $N[v]$ at the edge
+$vz$ to contain only neighbors counter-clockwise from $z$. The second
+recursive call will be made with $x_2\leftarrow v$, $y_2\leftarrow z$,
+and $z_2\leftarrow v$, splitting $N[v]$ at the edge $vz$ to include $z$
+and all neighbors clockwise from $z$.
 
-    \textbf{Case 2.6:} Suppose that $z\ne x$ and $S[v]\ne 0$, but
-    $S[v]\ne S[x]$ and $M[S[v]]\ne S[y]$, in other words $v\in C(y,x)-x-y$.
-    First remove the color in $L[z]$ from $L[v]$, if it exists, and then remove
-    arbitrary colors until $L[v]$ is of length one. Then remove the edge $zu_0$
-    and make two recursive calls. The first call is made with $x_1\leftarrow x$,
-    $y_1\leftarrow v$, and $z_1\leftarrow x$, splitting $N[v]$ at the edge $vz$
-    to contain only neighbors counter-clockwise from $z$. The second call is
-    made with $x_2\leftarrow v$, $y_2\leftarrow y$, and $z_2\leftarrow z$,
-    splitting $N[v]$ at the edge $vz$ to contain $z$ and all neighbors clockwise
-    from $z$.
+\textbf{Case 2.5.2:} Suppose that the color in $L[z]$ is not in $L[v]$.
+We remove the edge $zu_1$, assign $M[S[x]]\leftarrow S[y]$, and make two recursive
+calls. The first call
+will be made with $x_1\leftarrow x$,
+$y_1\leftarrow y$, and $z_1\leftarrow x$, splitting $N[v]$ at the edge
+$vz$ to contain only neighbors counter-clockwise from $z$. The second
+recursive call will be made with $x_1\leftarrow v$, $y_1\leftarrow z$,
+and $z_1\leftarrow v$, splitting $N[v]$ at the edge $vz$ to include $z$
+and all neighbors clockwise from $z$.
+
+\textbf{Case 2.6:} Suppose that $z\ne x$ and $S[v]\ne 0$, but
+$S[v]\ne S[x]$ and $M[S[v]]\ne S[y]$, in other words $v\in C(y,x)-x-y$.
+First remove the color in $L[z]$ from $L[v]$, if it exists, and then remove
+arbitrary colors until $L[v]$ is of length one. Then remove the edge $zu_1$
+and make two recursive calls.
+The first call is made with $x_1\leftarrow x$,
+$y_1\leftarrow v$, and $z_1\leftarrow x$, splitting $N[v]$ at the edge $vz$
+to contain only neighbors counter-clockwise from $z$.
+The second call is
+made with $x_2\leftarrow v$, $y_2\leftarrow y$, and $z_2\leftarrow z$,
+splitting $N[v]$ at the edge $vz$ to contain $z$ and all neighbors clockwise
+from $z$.
 \end{algorithm}
 
-Every recursive case except for Case 2.1 and Case 2.2 removes an edge
-from the representation and operates on one or two
+Every recursive case except for Case 2.1 and Case 2.2 removes at least
+one edge from the representation and operates on one or two
 strictly smaller subgraphs. In Case 2.1 a single recursive call is made
 with an input that will not itself satisfy Case 2.1. In Case 2.2 a recursive
 call is made with an input that will not itself satisfy Case 2.1 or Case 2.2.
@@ -2567,21 +2497,22 @@ is $\mathcal{O}(m)=\mathcal{O}(n)$.
 
 Each operation performed is either integer arithmetic, an
 array lookup, or a walk through a list of length three or less.
-As each of these operations is constant time,
-the algorithm has a time complexity of $\mathcal{O}(n)$.
+Therefore the algorithm has a time complexity of $\mathcal{O}(n)$.
 
 \section{Experimental performance and parallelism}
 
 A C implementation for both algorithms was run on randomly generated
-triangulated plane graphs up to $10,000,000$ vertices. Benchmark timings
-for both algorithms are shown below. Timings for a simple 
-breadth-first search
-(BFS) algorithm are also shown as baseline performance
-for an algorithm that hits every half-edge.
+triangulated plane graphs up to $10,000,000$ vertices~\cite{Bro2017}.
+Benchmark timings for both algorithms are shown below. Benchmark results for a
+simple breadth-first search
+(BFS) algorithm are also shown as a baseline linear
+algorithm that hits every half-edge of the graph.
 All benchmarks
-were run on an x86\_64 Intel N100 processor.
+were run on an x86\_64 Intel N100 processor. Timing numbers shown are
+the average number of nanoseconds required to color a graph. The benchmark
+source code is included with the implementation.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \begin{center}
 \begin{tabular}{r||r|r|r|r|r}
     & $n=10^3$  & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$
@@ -2638,12 +2569,12 @@ Benchmarks showed the best performance improvements for Poh's algorithm when
 using three threads to color plane graphs on the order of $10^6$ vertices
 or more. 
 
-The Hartman-\v{S}krekovski algorithm is tricker to adapt to
-parallel execution. The first diffuculty to consider is that certain recursive
+The Hartman-\v{S}krekovski algorithm is trickier to adapt to
+parallel execution. The first difficulty to consider is that certain recursive
 frames are
 dependent on each other: the recursive calls made in
 Algorithm 4.2 cannot be re-ordered, with the exception of
-in Case 2.4.1 and Case 2.5. For a concrete example,
+in Case~2.5.1 and Case~2.6. For a concrete example,
 in Figure~\ref{F:hartman_impl} the first recursive
 frame produced cannot start until the vertex $z_0$ has it's list $L[z_0]$
 reduced from $\{4,5\}$ down to $\{4\}$, which does not happen
@@ -2676,108 +2607,6 @@ The gains observed were less significant than those observed for the
 Poh algorithm, but that was to be expected as the recursive frames are often
 dependent and thread coordination is more complicated.
 
-%    If $z\ne y$, define $u$ to be the closest vertex to $y$ in $C(z,y)-z$
-%    that is adjacent to $z$. Note that $u$ is either
-%    the vertex immediately clockwise from $z$ around $C$ or a cut-vertex of
-%    $G-z$, and it may be that $u=y$. Otherwise, define $u=z$.
-%
-%    We define a new list function
-%    $L'$ such that
-%    \begin{align*}
-%        L'(v)&=\{\ c(z)\ \} \text{ if } v=u\text{ and } c(v)\in L(u);; \\
-%        L'(v)&=L(v)\setminus\{\ c(z)\ \} \text{ otherwise.}
-%    \end{align*}
-%    Note that if $v\in G$ is not adjacent to $z$ then $L'(v)=L(v)$, in
-%    particular $L'(v)=L(v)$ except for vertices on the outer face of $G-z$.
-%    Moreover, $L'(v)=L(v)$ for all $v\in C(x,z)-z$. We will show that for each
-%    $2$-connected component of $G-z$ there we can select $x',y',z'$ on the outer
-%    face that together with the list assignment $L'$ satisfy the requirements of
-%    the algorithm. We will also show that the resulting path $L'$-choosings
-%    of each subgraph agree on shared vertices and combine form a path
-%    $L$-choosing of $G$.
-%
-%    \textbf{Case 2.1:} Suppose that $z$ has exactly two neighbors in
-%    $C$, and therefore $G-z$ is $2$-connected. Let $C'$ be the outer face of
-%    $G-z$.
-%    
-%    \textbf{Case 2.1.1:} Suppose that $x=y=z$. Define $x'$ and $y'$
-%    to be the
-%    vertices immediately counter-clockwise and clockwise from $z$ in $C$,
-%    respectively. Define $z'=x'$. Note that $|L(x')|\ge 1$, $|L(y')|\ge1$, and
-%    $|L(u)|\ge 2$ for all $u\in C'-x'-y'$. Thus we may recursively color
-%    $\text{Int}(C')$ from list assignment $L'$. No vertex in $G-z$
-%    adjacent to $z$ in $G$ will receive the color $c(z)$, thus the path
-%    $L'$-choosing
-%    of $G-z$ extends to an path $L$-list coloring of $G$.
-%
-%    \textbf{Case 2.1.2:} Suppose that $x=z$, $z\ne y$. Define $x'$
-%    to be the vertex immediately counter-clockwise to $x$ around $C'$.
-%    Let $u$ be the vertex immediately clockwise to $z$ around $C$. If
-%    
-%    If $x=v$ let $H$ be the first $2$-connected component of $G-v$
-%    counter-clockwise from $v$, otherwise let $H$ be the $2$-connected
-%    component containing $x$. Define a new list assignment $L'$ such that
-%    $L'(u)=L(u)-L(v)$.
-%    from $x$ to $v$ around $C$. Note that each $u\in C(x,v)-v$ such that $uv\in
-%    E(G)$ will be a cut vertex of 
-%\end{algorithm}
-%
-%\begin{algorithm}[Hartman 1997, \v{S}krekovski 1999]\label{A:hartman3}
-%\textbf{Input:} A cycle $C$ in a triangulated plane graph $G$, a pair of
-%vertices $x,y\in C$ (not necessarily distinct), and function
-%$L:V(G)\to P_{<\aleph_0}(\mathbb{N})$ that assigns a finite set of
-%``colors'' to each vertex such that
-%\begin{align*}
-%    |L(v)| &\ge 1 \text{ for } v\in\{x,y\} \\
-%    |L(v)| &\ge 2 \text{ for } v\in V(C)\setminus\{x,y\} \\
-%    |L(v)| &\ge 3 \text{ for } v\in V(G)\setminus V(C).
-%\end{align*}
-%\textbf{Output:} A path $3$-coloring $c:V(G)\to\mathbb{N}$ of $G$ such that
-%$c(v)\in L(v)$ for all $v\in V(G)$.
-%
-%\textbf{Step 1:} Define $c(x)$ and $c(y)$ to be a color in their
-%    respective
-%    list. Let $C(x,y)$ be the set of vertices between $x$ and $y$ clockwise
-%    along $C$, including $x$ and $y$. We will construct an induced path $P$ that
-%    starts at $x$ and consists only of vertices $v\in C(x,y)$ such that
-%    $c(x)\in L(v)$. Start with $P={x}$. Let $u$ be the last vertex added to $P$
-%    and consider the neighbor $v$ of $x$
-%    that is furthest clockwise towards $y$ in $C(x,y)$. If $c(x)\in L(v)$, then
-%    add $v$ and the edge $uv$ to $P$ and repeat, otherwise we have finished
-%    constructing $P$.
-%
-%\textbf{Step 2:} Define a new color assignment
-%    $L'$ such that
-%    \begin{align*}
-%        L'(v)&=L(v)\setminus\{\ c(x)\ \} \text { if } v
-%            \text{ has a neighbor in } P \\
-%        L'(v)&=L(v)\text{ otherwise.}
-%    \end{align*}
-%    Let $H$ be a $2$-connected components of $G-P$. Let $v_1,v_2,v_3\in H\cap C$
-%    such that $v_2$ is in the path from $v_1$ to $v_3$ clockwise along $C$.
-%    Observe that $v_2$ has a neighbor in $P$ when considered as a vertex of $G$
-%    then any path $v_1$ to $v_3$ must pass through $v_2$. So it must
-%    be that $v_2=v_1$ or
-%    $v_2=v_3$. Thus there are at most two vertices in $H\cap C$ that had
-%    neighbors in $P$.
-%
-%    Note that if $v\in H$ is not
-%    on the outer face of $H$ then $L'(v)=L(v)$ since $v$ could not have had a
-%    neighbor in $P$. If $v\in H$ is on the outer face then if
-%    $v\in H-C$ it must be that $|L'(v)|\ge 2$, and if $v\in H\cap C$ it must be
-%    that $|L'(v)|\ge 1$. We may therefore recursively apply
-%    Algorithm~\ref{A:hartman3} to path $L'$ list color each $2$-connected
-%    component $H$ of $G-P$.
-%
-%    Suppose that $u\in G-P$ is contained in at least two $2$-connected
-%    component $H_1,H_2$. Let $u\in H_1$ and $v\in H_2$
-%
-%    We may proceed to color the $2$-connected components of $G-P$ moving
-%    clocwise from $x$ along $C$ above $P$ and counter-clockwise
-%    from $x$ below $P$.
-%\end{algorithm}
-
-
 \begin{thebibliography}{99}
 
 \bibitem{BoMy2004}
@@ -2802,7 +2631,8 @@ Masters Project,
 University of Alaska,
 2017,
 available from\hfil\break
-\texttt{http://github.com/permutationlock/path\_coloring\_bgl}.
+\texttt{http://github.com/permutationlock/path\_coloring\_bgl} and\hfil\break
+\texttt{http://github.com/permutationlock/libavengraph}.
 
 \bibitem{ChHa2017prep}
 G.~G.~Chappell and C.~Hartman,

@@ -17,9 +17,10 @@
 \tikzset{empty/.style={draw=none, fill=none, minimum size=0mm, inner sep=0mm}}
 
 \newcommand{\SolidGraph}{
-    \tikzset{every label/.append style={shape=rectangle, draw=none, fill=white}}
+    \tikzset{every label/.append style={shape=rectangle, draw=none, fill=white,
+        scale=1.17 }}
     \tikzset{
-        every node/.style={circle, inner sep=1mm, fill, draw, minimum size=2mm,
+        every node/.style={circle, inner sep=0.75mm, fill, draw, minimum size=1.5mm,
         scale=0.85}
     }
 }
@@ -388,7 +389,7 @@ colorings agree and combine form a path $3$-coloring of $G$.\ggcnopf
 \begin{figure}[ht]
 \begin{center}
 \SolidGraph
-\begin{tikzpicture}[scale=1.6]
+\begin{tikzpicture}[scale=1.2]
     \node (p0)[label=above left:${v_1}$] at (160:1.0cm) {};
     \node (pn) [label=above right:${v_\ell}$] at (20:1.0cm) {};
     \node (q0) [label=below left:${v_k}$] at (200:1.0cm) {};
@@ -397,8 +398,8 @@ colorings agree and combine form a path $3$-coloring of $G$.\ggcnopf
   \node (t1) [label=above left:$w$] at (0:0.5cm) {};
     \node (null) [draw=none, fill=none] at (270:1.25cm) {};
   
-  \node (C1) [scale=1.5] [draw=none, fill=none] at (90:0.47cm) {$C_1$};
-  \node (C2) [scale=1.5] [draw=none, fill=none] at (270:0.47cm) {$C_2$};
+  \node (C1) [scale=1.25] [draw=none, fill=none] at (90:0.55cm) {$C_1$};
+  \node (C2) [scale=1.25] [draw=none, fill=none] at (270:0.47cm) {$C_2$};
   
   \draw (p0) edge [bend left=70] (pn) [dashed];
   \draw (q0) edge [bend right=70] (qn) [dashed];
@@ -411,7 +412,7 @@ colorings agree and combine form a path $3$-coloring of $G$.\ggcnopf
   \draw (t0) edge (t1) [dashed];
 \end{tikzpicture}
 $\qquad$
-\begin{tikzpicture}[scale=1.6]
+\begin{tikzpicture}[scale=1.2]
     \node (p0) [label=above left:${v_1}$] at (160:1.0cm) {};
     \node (p1) [label=above:${v_i}$] at (90:0.8cm) {};
     \node (pn) [label=above right:${v_\ell}$] at (20:1.0cm) {};
@@ -420,8 +421,8 @@ $\qquad$
     \node (qn) [label=below right:${v_{\ell+1}}$] at (340:1.0cm) {};
     \node (null) [draw=none, fill=none] at (270:1.25cm) {};
   
-    \node (C1) [scale=1.5] [draw=none, fill=none] at (180:0.5cm) {$C_1$};
-    \node (C2) [scale=1.5] [draw=none, fill=none] at (0:0.5cm) {$C_2$};
+    \node (C1) [scale=1.25] [draw=none, fill=none] at (180:0.4cm) {$C_1$};
+    \node (C2) [scale=1.25] [draw=none, fill=none] at (0:0.4cm) {$C_2$};
   
   \draw (p0) edge [bend left] (p1) [dashed];
   \draw (p1) edge [bend left] (pn) [dashed];
@@ -431,8 +432,8 @@ $\qquad$
   \draw (pn) edge (qn);
   \draw (p1) edge (q1);
 \end{tikzpicture}
-\caption{The proof of Lemma~\ref{L:planar3c} when $C$ is induced (left) and not
-induced (right).}
+\caption{The proof of Lemma~\ref{L:planar3c} if $C$ is induced (left) or has
+a chord (right).}
 \label{poh_figure}
 \end{center}
 \end{figure}
@@ -504,7 +505,7 @@ $C_3=v_i,v_{i+1},\ldots,v_j$.
 \begin{figure}[ht]
 \begin{center}
 \SolidGraph
-\begin{tikzpicture}
+    \begin{tikzpicture}[scale=0.75]
   \node (vl) [label=above:$v_l$] at (2cm, 1cm) {};
   \node (v1) [label=above:$v_1$] at (-2cm, 1cm) {};
   \node (vl1) [label=below:$v_{l+1}$] at (2cm, -1cm) {};
@@ -514,9 +515,9 @@ $C_3=v_i,v_{i+1},\ldots,v_j$.
   \node (vi) [label=above:$v_i$] at (1cm, 1.5cm) {};
   \node (vj) [label=below:$v_j$] at (1cm, -1.5cm) {};
   
-  \node (CP) [scale=1.5] [draw=none, fill=none] at (-0.5cm, 1cm) {$C_1$};
-  \node (CQ) [scale=1.5] [draw=none, fill=none] at (-0.5cm, -1cm) {$C_2$};
-  \node (Ci) [scale=1.5] [draw=none, fill=none] at (1.5cm, 0cm) {$C_3$};
+  \node (CP) [scale=1.25] [draw=none, fill=none] at (-0.5cm, 1cm) {$C_1$};
+  \node (CQ) [scale=1.25] [draw=none, fill=none] at (-0.5cm, -1cm) {$C_2$};
+  \node (Ci) [scale=1.25] [draw=none, fill=none] at (1.5cm, 0cm) {$C_3$};
   
   \node (null) [draw=none, fill=none] at (270:2.5cm) {};
   
@@ -555,14 +556,14 @@ $C_3=v_i,v_{i+1},\ldots,v_j$.
   \node (t0) [label=above left:$w$] at (6.25cm, 0.5cm) {};
   \node (t1) [label=above right:$u$] at (4.75cm, 0.5cm) {};
   
-  \node (CP) [scale=1.5] [draw=none, fill=none] at (5.5cm, 1.5cm) {$C_1$};
-  \node (CQ) [scale=1.5] [draw=none, fill=none] at (5.5cm, -1.5cm) {$C_2$};
-  \node (Ci) [scale=1.5] [draw=none, fill=none] at (8.5cm, 0cm) {$C_3$};
+  \node (CP) [scale=1.25] [draw=none, fill=none] at (5.5cm, 1.5cm) {$C_1$};
+  \node (CQ) [scale=1.25] [draw=none, fill=none] at (5.5cm, -1.5cm) {$C_2$};
+  \node (Ci) [scale=1.25] [draw=none, fill=none] at (8.5cm, 0cm) {$C_3$};
   
   \node (qj_1) [label=below:$v_j$] at (7cm, -2cm) {};
   \node (qn) [label=below:$v_k$] at (4cm, -1.5cm) {};
-  \node (t0_1) [label=below:$w$] at (6.25cm, -0.5cm) {};
-  \node (t1_1) [label=below:$u$] at (4.75cm, -0.5cm) {};
+  \node (t0_1) [label=below left:$w$] at (6.25cm, -0.5cm) {};
+  \node (t1_1) [label=below right:$u$] at (4.75cm, -0.5cm) {};
 
   \draw (p0) edge (pi) [dashed];
   \draw (pi_1) edge [bend right] (pn) [dashed];
@@ -577,32 +578,25 @@ $C_3=v_i,v_{i+1},\ldots,v_j$.
   \draw (pi_1) edge (t0);
   \draw (qj_1) edge (t0_1);
 \end{tikzpicture}
-\caption{Dividing $G$ along the edge $v_iv_j$ and the $uw$-path $P_3$ in
-Algorithm~\ref{A:poh_bfs}.}
-\end{center}
-\end{figure}
-
-\begin{figure}[ht]
-\begin{center}
-\SolidGraph
-\begin{tikzpicture}[scale=1.2]
+$\qquad$
+\begin{tikzpicture}[scale=0.9]
   \node (t1) at (0cm, 3.5cm) {};
-  \node (t2) at (3.675cm, 0cm) {};
-  \node (t3) at (-3.675cm, 0cm) {};
+  \node (t2) at (2.45cm, 0cm) {};
+  \node (t3) at (-2.45cm, 0cm) {};
 
-    \node (k1) [label=above left:$1$, label=below:$1$] at (-1.875cm, 0.65cm) {};
-    \node (k2) [label=below:$2$] at (-0.75cm, 0.65cm) {};
-    \node (k3) [label=below:$3$] at (0.375cm, 0.65cm) {};
-    \node (kn) [label=below:$k$] at (1.875cm, 0.65cm) {};
+    \node (k1) [label=above left:$1$, label=below:$1$] at (-1.25cm, 0.65cm) {};
+    \node (k2) [label=below:$2$] at (-0.5cm, 0.65cm) {};
+    \node (k3) [label=below:$3$] at (0.25cm, 0.65cm) {};
+    \node (kn) [label=below:$k$] at (1.25cm, 0.65cm) {};
 
-    \node (l1) [label=above left:$2$] at (-1.32cm, 1.15cm) {};
-    \node (l2) at (-0.18cm, 1.15cm) {};
-    \node (ln) at (1.32cm, 1.15cm) {};
+    \node (l1) [label=above left:$2$] at (-0.88cm, 1.15cm) {};
+    \node (l2) at (-0.12cm, 1.15cm) {};
+    \node (ln) at (0.88cm, 1.15cm) {};
 
-  \node (j1) [label=above left:$3$] at (-0.75cm, 1.65cm) {};
-  \node (jn) at (0.75cm, 1.65cm) {};
+  \node (j1) [label=above left:$3$] at (-0.5cm, 1.65cm) {};
+  \node (jn) at (0.5cm, 1.65cm) {};
 
-  \node (p) [label=above left:$3$] at (0cm, 2.4cm) {};
+  \node (p) [label=above left:$k$] at (0cm, 2.4cm) {};
 
   \begin{pgfonlayer}{bg}
 	  \draw (t1) edge (t2); \draw (t3) edge (t2); \draw (t1) edge (t3);
@@ -635,16 +629,24 @@ Algorithm~\ref{A:poh_bfs}.}
 	  \draw (t3) edge (k3); \draw (t3) edge (kn);
   \end{pgfonlayer}
 \end{tikzpicture}
-
-\caption{The collection of graphs $\{G_k\}_{k\in\mathbb{N}}$ for which
-Algorithm~\ref{A:poh_bfs} performs poorly.}\label{F:poh_bad_graph_collection}
+\caption{Algorithm~\ref{A:poh_bfs}, Case~2 (left), and
+the sequence of graphs $\{G_k\}_{k\in\mathbb{N}}$ on which it displays
+$\Omega(n^{3/2})$ time complexity (right).}\label{F:poh_bfs}
 \end{center}
 \end{figure}
 
+%\begin{figure}[ht]
+%\begin{center}
+%\SolidGraph
+%\caption{The collection of graphs $\{G_k\}_{k\in\mathbb{N}}$ for which
+%Algorithm~\ref{A:poh_bfs} performs poorly.}\label{F:poh_bad_graph_collection}
+%\end{center}
+%\end{figure}
+
 Unfortunately Algorithm~\ref{A:poh_bfs}
-is not linear. Consider the family of
+is not linear. Consider the sequence of
 graphs $\{G_k\}_{k\in\mathbb{N}}$ depicted in
-Figure~\ref{F:poh_bad_graph_collection}.
+Figure~\ref{F:poh_bfs}.
 Fix $k\in\mathbb{N}$ and note that
 $n=n(G_k)=k(k+1)/2+3$. Assume
 that the outer triangle is path $2$-colored such that the top vertex is
@@ -869,7 +871,7 @@ $\text{Int}(C)$ and $y\not\in\text{Int}(D)$. Thus if an edge $yu_e$ exists with
 $u_e\in P_3-u_j$,
 then the entry for $y$ in $\text{Adj}[u_e]$ is between $u_{e-1}$ and
 $u_{e+1}$ counter-clockwise.
-But then $y$ would have been encountered before $u_{e+1}$
+But $y$ would have been encountered before $u_{e+1}$
 when iterating through $\text{Adj}[u_e]$, a contradiction since
 $S[y]=m_{P_1}$.
 
@@ -1877,23 +1879,23 @@ of $G$ induced by the color class of $c(v)$.
 Let $C$ be the outer face of a $2$-connected, weakly triangulated plane graph
 $G$ and let $u,v\in C$ be vertices.
 If $n(G)\ge3$, then $C$ is a cycle and we
-define $C(u,v)$ to be the clockwise $u,v$-path
-around $C$. If $n(G)<3$ then we define $C(u,v)=C$ if
-$u\ne v$, and $C(u,u)=u$.
+define $C[u,v]$ to be the clockwise $u,v$-path
+around $C$. If $n(G)<3$ then we define $C[u,v]=C$ if
+$u\ne v$, and $C[u,u]=u$.
 
 \begin{lemma}\label{L:hartman3}
 Let $G$ be a $2$-connected, weakly triangulated plane graph with outer face
 $C$. Let $x,y,z\in C$ be vertices (not necessarily distinct) such that
-$z\in C(x,y)$. Let $L$ be a list assignment of $G$ such that
+$z\in C[x,y]$. Let $L$ be a list assignment of $G$ such that
 \begin{align*}
     |L(v)| &= 1 \text{ for } v\in\{x,y,z\},\\
     |L(v)| &\ge 2 \text{ for } v\in C-\{x,y,z\},\\
     |L(v)| &\ge 3 \text{ for } v\in G-C,
 \end{align*}
-and if $v\in C(x,z)-z$, then $L(v)\cap L(z)=\emptyset$.
+and if $v\in C[x,z]-z$, then $L(v)\cap L(z)=\emptyset$.
 There exists a path $L$-coloring of $G$ such that $\text{deg}_c(x)\le 1$,
 $\text{deg}_c(y)\le 1$, and $\text{deg}_c(z)\le 1$. Moreover,
-if $z=y$ or $C(z,y)=z,y$ and $L(z)\cap L(y)=\emptyset$,
+if $z=y$ or $C[z,y]=z,y$ and $L(z)\cap L(y)=\emptyset$,
 then $\text{deg}_c(z)=0$.
 \end{lemma}
 
@@ -1905,7 +1907,7 @@ Suppose that $m=|E(G)|\le 2$ and therefore $G=C$.
 If $m=0$, then $n(G)=1$ and $x=y$.
 If $m=1$, then $n(G)= 2$. If $x\ne y$, then $C=x,y$ and $G$ is colored.
 If $x=y$, then the remaining vertex
-$v\in G-C(x,y)$ satisfies $|L(v)|\ge 2$. Choose $c(v)\in L(v)-\{c(x)\}$.
+$v\in G-C[x,y]$ satisfies $|L(v)|\ge 2$. Choose $c(v)\in L(v)-\{c(x)\}$.
 
 We proceed by induction on $m$ the number of edges. Let
 $u_1,u_2,\ldots,u_k$ label the neighbors of $z$ in counter-clockwise
@@ -1915,9 +1917,9 @@ and $u_k$ is the vertex immediately clockwise from $z$.
 \begin{figure}[ht]
 \begin{center}
 \SolidGraph
-\begin{tikzpicture}[scale=1.4]
-    \node (y) at (0.0cm, 1.0cm) [label=above:${y}$] {};
-    \node (x) at (1.5cm, 1.0cm) [label=above:${x,z}$] {};
+\begin{tikzpicture}[scale=1.1]
+    \node (y) at (0.0cm, 1.35cm) [label=above:${y}$] {};
+    \node (x) at (1.5cm, 1.35cm) [label=above:${x,z}$] {};
     \node (bot) [empty] at (0.75cm, 0.0cm) {};
 
     \begin{pgfonlayer}{bg}
@@ -1926,12 +1928,12 @@ and $u_k$ is the vertex immediately clockwise from $z$.
         \draw (bot) edge [dashed, bend left] (y);
     \end{pgfonlayer}
 
-    \node (yb) at (3.0cm, 1.0cm) [label=above:${x',z'}$] {};
-    \node (xb) at (4.5cm, 1.0cm) [label=above:${y'}$] {};
-    \node (botb) [empty] at (3.75cm, 0.0cm) {};
+    \node (yb) at (2.3cm, 1.35cm) [label=above:${x',z'}$] {};
+    \node (xb) at (3.8cm, 1.35cm) [label=above:${y'}$] {};
+    \node (botb) [empty] at (3.05cm, 0.0cm) {};
 
-    \node (bs) [empty] at (1.6cm, 0.5cm) {};
-    \node (be) [empty] at (2.9cm, 0.5cm) {};
+    \node (bs) [empty] at (1.7cm, 0.75cm) {};
+    \node (be) [empty] at (2.1cm, 0.75cm) {};
 
     \draw (bs) edge[very thick, ->] (be);
 
@@ -1941,61 +1943,35 @@ and $u_k$ is the vertex immediately clockwise from $z$.
         \draw (botb) edge [dashed, bend left] (yb);
     \end{pgfonlayer}
 \end{tikzpicture}
-$\qquad$
-\begin{tikzpicture}[scale=1.4]
-    \node (u1) at (0.0cm, 1.0cm) [label=above:${u_1}$] {};
-    \node (x) at (1.5cm, 1.0cm) [label=above:${x,z}$] {};
-    \node (bot) [empty] at (0.75cm, 0.0cm) {};
+$\quad$
+\begin{tikzpicture}[scale=1.1]
+    \node (u1) at (0.0cm, 1.35cm) [label=above:${u_1}$] {};
+    \node (x) at (1.5cm, 1.35cm) [label=above:${x,z}$] {};
+    \node (y) [label=above:${y}$] at (0.75cm, 0.0cm) {};
 
     \begin{pgfonlayer}{bg}
         \draw (x) edge (u1);
-        \draw (bot) edge [dashed, bend right] (x);
-        \draw (bot) edge [dashed, bend left] (u1);
+        \draw (y) edge [dashed, bend right] (x);
+        \draw (y) edge [dashed, bend left] (u1);
     \end{pgfonlayer}
 
-    \node (u1b) at (3.0cm, 1.0cm) [label=above:${x'}$] {};
-    \node (xb) at (4.5cm, 1.0cm) [label=above:${z'}$] {};
-    \node (botb) [empty] at (3.75cm, 0.0cm) {};
+    \node (u1b) at (2.3cm, 1.35cm) [label=above:${x'}$] {};
+    \node (xb) at (3.8cm, 1.35cm) [label=above:${z'}$] {};
+    \node (yb) [label=above:${y'}$] at (3.05cm, 0.0cm) {};
 
-    \node (bs) [empty] at (1.6cm, 0.5cm) {};
-    \node (be) [empty] at (2.9cm, 0.5cm) {};
+    \node (bs) [empty] at (1.7cm, 0.75cm) {};
+    \node (be) [empty] at (2.1cm, 0.75cm) {};
 
     \draw (bs) edge[very thick, ->] (be);
 
     \begin{pgfonlayer}{bg}
         \draw (xb) edge (u1b);
-        \draw (botb) edge [dashed, bend right] (xb);
-        \draw (botb) edge [dashed, bend left] (u1b);
+        \draw (yb) edge [dashed, bend right] (xb);
+        \draw (yb) edge [dashed, bend left] (u1b);
     \end{pgfonlayer}
 \end{tikzpicture}
-    \caption{The proof of Lemma~\ref{L:hartman3}, Case~1 (left) and Case~2 (right).}
-\end{center}
-\end{figure}
-
-\textbf{Case 1.}
-Suppose that $u_1=y$. Note that $z=x$ since $z\in C(x,y)$. Therefore
-$V(C(z,y))=V(C)$ and $|V(C(z,y))|\ge 3$.
-Apply the lemma with vertices re-labeled as $x'=y$, $y'=x$,
-and $z'=y$ to find a path $L$-coloring $c$ of $G$.
-
-\textbf{Case 2.}
-Suppose that $u_1\ne y$ and $z=x$. Then $u_1\in C-C(x,z)$
-and $|L(u_1)|\ge 2$. Pick $c(u_1)\in L(u_1)-c(z)$. Define
-$L'(u_1)=\{c(u_1)\}$ and $L'(v)=L(v)$ for each $v\in G-u_1$. Apply the
-lemma with vertices re-labeled as $x'=u_1$, $y'=y$, and $z'=z$.
-
-\textbf{Case 3.}
-Suppose that $u_1\ne y$ and $z\ne x$. 
-Our strategy will be to apply the inductive hypothesis to $G-zu_1$
-with the embedding inherited from $G$.
-Because $u_1\in C(x,z)$, it is guaranteed that $L(u_1)\cap L(z)=\emptyset$.
-Thus any path $L$-coloring of $G-zu_1$ will also be a path $L$-coloring
-of $G$.
-
-\begin{figure}[ht]
-\begin{center}
-\SolidGraph
-\begin{tikzpicture}[scale=1.4]
+$\quad$
+\begin{tikzpicture}[scale=1.1]
     \node (u1) at (0.0cm, 1.0cm) [label=above:${u_1}$] {};
     \node (v) at (0.75cm, 0.5cm) [label=below:${u_2}$] {};
     \node (z) at (1.5cm, 1.0cm) [label=above:${z}$] {};
@@ -2011,14 +1987,14 @@ of $G$.
         \draw (x) edge [dashed, bend right] (y);
     \end{pgfonlayer}
 
-    \node (u1b) at (4.0cm, 1.0cm) {};
-    \node (vb) at (4.75cm, 0.5cm) {};
-    \node (zb) at (5.5cm, 1.0cm) [label=above:${z}$] {};
-    \node (xb) at (4.0cm, 0.0cm) [label=below:${x}$] {};
-    \node (yb) at (5.5cm, 0.0cm) [label=below:${y}$] {};
+    \node (u1b) at (2.7cm, 1.0cm) {};
+    \node (vb) at (3.45cm, 0.5cm) {};
+    \node (zb) at (4.2cm, 1.0cm) [label=above:${z}$] {};
+    \node (xb) at (2.7cm, 0.0cm) [label=below:${x}$] {};
+    \node (yb) at (4.2cm, 0.0cm) [label=below:${y}$] {};
 
     \node (bs) [empty] at (1.9cm, 0.5cm) {};
-    \node (be) [empty] at (3.6cm, 0.5cm) {};
+    \node (be) [empty] at (2.3cm, 0.5cm) {};
 
     \draw (bs) edge[very thick, ->] (be);
 
@@ -2030,15 +2006,36 @@ of $G$.
         \draw (xb) edge [dashed, bend right] (yb);
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{The proof of Lemma~\ref{L:hartman3}, Case~3.1.}
+    \caption{The proof of Lemma~\ref{L:hartman3}, Case~1 (left), Case~2
+    (middle), and Case~3.1 (right).}
 \end{center}
 \end{figure}
+
+\textbf{Case 1.}
+Suppose that $u_1=y$. Note that $z=x$ since $z\in C[x,y]$. Therefore
+$V(C[z,y])=V(C)$ and $|V(C[z,y])|\ge 3$.
+Apply the lemma with vertices re-labeled as $x'=y$, $y'=x$,
+and $z'=y$ to find a path $L$-coloring $c$ of $G$.
+
+\textbf{Case 2.}
+Suppose that $u_1\ne y$ and $z=x$. Then $u_1\in C-C[x,z]$
+and $|L(u_1)|\ge 2$. Pick $c(u_1)\in L(u_1)-c(z)$. Define
+$L'(u_1)=\{c(u_1)\}$ and $L'(v)=L(v)$ for each $v\in G-u_1$. Apply the
+lemma with vertices re-labeled as $x'=u_1$, $y'=y$, and $z'=z$.
+
+\textbf{Case 3.}
+Suppose that $u_1\ne y$ and $z\ne x$. 
+Our strategy will be to apply the inductive hypothesis to $G-zu_1$
+with the embedding inherited from $G$.
+Because $u_1\in C[x,z]$, it is guaranteed that $L(u_1)\cap L(z)=\emptyset$.
+Thus any path $L$-coloring of $G-zu_1$ will also be a path $L$-coloring
+of $G$.
 
 \textbf{Case 3.1.}
 Suppose that $u_2\in G-C$. Define $L'(u_2)=L(u_2)-c(z)$ and
 $L'(v)=L(v)$ for each $v\in G-u_2$. Note that $|L'(u_2)|\ge |L(v)|-1\ge 2$.
 Let $C'$ be the outer face of $G-zu_1$
-and observe that $C'(x,z)$ is equal to $C(x,z)$ with the edge $u_1z$ removed
+and observe that $C'[x,z]$ is equal to $C[x,z]$ with the edge $u_1z$ removed
 and the path $u_1,u_2,z$ added. Since $|L'(u_2)|\ge 2$ and $L'(u_2)\cap
 L'(z)=\emptyset$, we may apply the inductive hypothesis
 to find a path $L'$-coloring of $G-zu_1$.
@@ -2046,8 +2043,8 @@ to find a path $L'$-coloring of $G-zu_1$.
 \textbf{Case 3.2.}
 Suppose that $u_2\in C$. Observe that $u_2$ is a cut-vertex of
 $G-zu_1$.
-Define $C_1=C(u_2,u_1)+u_1u_2$ and
-$C_2=C(z,u_2)+zu_2$. Define $G_1=\text{Int}(C_1)$ and $G_2=\text{Int}(C_2)$.
+Define $C_1=C[u_2,u_1]+u_1u_2$ and
+$C_2=C[z,u_2]+zu_2$. Define $G_1=\text{Int}(C_1)$ and $G_2=\text{Int}(C_2)$.
 The subgraphs $G_1$ and $G_2$ are the two $2$-connected components (blocks) of
 $G-zu_1$. Note that if $k=2$, then $G_1=G-z$ and $G_2=z,u_2$.
 
@@ -2112,9 +2109,9 @@ $\text{deg}_{c}(u_2)\le 2$.
 \end{tikzpicture}
 $\quad$
 \begin{tikzpicture}[scale=1.4]
-    \node (u1) at (0.0cm, 1.25cm) [label=above:${u_1}$] {};
+    \node (u1) at (0.25cm, 1.25cm) [label=above:${u_1}$] {};
     \node (y) at (1.5cm, 0.25cm) [label=below:${y}$] {};
-    \node (z) at (1.5cm, 1.25cm) [label=above:${z}$] {};
+    \node (z) at (1.25cm, 1.25cm) [label=above:${z}$] {};
     \node (x) at (0.0cm, 0.25cm) [label=below:${x}$] {};
     \node (v) at (0.75cm, 0.25cm) [label=below:${u_2}$] {};
 
@@ -2130,18 +2127,18 @@ $\quad$
 
     \node (bs) [empty] at (1.8cm, 0.75cm){};
     \node (bm) [empty] at (2.3cm, 0.75cm){};
-    \node (be1) [empty] at (4.45cm, 0.8cm){};
+    \node (be1) [empty] at (4.3cm, 0.9cm){};
     \node (be2) [empty] at (2.7cm, 0.25cm){};
 
     \draw (bs) edge [very thick] (bm);
     \draw (bm) edge[very thick, ->, bend left=85] (be1);
     \draw (bm) edge[very thick, ->, bend right] (be2);
 
-    \node (u1b) at (3.0cm, 1.0cm) {};
+    \node (u1b) at (3.25cm, 1.0cm) {};
     \node (xb) at (3.0cm, 0.0cm) [label=below:${x_1,z_1}$] {};
     \node (vb) at (3.75cm, 0.0cm) [label=below:${y_1}$] {};
 
-    \node (zbp) at (5.0cm, 1.0cm) [label=above:${z_2}$] {};
+    \node (zbp) at (4.75cm, 1.0cm) [label=above:${z_2}$] {};
     \node (vbp) at (4.25cm, 0.0cm) [label=below:${x_2}$] {};
     \node (ybp) at (5.0cm, 0.0cm) [label=below:${y_2}$] {};
 
@@ -2160,7 +2157,7 @@ Case~3.2.2 (right).}
 \end{figure}
 
 \textbf{Case 3.2.1.}
-Suppose that $u_2\in C(x,z)$. Observe that $x,y,z\in C_2$.
+Suppose that $u_2\in C[x,z]$. Observe that $x,y,z\in C_2$.
 Apply the inductive hypothesis to produce a path $L$-coloring
 $c_2$ of $G_2$ with designated
 vertices $x_2=x$, $y_2=y$, and $z_2=z$.
@@ -2171,7 +2168,7 @@ $\text{deg}_{c_1}(u_2)=0$, it follows that $c$ is a path $L$-coloring of $G$
 satisfying the lemma.
 
 \textbf{Case 3.2.2.}
-Suppose that $u_2\in C(y,x)-x-y$. Pick $c(u_2)\in L(u_2)-c(z)$. Define
+Suppose that $u_2\in C[y,x]-x-y$. Pick $c(u_2)\in L(u_2)-c(z)$. Define
 $L'(u_2)=\{c(u_2)\}$ and $L'(v)=L(v)$ for each $v\in G-u_2$. 
 Observe that
 $x\in C_1$ and $z,y\in C_2$. Apply the inductive hypothesis to produce path
@@ -2270,10 +2267,10 @@ satisfying the lemma.
 \end{figure}
 
 \textbf{Case 3.2.3.}
-Suppose that $u_2\in C(z,y)$. Note that $z\ne y$. There are two distinct cases to consider.
+Suppose that $u_2\in C[z,y]$. Note that $z\ne y$. There are two distinct cases to consider.
 
 \textbf{Case 3.2.3.1.} Suppose that $c(z)\in L(u_2)$. Then 
-either $u_2=y$ and $L(z)\cap L(y)=\{c(z)\}$, or $C(z,y)\ne z,y$.
+either $u_2=y$ and $L(z)\cap L(y)=\{c(z)\}$, or $C[z,y]\ne z,y$.
 Define $L'(u_2)=\{c(z)\}$
 and $L'(v)=L(v)$ for each $v\in G-u_2$. Construct a path $L'$-coloring $c_1$ of $G_1$
 with designated vertices $x_1=x$,
@@ -2287,11 +2284,11 @@ $c_1$ of $G_1$ with designated vertices
 $x_1=x$, $y_1=y$, and $z_1=x$. Define $L'(u_2)=\{c_1(u_2)\}$ and $L'(v)=L(v)$
 for each $v\in G_2-u_2$. Find a path $L'$-coloring $c_2$ of $G_2$
 with designated vertices $x_2=u_2$, $y_2=z$, and $z_2=u_2$. Because
-$C(z_2,y_2)=z_2,y_2$ and $L'(z_2)\cap L'(y_2)=\emptyset$, it is
+$C[z_2,y_2]=z_2,y_2$ and $L'(z_2)\cap L'(y_2)=\emptyset$, it is
 guaranteed that $\text{deg}_{c_2}(u_2)=\text{deg}_{c_2}(z_2)=0$. Thus
 $c$ is a path $L$-coloring of $G$.
 
-Suppose that $C(z,y)=z,y$. Then it must be that $u_2=y$ and $k=2$.
+Suppose that $C[z,y]=z,y$. Then it must be that $u_2=y$ and $k=2$.
 Therefore $G_2=C_2=z,y$ and $\text{deg}_c(z)=0$ since
 $c(z)\not\in L(u_2)$.\ggcnopf
 \end{proof}
@@ -2314,46 +2311,42 @@ lists
 is a constant time operation.
 The
 available C implementation represents each augmented adjacency list as an array
-of entries~\cite{Bro2017}.
+of entries, but e.g. a doubly linked list would also suffice~\cite{Bro2017}.
 
 \begin{algorithm}\label{A:hartman_impl}
 \textbf{Input.} Let $C$ be a cycle or length $2$ path in a
 $2$-connected, weakly triangulated plane graph $G$
 represented by augmented adjacency lists. Let $x,y,z\in C$ be
-vertices such that $z\in C(x,y)$.
+vertices such that $z\in C[x,y]$.
 
 Let $L$ be an array of lists of colors
 such that for $v\in\{x,y,z\}$ the list $L[v]$ has length one,
 for $v\in C-\{x,y,z\}$ the list $L[v]$ has length two
 or three, and for $v\in \text{Int}(C)-C$ the list
-$L[v]$ has length three. Furthermore, for each $v\in C(x,z) - z$ assume
+$L[v]$ has length three. Furthermore, for each $v\in C[x,z] - z$ assume
 that $L[v]$ does not contain the color in $L[z]$.
 
 Let $N$ be an array of pairs of
 references such that for each $v\in C$ the pair $N[v]=(r_1,r_2)$ contains
-a reference $r_1$ to the neighbor the immediately counter-clockwise
+a reference $r_1$ to the $\text{Adj}[v]$ entry for neighbor the
+immediately counter-clockwise
 from $v$
 around $C$, and a reference $r_2$
-to the neighbor immediately clockwise from $v$ around $C$.
+to the entry for the neighbor immediately clockwise from $v$ around $C$.
 
 Let $S$ be an array of
-integers such that for each $v\in C(x,z)-z$ we have $S[v]=S[x]$ and for
-all vertices $v\in C-C(x,z)$ we have $S[v]\ne S[x]$. Furthermore, for each
-vertices $v\in C$ assume that $S[v]\ne 0$, and for each $v\in \text{Int}(C)-C$
-assume that $S[v]=0$.
+integers such that if $v\in C$, then $S[v]\ne 0$, and if
+$v\in \text{Int}(C)-C$, then $S[v]=0$. Also, if
+$v\in C$, then $S[v]=S[x]$ if and only if $v\in C[x,z]-z$. Let $M$
+be an array of integers such that if $v\in C$, then $M[S[v]]=S[y]$
+if and only if $v\in C[z,y]$.
 
-Finally, let $M$
-be an array of integers such that for all vertices $v\in C(z,y)$ we have
-$M[S[v]]=S[y]$, and for all vertices $v\in C-C(z,y)$ we have $M[S[v]]\ne
-S[y]$.
-
-\textbf{Output.} Elements will be removed from the lists in $L$ such that
-for each $v\in\text{Int}(C)$ the list $L[v]$ will contain a single color. The
-coloring of $\text{Int}(C)$ corresponding to the remaining
-colors will be a path
-coloring $c$ such that $\text{deg}_c(x)\le1$, $\text{deg}_c(y)\le1$, and
-$\text{deg}_c(z)\le1$. If $z=y$, or if $C(z,y)=z,y$ and $L[z]$ doesn't contain
-the color in $L[y]$, then $\text{deg}_c(z)=0$.
+\textbf{Output.} For each $v\in\text{Int}(C)$, all but one color will be
+removed from the list $L[v]$. The remaining color in each list will represent
+a path $L$-coloring of $\text{Int}(C)$
+such that $\text{deg}_c(x)\le1$, $\text{deg}_c(y)\le1$, and
+$\text{deg}_c(z)\le1$. If $z=y$, or if $C[z,y]=z,y$ and $L[z]$ did
+not contain the color in $L[y]$, then $\text{deg}_c(z)=0$.
 
 \textbf{Procedure.} Let $N[z]=(r_1,r_2)$. Define the vertex $u_1$ to be
 the neighbor of $z$ corresponding to $r_1$.
@@ -2389,8 +2382,7 @@ $N[u_2]\leftarrow(s_1,s_2)$ where $s_1$ is a reference to the entry
 for $u_1$ in $\text{Adj}[u_2]$, and $s_2$ is a reference to the entry
 for $z$. Remove the color in $L[z]$ from
 $L[u_2]$ and remove the edge $zu_1$ by adjusting
-$N[u_1]$ and $N[z]$. Make a recursive call with $x$, $y$, and $z$ the
-same as before.
+$N[u_1]$ and $N[z]$. Make a recursive call with the same $x$, $y$, and $z$.
 
 \textbf{Case 3.2.} Suppose that $S[u_2]\ne 0$, that is, $u_2\in C$. Just as in
 Case~3.2 of the proof of Lemma~\ref{L:hartman3}, we will separately consider
@@ -2409,11 +2401,11 @@ $\text{Adj}[u_2]$ and
 $s_3+1$ a reference to the next entry counter-clockwise from $z$ in
 $\text{Adj}[u_2]$.
 To represent
-the subgraph $G_1$ from the proof's Case~3.2, we assign
-$N[u_2]\leftarrow (s_3+1,s_2)$. To represent the graph $G_2$,
-we assign $N[u_2]\leftarrow (s_1,s_3)$.
+the subgraph $G_1$, assign
+$N[u_2]\leftarrow (s_3+1,s_2)$. To represent the $G_2$,
+assign $N[u_2]\leftarrow (s_1,s_3)$.
 
-\textbf{Case 3.2.1.} Suppose that $S[u_2]=S[x]$, i.e. $u_2\in C(x,z)$. Make a
+\textbf{Case 3.2.1.} Suppose that $S[u_2]=S[x]$, i.e. $u_2\in C[x,z]$. Make a
 recursive call on $G_2$ with $x_2\leftarrow x$,
 $y_2\leftarrow y$, $z_2\leftarrow z$. Assign
 $S[u_2]$ a new
@@ -2421,19 +2413,18 @@ unique mark, set $M[S[u_2]]\leftarrow S[u_2]$, and make a recursive call
 on $G_1$ with $x_1,y_1,z_1$ all equal to $u_2$.
 
 \textbf{Case 3.2.2.} Suppose that $z\ne x$ and $S[u_2]\ne 0$, but
-$S[u_2]\ne S[x]$ and $M[S[u_2]]\ne S[y]$. In other words, suppose that $u_2\in C(y,x)-x-y$.
+$S[u_2]\ne S[x]$ and $M[S[u_2]]\ne S[y]$. In other words, suppose that
+$u_2\in C[y,x]-x-y$.
 First remove the color in $L[z]$ from $L[u_2]$, if it exists, and then remove
 arbitrary colors until $L[u_2]$ is of length one. Assign $S[u_2]=S[x]$.
 Make a recursive call on $G_1$ with $x_1\leftarrow x$,
 $y_1\leftarrow u_2$, and $z_1\leftarrow x$.
 Assign $S[u_2]$ a new unique mark and $M[S[u_2]]\leftarrow S[u_2]$.
 Make a recursive call on $G_2$
-with $x_2\leftarrow u_2$, $y_2\leftarrow y$, and $z_2\leftarrow z$,
-splitting $N[u_2]$ at the edge $u_2z$ to contain $z$ and all neighbors clockwise
-from $z$.
+with $x_2\leftarrow u_2$, $y_2\leftarrow y$, and $z_2\leftarrow z$.
 
 \textbf{Case 3.2.3.} Suppose that $z\ne x$ and $M[S[u_2]]=S[y]$, i.e.
-$u_2\in C(z,y)$. There are
+$u_2\in C[z,y]$. There are
 two cases to consider.
 
 \textbf{Case 3.2.3.1.} Suppose that the color in $L[z]$ is in $L[u_2]$. Remove
@@ -2805,7 +2796,7 @@ $y$};
         \node (v7) [label=right:{0,\{3,4,5\}}] at (1.340525cm, 0.632695cm) {};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {};
 
-        \node (M) [shape=rectangle, draw=none, fill=white] at (0.0cm, -2.3cm) {$M[4]\leftarrow 3$};
+        \node (M) [shape=rectangle, draw=none, fill=white] at (0.0cm, -2.4cm) {$M[4]\leftarrow 3$};
 
         \begin{pgfonlayer}{bg}
                 \draw (v2) edge [double, very thick] (v7);
@@ -3199,7 +3190,7 @@ Figure~\ref{F:hartman_impl} and Figure~\ref{F:hartman_impl_cont}.}
 \end{center}
 \end{figure}
 
-Let $G$ be a triangulated plane graph with $n$ vertices and $m$ edges,
+Let $G$ be a triangulated plane graph with $n$ vertices and $m=3n-6$ edges,
 represented by augmented adjacency
 lists. Let $L$ be a size $n$ array of color lists of length $3$,
 representing a list assignment of $G$. We may path $L$-color $G$ using
@@ -3233,7 +3224,7 @@ Algorithm~\ref{A:hartman_impl}.
 
 A C implementation of each algorithm is available~\cite{Bro2017}.
 For graph orders up to $10^7$ vertices, each algorithm
-was run on $100$ random plane triangulations; see the timings in
+was run on a set of $100$ random plane triangulations; see the timings in
 Figure~\ref{F:benchmark}.
 Benchmark results are also shown
 for a label-independent breadth-first search implemented with
@@ -3299,12 +3290,51 @@ is relatively expensive to construct.
 \end{center}
 \end{figure}
 
+A benchmark was also run to test the asymptotic performance of
+Algorithm~\ref{A:poh_bfs} and
+Algorithm~\ref{A:poh_linear} on the collection of graphs
+$\{G_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:poh_bfs}; see the timings
+in Figure~\ref{F:pyramid_benchmark}. We selected
+values for $k$ such that
+$n(G_k)=k(k+1)/2+3\approx 10^i$ to make the timings comparable to the other
+benchmarks. Observe that not only did Algorithm~\ref{A:poh_bfs} perform very
+poorly as predicted, but Algorithm~\ref{A:poh_linear} performed far
+better than it did on random graphs. The structured nature of generating each
+graph $G_k$ produced an adjacency list memory layout that was close to
+linear, rather than random.
+
+\begin{figure}[ht]
+\begin{center}
+\begin{tabular}{r||l|l|l|l|l}
+    & $n\approx10^3$  & $n\approx10^{4}$ & $n\approx10^{5}$ & $n\approx10^{6}$
+        & $n\approx10^{7}$ \\
+\hline
+\hline
+    Algorithm~\ref{A:poh_bfs} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
+    $2.63\cdot 10^{5}$ & $8.31\cdot 10^{6}$ &
+    $3.82\cdot 10^{8}$ & $3.11\cdot 10^{10}$ &
+    $1.06\cdot 10^{12}$ \\
+\hline
+    Algorithm~\ref{A:poh_linear} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
+    $2.36\cdot 10^{4}$ & $2.39\cdot 10^{5}$ &
+    $2.41\cdot 10^{6}$ & $2.50\cdot 10^{7}$ &
+    $2.49\cdot 10^{8}$ \\
+\end{tabular}
+\caption{Average time (ns) to path $3$-color a graph $G_k$ from Figure~\ref{F:poh_bfs}.}
+    \label{F:pyramid_benchmark}
+\end{center}
+\end{figure}
+
 Both Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl} perform
 recursive calls that operate on
 subgraphs that are disjoint except for select vertices on their
-respective outer faces. Therefore it is possible to maintain a stack of
+respective outer faces. Therefore it is theoretically possible to maintain a
+stack of
 independent recursive frames and have a pool of threads operate on these frames
-concurrently.
+concurrently. The amount of parallelism possible with this method is highly
+dependent on the structure of the graph, e.g. the graphs
+$\{G_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:poh_bfs} will never have more
+than one recursive frame on the stack and thus will not benefit at all.
 
 In the case of Algorithm~\ref{A:poh_linear} such parallelism can easily be
 organized since
@@ -3327,10 +3357,6 @@ local stack of $16$ frames for each thread. If a local stack filled up,
 $8$ frames were pushed to the
 shared stack. If a local stack emptied, $8$ frames were popped from the
 shared stack.
-
-Benchmarks showed performance improvements when applying the
-parallel Algorithm~\ref{A:poh_linear} to plane graphs on the order of $10^4$
-vertices or more; see Figure~\ref{F:benchmark_poh_thread}.
 
 \begin{figure}[ht]
 \begin{center}
@@ -3365,25 +3391,23 @@ per graph (sample size $100$).}
 \end{center}
 \end{figure}
 
+Benchmarks showed performance improvements when applying the
+parallel Algorithm~\ref{A:poh_linear} to plane graphs on the order of $10^4$
+vertices or more; see Figure~\ref{F:benchmark_poh_thread}.
+
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
 parallel execution. The first difficulty to consider is that
 the recursive calls made in
 Algorithm~\ref{A:hartman_impl} cannot be re-ordered. If we store the mark
 and neighbor range ($S[v]$ and $N[v]$) for $x$, $y$, and $z$ alongside
 each frame, then the recursive call order becomes independent in
-Case~3.2.1 with $u_2=x$, Case~3.2.2, and
-Case~3.2.3.1 with $u_2=y$.
+Case~3.2.1 with $u_2=x$, Case~3.2.2,
+Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$.
 Unfortunately, in Case~3.2.1 with $u_2\ne x$ and Case~3.2.3.2 with $u_2\ne y$,
-the second call will always depend on the reduced list $L[u_2]$
+the second call will always depend on the reduced color list $L[u_2]$
 produced by the first call. A smaller, but no less important detail
-is that two threads must never use the
+is that two threads must never assign the
 same face mark or else we risk corruption and data races against the array $M$.
-
-We can ensure unique marks across threads by using a shared atomic mark
-counter.
-Contention can be minimized by having
-threads reserve marks in large chunks, rather than performing an
-atomic fetch-add operation for each new mark.
 
 The hurdle of dependent frames can be overcome by maintaining a shared
 lock-guarded object pool
@@ -3400,6 +3424,35 @@ the new frame is added to the linked list of the existing frame.
 When a vertex $v$ is colored, i.e. has its color list reduced to length $1$,
 walk the linked list of frames waiting on $v$
 and push a reference to each frame onto the shared stack.
+
+We can ensure unique marks across threads by using a shared atomic mark
+counter.
+Contention can be minimized by having
+threads reserve marks in large chunks, rather than performing an
+atomic fetch-add operation for each new mark.
+
+Technically, if we want to avoid even benign data races that don't affect
+correctness, one more small
+modification must be made to the algorithm.
+In Case~3.2.1, if $u_2= x$, then $S[x]$ must be assigned a new unique mark
+in the recursive frame handling the $G_2$ subgraph. This change will
+prevent future writes to $M[S[x]]$ in the $G_2$ frame from
+interfering with any reads to $M[S[x]]$ that may result from the vertices on the
+outer face of $G_1$ that were marked with $S[v]=S[x]$. In
+Figure~\ref{F:hartman_impl} this would change the mark assigned to the bottom
+right vertex $x$ of the graph shown in the step at the bottom right of
+the first page from $4$ to $7$ in the recursive frame handling the $G_2$ block.
+The change would then ripple forward as the next unique mark
+assigned would be have to be $8$ rather than $7$, and so on.
+
+Lock contention can be reduced in a similar manner to
+Algorithm~\ref{A:poh_linear} by having each thread maintain a local stack of
+frames. Unfortunately, if a frame is created that needs to await the coloring
+of a vertex, then it must always be added to the shared pool since we do not
+know which thread will end up coloring that vertex.
+Moreover, if a frame colors a
+vertex that has another frame waiting on it, then the lock must also be
+acquired.
 
 \begin{figure}[ht]
 \begin{center}
@@ -3433,15 +3486,6 @@ and push a reference to each frame onto the shared stack.
     \label{F:benchmark_hartman_thread}
 \end{center}
 \end{figure}
-
-Lock contention can be reduced in a similar manner to
-Algorithm~\ref{A:poh_linear} by having each thread maintain a local stack of
-frames. Unfortunately, if a frame is created that needs to await the coloring
-of a vertex, then it must always be added to the shared pool since we do not
-know which thread will end up coloring that vertex.
-Moreover, if a frame colors a
-vertex that has another frame waiting on it, then the lock must also be
-acquired.
 
 Benchmarks showed small performance benefits when applying the parallel
 version of Algorithm~\ref{A:hartman_impl} to plane graphs on the order

@@ -710,7 +710,8 @@ N(P_3)-C-P_3$ will be marked $S[v]\leftarrow m_{P_3}$.
 While constructing $P_3$ we will locate each induced cycle formed by
 vertices in $P_1+P_3$, and each induced cycle formed by
 vertices in $P_2+P_3$. We'll make a recursive call to path $3$-color
-each such cycle with a non-empty interior.
+$\text{Int}(C')$ for
+each such cycle $C'$ with a non-empty interior.
 
 \textbf{Procedure.}
 Store $u_j$, the last
@@ -720,7 +721,7 @@ of identifying $u_{j-1}$. Track the
 last edge $u_rv_s$ between $P_3$ and $P_2$ that was encountered,
 represented by
 $u_r\in P_3$ and the entry for $v_s\in P_2$ in $\text{Adj}[u_r]$.
-Initialize $j\leftarrow 1$, $u_1\leftarrow u$, $u_rv_s\leftarrow uv_k$,
+Initialize $j\leftarrow 1$, $u_1\leftarrow u$, $u_rv_s\leftarrow u_1v_k$,
 and color $c[u]\leftarrow c_{P_3}$. 
 
 \textbf{Step 1.} Iterate through $\text{Adj}[u_j]$ in counter-clockwise
@@ -1912,7 +1913,7 @@ $v\in G-C[x,y]$ satisfies $|L(v)|\ge 2$. Choose $c(v)\in L(v)-\{c(x)\}$.
 We proceed by induction on $m$ the number of edges. Let
 $u_1,u_2,\ldots,u_k$ label the neighbors of $z$ in counter-clockwise
 order such that $u_1$ is the vertex immediately counter-clockwise from $z$ around $C$
-and $u_k$ is the vertex immediately clockwise from $z$.
+and $u_k$ is the vertex clockwise from $z$ around $C$.
 
 \begin{figure}[ht]
 \begin{center}
@@ -2021,7 +2022,7 @@ and $z'=y$ to find a path $L$-coloring $c$ of $G$.
 Suppose that $u_1\ne y$ and $z=x$. Then $u_1\in C-C[x,z]$
 and $|L(u_1)|\ge 2$. Pick $c(u_1)\in L(u_1)-c(z)$. Define
 $L'(u_1)=\{c(u_1)\}$ and $L'(v)=L(v)$ for each $v\in G-u_1$. Apply the
-lemma with vertices re-labeled as $x'=u_1$, $y'=y$, and $z'=z$.
+lemma to path $L'$-color $G$ with designated vertices $x'=u_1$, $y'=y$, and $z'=z$.
 
 \textbf{Case 3.}
 Suppose that $u_1\ne y$ and $z\ne x$. 
@@ -2303,8 +2304,8 @@ Clearly $c$ is also a path $L$-coloring of $G$.
 Therefore Theorem~\ref{T:planar3} follows immediately from 
 Lemma~\ref{L:hartman3}.
 
-The proof of Lemma~\ref{L:hartman3} is a constructive algorithm that may be
-implemented for plane graphs represented by
+The proof of Lemma~\ref{L:hartman3} is constructive and may be
+implemented as a linear time algorithm for plane graphs represented by
 rotation scheme ordered augmented adjacency lists.
 We will assume that both forward and backward iteration in augmented adjacency
 lists
@@ -3206,7 +3207,8 @@ Create a size $2m+1$
 array of integers $M$ and initialize $M[i]\leftarrow i$ for each
 $i\in\{0,1,2\}$.
 Finally, apply
-Algorithm~\ref{A:hartman_impl} with $x=y=z=u$ to reduce each list in $L$ to
+Algorithm~\ref{A:hartman_impl} with $x\leftarrow u$, $y\leftarrow u$,
+and $z\leftarrow u$ to reduce each list in $L$ to
 represent a path $L$-coloring of $G$.
 
 Every recursive case in Algorithm~\ref{A:hartman_impl} performs a fixed number
@@ -3299,9 +3301,10 @@ values for $k$ such that
 $n(G_k)=k(k+1)/2+3\approx 10^i$ to make the timings comparable to the other
 benchmarks. Observe that not only did Algorithm~\ref{A:poh_bfs} perform very
 poorly as predicted, but Algorithm~\ref{A:poh_linear} performed far
-better than it did on random graphs. The structured nature of generating each
-graph $G_k$ produced an adjacency list memory layout that was close to
-linear, rather than random.
+better than it did on random graphs. The structured nature of each
+graph $G_k$ results in a memory layout where vertices close to one another in the graph
+have their adjacency lists stored close together in memory. Thus the memory
+access pattern of Algorithm~\ref{A:poh_linear} run on $G_k$ is almost linear.
 
 \begin{figure}[ht]
 \begin{center}
@@ -3330,11 +3333,13 @@ recursive calls that operate on
 subgraphs that are disjoint except for select vertices on their
 respective outer faces. Therefore it is theoretically possible to maintain a
 stack of
-independent recursive frames and have a pool of threads operate on these frames
+independent recursive frames and have a pool of threads operate on the frames
 concurrently. The amount of parallelism possible with this method is highly
-dependent on the structure of the graph, e.g. the graphs
-$\{G_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:poh_bfs} will never have more
-than one recursive frame on the stack and thus will not benefit at all.
+dependent on the structure of the graph. E.g. when
+Algorithm~\ref{A:poh_linear} is run on a graph
+$G_k$ from Figure~\ref{F:poh_bfs} there will never be more
+than one recursive frame on the stack, and thus there is
+no opportunity for parallel execution.
 
 In the case of Algorithm~\ref{A:poh_linear} such parallelism can easily be
 organized since
@@ -3406,8 +3411,9 @@ Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$.
 Unfortunately, in Case~3.2.1 with $u_2\ne x$ and Case~3.2.3.2 with $u_2\ne y$,
 the second call will always depend on the reduced color list $L[u_2]$
 produced by the first call. A smaller, but no less important detail
-is that two threads must never assign the
-same face mark or else we risk corruption and data races against the array $M$.
+is that the new unique face marks assigned to $S$ must be unique
+across threads, or else we risk corruption and data races against
+the array $M$.
 
 The hurdle of dependent frames can be overcome by maintaining a shared
 lock-guarded object pool

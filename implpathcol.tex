@@ -506,10 +506,10 @@ $C_3=v_i,v_{i+1},\ldots,v_j$.
 \begin{center}
 \SolidGraph
     \begin{tikzpicture}[scale=0.75]
-  \node (vl) [label=above:$v_l$] at (2cm, 1cm) {};
-  \node (v1) [label=above:$v_1$] at (-2cm, 1cm) {};
-  \node (vl1) [label=below:$v_{l+1}$] at (2cm, -1cm) {};
-  \node (vk) [label=below:$v_k$] at (-2cm, -1cm) {};
+  \node (vl) [label=above right:$v_l$] at (2cm, 1cm) {};
+  \node (v1) [label=above left:$v_1$] at (-2cm, 1cm) {};
+  \node (vl1) [label=below right:$v_{l+1}$] at (2cm, -1cm) {};
+  \node (vk) [label=below left:$v_k$] at (-2cm, -1cm) {};
   \node (w) [label=above left:$w$] at (0.25cm, 0cm) {};
   \node (u) [label=above right:$u$] at (-1.25cm, 0cm) {};
   \node (vi) [label=above:$v_i$] at (1cm, 1.5cm) {};
@@ -546,13 +546,13 @@ $C_3=v_i,v_{i+1},\ldots,v_j$.
   \draw (bm) edge[very thick, ->, bend right] (be2);
   \draw (bm) edge[very thick, ->] (be3);
 
-  \node (p0) [label=above:$v_l$] at (9cm, 1cm) {};
-  \node (q0) [label=below:$v_{l+1}$] at (9cm, -1cm) {};
+  \node (p0) [label=above right:$v_l$] at (9cm, 1cm) {};
+  \node (q0) [label=below right:$v_{l+1}$] at (9cm, -1cm) {};
   \node (pi) [label=above:$v_i$] at (8cm, 1.5cm) {};
   \node (qj) [label=below:$v_j$] at (8cm, -1.5cm) {};
   
   \node (pi_1) [label=above:$v_i$] at (7cm, 2cm) {};
-  \node (pn) [label=above:$v_1$] at (4cm, 1.5cm) {};
+  \node (pn) [label=above left:$v_1$] at (4cm, 1.5cm) {};
   \node (t0) [label=above left:$w$] at (6.25cm, 0.5cm) {};
   \node (t1) [label=above right:$u$] at (4.75cm, 0.5cm) {};
   
@@ -561,7 +561,7 @@ $C_3=v_i,v_{i+1},\ldots,v_j$.
   \node (Ci) [scale=1.25] [draw=none, fill=none] at (8.5cm, 0cm) {$C_3$};
   
   \node (qj_1) [label=below:$v_j$] at (7cm, -2cm) {};
-  \node (qn) [label=below:$v_k$] at (4cm, -1.5cm) {};
+  \node (qn) [label=below left:$v_k$] at (4cm, -1.5cm) {};
   \node (t0_1) [label=below left:$w$] at (6.25cm, -0.5cm) {};
   \node (t1_1) [label=below right:$u$] at (4.75cm, -0.5cm) {};
 
@@ -630,25 +630,17 @@ $\qquad$
   \end{pgfonlayer}
 \end{tikzpicture}
 \caption{Algorithm~\ref{A:poh_bfs}, Case~2 (left), and
-the sequence of graphs $\{G_k\}_{k\in\mathbb{N}}$ on which it displays
+the sequence of ``pyramid graphs'' $\{A_k\}_{k\in\mathbb{N}}$ on which it displays
 $\Omega(n^{3/2})$ time complexity (right).}\label{F:poh_bfs}
 \end{center}
 \end{figure}
 
-%\begin{figure}[ht]
-%\begin{center}
-%\SolidGraph
-%\caption{The collection of graphs $\{G_k\}_{k\in\mathbb{N}}$ for which
-%Algorithm~\ref{A:poh_bfs} performs poorly.}\label{F:poh_bad_graph_collection}
-%\end{center}
-%\end{figure}
-
 Unfortunately Algorithm~\ref{A:poh_bfs}
-is not linear. Consider the sequence of
-graphs $\{G_k\}_{k\in\mathbb{N}}$ depicted in
+is not linear. Consider the sequence of ``pyramid graphs''
+$\{A_k\}_{k\in\mathbb{N}}$ depicted in
 Figure~\ref{F:poh_bfs}.
 Fix $k\in\mathbb{N}$ and note that
-$n=n(G_k)=k(k+1)/2+3$. Assume
+$n=n(A_k)=k(k+1)/2+3$. Assume
 that the outer triangle is path $2$-colored such that the top vertex is
 assigned a color distinct from the bottom two. At depth $i$ of
 Algorithm~\ref{A:poh_bfs}
@@ -2084,14 +2076,14 @@ $\text{deg}_{c}(u_2)\le 2$.
     \node (bs) [empty] at (1.8cm, 0.5cm) {};
     \node (bm) [empty] at (2.3cm, 0.5cm) {};
     \node (be1) [empty] at (2.5cm, 0.65cm) {};
-    \node (be2) [empty] at (2.7cm, 0.0cm) {};
+    \node (be2) [empty] at (2.8cm, -0.05cm) {};
 
     \draw (bs) edge [very thick] (bm);
     \draw (bm) edge[very thick, ->, bend left] (be1);
     \draw (bm) edge[very thick, ->, bend right] (be2);
 
-    \node (u1b) at (3.0cm, 1.0cm) {};
-    \node (vb) at (3.25cm, 0.5cm) [label=above right:${x_1,y_1,z_1}$] {};
+    \node (u1b) at (2.8cm, 1.0cm) {};
+    \node (vb) at (3.05cm, 0.5cm) [label=above right:${x_1,y_1,z_1}$] {};
 
     \node (vbp) at (3.25cm, 0.0cm) {};
     \node (zbp) at (4.5cm, 0.5cm) [label=above:${z_2}$] {};
@@ -2136,7 +2128,7 @@ $\quad$
     \draw (bm) edge[very thick, ->, bend right] (be2);
 
     \node (u1b) at (3.25cm, 1.0cm) {};
-    \node (xb) at (3.0cm, 0.0cm) [label=below:${x_1,z_1}$] {};
+    \node (xb) at (3.0cm, 0.0cm) [label=below left:${x_1,z_1}$] {};
     \node (vb) at (3.75cm, 0.0cm) [label=below:${y_1}$] {};
 
     \node (zbp) at (4.75cm, 1.0cm) [label=above:${z_2}$] {};
@@ -2250,7 +2242,7 @@ satisfying the lemma.
 
     \node (u1bp) at (4.1cm, 0.5cm) {};
     \node (vbp) at (5.35cm, 0.0cm) {};
-    \node (xbp) at (4.1cm, -0.5cm) [label=below:${x_1,z_1}$] {};
+    \node (xbp) at (4.1cm, -0.5cm) [label=below left:${x_1,z_1}$] {};
     \node (ybp) at (5.6cm, -0.5cm) [label=below:${y_1}$] {};
 
     \begin{pgfonlayer}{bg}
@@ -3225,14 +3217,13 @@ Algorithm~\ref{A:hartman_impl}.
 \section{Experimental performance and parallelism}
 
 A C implementation of each algorithm is available~\cite{Bro2017}.
-For graph orders up to $10^7$ vertices, each algorithm
-was run on a set of $100$ random plane triangulations; see the timings in
-Figure~\ref{F:benchmark}.
-Benchmark results are also shown
-for a label-independent breadth-first search implemented with
-a ring buffer queue, run on the same set of graphs, to serve
-as a baseline linear
-algorithm that hits every half-edge of the graph.
+For each $i$ from $3\ldots 7$ we generated $100$ random plane triangulations
+of order $10^i$, and each algorithm was run on this set of graphs;
+see the timings in Figure~\ref{F:benchmark}.
+A breadth-first search implemented with
+a ring buffer queue was run on the same set of graphs
+as a baseline
+algorithm that hits every half-edge of a graph exactly once.
 All binaries 
 were compiled with Clang 19.1.7 and run on a Linux 6.12.9 machine
 with an x86\_64 Intel N100 processor.
@@ -3240,19 +3231,18 @@ The benchmark
 source code is included with the implementation.
 
 The list assignments for Algorithm~\ref{A:hartman_impl} were randomly
-drawn from a set of eight colors. Drawing from a larger color set
-experimentally seems to
-increase the performance of the algorithm, but results in boring colorings
-with very few long paths.
+drawn from a set of eight colors. Experiments drawing from larger color sets
+show better performance for Algorithm~\ref{A:hartman_impl}, but also
+resulted in boring colorings with very few long paths.
 
 The performance of
 Algorithm~\ref{A:hartman_impl} was surprisingly close to
-Algorithm~\ref{A:poh_linear}, despite the fact that
+Algorithm~\ref{A:poh_linear} on the set of random graphs, despite the fact that
 Algorithm~\ref{A:hartman_impl} is more complex and has a larger memory
 footprint.
-However, Algorithm~\ref{A:hartman_impl} requires an augmented adjacency list
-representation, which the benchmarks for Algorithm~\ref{A:augment} show
-is relatively expensive to construct.
+However, Algorithm~\ref{A:hartman_impl} required an augmented adjacency list
+representation, which the benchmarks for Algorithm~\ref{A:augment} showed
+was relatively expensive to construct from a standard adjacency list graph.
 
 \begin{figure}[ht]
 \begin{center}
@@ -3294,17 +3284,23 @@ is relatively expensive to construct.
 
 A benchmark was also run to test the asymptotic performance of
 Algorithm~\ref{A:poh_bfs} and
-Algorithm~\ref{A:poh_linear} on the collection of graphs
-$\{G_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:poh_bfs}; see the timings
+Algorithm~\ref{A:poh_linear} on the collection of pyramid graphs
+$\{A_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:poh_bfs}; see the timings
 in Figure~\ref{F:pyramid_benchmark}. We selected
 values for $k$ such that
-$n(G_k)=k(k+1)/2+3\approx 10^i$ to make the timings comparable to the other
-benchmarks. Observe that not only did Algorithm~\ref{A:poh_bfs} perform very
-poorly as predicted, but Algorithm~\ref{A:poh_linear} performed far
-better than it did on random graphs. The structured nature of each
-graph $G_k$ results in a memory layout where vertices close to one another in the graph
-have their adjacency lists stored close together in memory. Thus the memory
-access pattern of Algorithm~\ref{A:poh_linear} run on $G_k$ is almost linear.
+$n(A_k)=k(k+1)/2+3\approx 10^i$ to make the timings comparable to the other
+benchmarks. Not only did Algorithm~\ref{A:poh_bfs} scale very
+poorly on pyramids as predicted, but Algorithm~\ref{A:poh_linear} performed
+better than breadth-first search on large pyramids. In fact, the times measured for
+Algorithm~\ref{A:poh_linear} scaled almost exactly $1:1$ with $n$.
+
+The representation for each graph $A_k$ was generated such that
+adjacency lists for vertices along the same horizontal line
+were stored consecutively in memory. Algorithm~\ref{A:poh_linear}
+was provided an input for $A_k$ such that $P_1$ consisted of the
+bottom two vertices of the outer triangle, and $P_2$ was the
+top vertex. Thus each recursive call colored a horizontal line
+and the memory access pattern was close to linear.
 
 \begin{figure}[ht]
 \begin{center}
@@ -3313,17 +3309,22 @@ access pattern of Algorithm~\ref{A:poh_linear} run on $G_k$ is almost linear.
         & $n\approx10^{7}$ \\
 \hline
 \hline
+    Breadth-first search & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
+    $1.04\cdot 10^{4}$ & $1.21\cdot 10^{5}$ &
+    $1.49\cdot 10^{6}$ & $2.12\cdot 10^{7}$ &
+    $4.88\cdot 10^{8}$ \\
+\hline
     Algorithm~\ref{A:poh_bfs} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $2.63\cdot 10^{5}$ & $8.31\cdot 10^{6}$ &
-    $3.82\cdot 10^{8}$ & $3.11\cdot 10^{10}$ &
-    $1.06\cdot 10^{12}$ \\
+    $2.66\cdot 10^{5}$ & $8.44\cdot 10^{6}$ &
+    $3.79\cdot 10^{8}$ & $3.06\cdot 10^{10}$ &
+    $1.08\cdot 10^{12}$ \\
 \hline
     Algorithm~\ref{A:poh_linear} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $2.36\cdot 10^{4}$ & $2.39\cdot 10^{5}$ &
-    $2.41\cdot 10^{6}$ & $2.50\cdot 10^{7}$ &
-    $2.49\cdot 10^{8}$ \\
+    $1.98\cdot 10^{4}$ & $1.98\cdot 10^{5}$ &
+    $1.99\cdot 10^{6}$ & $2.07\cdot 10^{7}$ &
+    $2.05\cdot 10^{8}$ \\
 \end{tabular}
-\caption{Average time (ns) to path $3$-color a graph $G_k$ from Figure~\ref{F:poh_bfs}.}
+\caption{Average time (ns) per pyramid graph from Figure~\ref{F:poh_bfs}.}
     \label{F:pyramid_benchmark}
 \end{center}
 \end{figure}
@@ -3336,9 +3337,9 @@ stack of
 independent recursive frames and have a pool of threads operate on the frames
 concurrently. The amount of parallelism possible with this method is highly
 dependent on the structure of the graph. E.g. when
-Algorithm~\ref{A:poh_linear} is run on a graph
-$G_k$ from Figure~\ref{F:poh_bfs} there will never be more
-than one recursive frame on the stack, and thus there is
+Algorithm~\ref{A:poh_linear} is run on a pyramid
+graph from Figure~\ref{F:poh_bfs} there will never be more
+than one recursive frame on the stack, and thus
 no opportunity for parallel execution.
 
 In the case of Algorithm~\ref{A:poh_linear} such parallelism can easily be
@@ -3396,9 +3397,11 @@ per graph (sample size $100$).}
 \end{center}
 \end{figure}
 
-Benchmarks showed performance improvements when applying the
-parallel Algorithm~\ref{A:poh_linear} to plane graphs on the order of $10^4$
-vertices or more; see Figure~\ref{F:benchmark_poh_thread}.
+Benchmarks in Figure~\ref{F:benchmark_poh_thread} showed performance
+improvements for graphs with $10^4$ vertices
+or more when applying the
+parallel Algorithm~\ref{A:poh_linear} to the same set of random plane
+triangulations used in Figure~\ref{F:benchmark}.
 
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
 parallel execution. The first difficulty to consider is that
@@ -3493,14 +3496,12 @@ acquired.
 \end{center}
 \end{figure}
 
-Benchmarks showed small performance benefits when applying the parallel
+Benchmarks in Figure~\ref{F:benchmark_hartman_thread}
+showed small performance benefits when applying the parallel
 version of Algorithm~\ref{A:hartman_impl} to plane graphs on the order
 of $10^4$ vertices or more, and significant benefits for graphs with
-$10^6$ vertices or more; see Figure~\ref{F:benchmark_hartman_thread}.
-The speed improvements observed were less than those achieved for the
-parallel
-Algorithm~\ref{A:poh_linear}, but Algorithm~\ref{A:hartman_impl} requires
-far more coordination between threads.
+$10^6$ vertices or more. Once again, the same set of random plane triangulations
+was used as in Figure~\ref{F:benchmark}.
 
 \begin{thebibliography}{99}
 

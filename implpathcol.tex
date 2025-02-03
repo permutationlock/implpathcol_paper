@@ -335,7 +335,7 @@ plane graphs. Let's first recount Poh's path $3$-coloring strategy.
 Given a cycle $C$ in a plane graph $G$ we define $\text{Int}(C)$ to
 be the subgraph of $G$ consisting of $C$ and all vertices and edges interior to
 $C$. If $C$ is a length $1$ or $2$ path, we define $\text{Int}(C)=C$.
-Equivalently, $\text{Int}(C)$ is the maximal $2$-connected subgraph of
+Equivalently, $\text{Int}(C)$ is the maximal subgraph of
 $G$ which has outer face $C$ with the embedding inherited from $G$.
 
 \begin{lemma}[Poh 1990]\label{L:planar3c}
@@ -353,21 +353,21 @@ $3$-coloring of $G$. We proceed by induction on the order of $G$.
 Let $P_1,P_2$ be the two paths induced by the $2$-coloring of the outer face
 $C$. 
 Label the vertices of the outer face $C=v_1,v_2,\ldots, v_k$ in clockwise
-order such that $P_1=v_1,v_2,\ldots, v_\ell$ and
-$P_2=v_{l+1},v_{l+2},\ldots, v_k$.
+order such that $P_1=v_1,v_2,\ldots, v_i$ and
+$P_2=v_{i+1},v_{i+2},\ldots, v_k$.
 
 Suppose $C$ is an induced subgraph of $G$. Let
-$u,w\in V(G)-V(C)$ be the vertices such that $u,v_k,v_1$ and $w,v_\ell,v_{\ell+1}$
+$u,w\in V(G)-V(C)$ be the vertices such that $u,v_k,v_1$ and $w,v_i,v_{i+1}$
 are faces of $G$; note that
 $u$ and $w$ are uniquely determined, but it may be that $u=w$. Since
 $C$ is an induced cycle in $G$ and $G\ne C$, $G-C$ is connected.
-Let $P_3=u_1,u_2,\ldots,u_r$ be a $u,w$-path in $G-C$ of minimal length, and
+Let $P_3=u_1,u_2,\ldots,u_j$ be a $u,w$-path in $G-C$ of minimal length, and
 note that $P_3$ is an induced subgraph of $G-C$.
 
 Color each vertex of $P_3$ with the color in $\{1,2,3\}- S$ not used
 in the $2$-coloring of
-$C$. Let $C_1=v_1,v_2,\ldots,v_\ell,u_r,u_{r-1},\ldots,u_1$ and
-$C_2=u_1,u_2,\ldots,u_r,v_{\ell+1},v_{l+2},\ldots,v_k$. The subgraphs
+$C$. Let $C_1=v_1,v_2,\ldots,v_\ell,u_j,u_{j-1},\ldots,u_1$ and
+$C_2=u_1,u_2,\ldots,u_j,v_{i+1},v_{i+2},\ldots,v_k$. The subgraphs
 $\text{Int}(C_1)$ and $\text{Int}(C_2)$ together with the coloring $c$
 each satisfy the requirements of the lemma. By the inductive hypothesis
 there exist extensions of $c$ to a path
@@ -377,9 +377,9 @@ on their respective outer faces, the colorings agree and form a path
 $3$-coloring of $G$.
 
 Suppose $C$ is not an induced subgraph. Then there
-exists an edge $v_iv_j\in E(G)-E(C)$ such that $i\le \ell < j$. Let
-$C_1=v_1,v_2,\ldots,v_i,v_j,v_{j+1},\ldots,v_k$
-and $C_2=v_i,v_{i+1},\ldots,v_j$.
+exists an edge $v_rv_s\in E(G)-E(C)$ such that $r\le i < s$. Let
+$C_1=v_1,v_2,\ldots,v_r,v_s,v_{s+1},\ldots,v_k$
+and $C_2=v_r,v_{r+1},\ldots,v_s$.
 By the inductive hypothesis, there exists an extension of $c$ to a path
 $3$-coloring of $\text{Int}(C_1)$ and $\text{Int}(C_2)$. Again
 the subgraphs only share vertices on their outer faces, and thus the
@@ -391,9 +391,9 @@ colorings agree and combine form a path $3$-coloring of $G$.\ggcnopf
 \SolidGraph
 \begin{tikzpicture}[scale=1.2]
     \node (p0)[label=above left:${v_1}$] at (160:1.0cm) {};
-    \node (pn) [label=above right:${v_\ell}$] at (20:1.0cm) {};
+    \node (pn) [label=above right:${v_i}$] at (20:1.0cm) {};
     \node (q0) [label=below left:${v_k}$] at (200:1.0cm) {};
-    \node (qn) [label=below right:${v_{\ell+1}}$] at (340:1.0cm) {};
+    \node (qn) [label=below right:${v_{i+1}}$] at (340:1.0cm) {};
   \node (t0) [label=above right:$u$] at (180:0.5cm) {};
   \node (t1) [label=above left:$w$] at (0:0.5cm) {};
     \node (null) [draw=none, fill=none] at (270:1.25cm) {};
@@ -414,11 +414,11 @@ colorings agree and combine form a path $3$-coloring of $G$.\ggcnopf
 $\qquad$
 \begin{tikzpicture}[scale=1.2]
     \node (p0) [label=above left:${v_1}$] at (160:1.0cm) {};
-    \node (p1) [label=above:${v_i}$] at (90:0.8cm) {};
-    \node (pn) [label=above right:${v_\ell}$] at (20:1.0cm) {};
+    \node (p1) [label=above:${v_r}$] at (90:0.8cm) {};
+    \node (pn) [label=above right:${v_i}$] at (20:1.0cm) {};
     \node (q0) [label=below left:${v_k}$] at (200:1.0cm) {};
-    \node (q1) [label=below:${v_j}$] at (270:0.8cm) {};
-    \node (qn) [label=below right:${v_{\ell+1}}$] at (340:1.0cm) {};
+    \node (q1) [label=below:${v_s}$] at (270:0.8cm) {};
+    \node (qn) [label=below right:${v_{i+1}}$] at (340:1.0cm) {};
     \node (null) [draw=none, fill=none] at (270:1.25cm) {};
   
     \node (C1) [scale=1.25] [draw=none, fill=none] at (180:0.4cm) {$C_1$};
@@ -455,65 +455,79 @@ to construct a $u,w$-path and/or locate
 a chord edge.
 
 \begin{algorithm}\label{A:poh_bfs}
-\textbf{Input.} Let $C=v_1,v_2,\ldots,v_k$ be a cycle in a $2$-connected,
+\textbf{Input.} 
+Let $C=v_1,v_2,\ldots,v_k$ be a cycle in a $2$-connected,
 weakly triangulated plane
-graph $G$ with adjacency list representation $\text{Adj}$. Let 
-$c$ be an array of colors representing a $2$-coloring of $C$ such
+graph $G$ with adjacency list representation $\text{Adj}$.
+Let 
+$c$ be a length $n$ integer array representing a $2$-coloring of $C$ such
 that each color class induces a path, respectively labelled
 $P_1=v_1,v_2,\ldots,v_\ell$ and $P_2=v_\ell,v_{\ell+1},\ldots,v_k$. Assume that
 $c[v]=0$ for each $v\in\text{Int}(C)-C$.
+
+The concrete input to each call will be the arrays $\text{Adj}$ and $c$,
+along with the ordered pair
+$(v_1, v_i, v_{i+1}, v_k, v_1v_k)$ where $v_1v_k$ is represented by
+a reference to $v_k$'s entry in $\text{Adj}[v_1]$. 
 
 \textbf{Output.} For each vertex $v\in\text{Int}(C)-C$, a nonzero color will be
 assigned to $c[v]$ such that $c$ represents a path $3$-coloring of
 $\text{Int}(C)$ extending the original $2$-coloring of $C$. Moreover, if
 $v\in \text{Int}(C)-C$ has a neighbor $u\in C$, then $c[v]\ne c[u]$.
 
-\textbf{Base case.} If $k=3$, then $C=\text{Int}(C)$ and $G$ is colored.
+\textbf{Procedure.} Let $u$ be the vertex immediately counter-clockwise from
+$v_k$ in $\text{Adj}[v_1]$.
 
-\textbf{Recursive step.} Iterate through $\text{Adj}[v_1]$ to locate the vertex $u$
-immediately counter-clockwise from $v_k$. Note that since $G$ is triangulated,
-$v_1,u,v_k$ is a face of $G$.
+\textbf{Base case.} If $c[u]\ne 0$ and $u\in\{v_i,v_{i+1}\}$, then
+$\text{Int}(C)=C$ is colored.
 
-\textbf{Case 1.} Suppose that $c[u]\ne 0$. If $c[u]=c[v_k]$,
-then $u\in P_2$ and
-thus $u=v_{k-1}$ since $G$ is
-triangulated and $P_2$ is an induced path. Recursively
-apply the algorithm to the cycle $C'=v_1,v_2,\ldots,v_{k-1}$.
-
-Otherwise $c[u]=c[v_1]$, and it must be that $u=v_2\in P_1$. Recursively
-apply the algorithm to the cycle $C'=v_2,v_3,\ldots,v_{k-1}$.
+\textbf{Case 1.} Suppose that $c[u]\ne 0$ and $u\not\in\{v_i,v_{i+1}\}$.
+If $c[u]=c[v_k]$, then $u\in P_2$. Make a recursive call with the input
+$(v_1, v_i, v_{i+1}, u, v_1u)$. Otherwise, it must be that $c[u]=c[v_1]$
+and $u\in P_1$. Iterate through $\text{Adj}[u]$ to find the entry for
+$v_k$. Make a recursive call with the input $(u, v_i, v_{i+1}, v_k, uv_k)$. 
 
 \textbf{Case 2.} Suppose that $c[u]=0$ and therefore $u\in \text{Int}(C)-C$.
-Perform a breadth-first search of $\text{Int}(C)-C$ starting from the
-vertex $u$. Terminate the search upon locating a vertex $w$ with
-adjacent
-neighbors $v_i\in P_1$ and $v_j\in P_2$ such that $i\ne 1$ or $j\ne k$.
+Perform a breadth-first search in $\text{Int}(C)-C$, i.e. ignoring $v\in G$
+if $c[v]\ne 0$, starting from the vertex $u$. Terminate the search once a vertex
+$w$ is discovered that has a neighbor $v_r\in P_1$ with $c[v_r]=c[v_1]$
+immediately counter-clockwise from a neighbor $v_s\in P_2$ with
+$c[v_s]=c[v_k]$.
 
-Backtrack along the breadth-first search tree
-to construct a $u,w$-path of minimum length $P_3=u_1,u_2,\ldots,u_r$.
-Color the vertices in
-$P_3$ with the third color not used in the $2$-coloring of $C$.
-Define
-$$C_1=v_1,v_2,\ldots,v_i,u_r,u_{r-1},\ldots,u_1 \text{ and }
-C_2=u_1,u_2,\ldots,u_r,v_j,v_{j-1},\ldots,v_k.$$
-Apply the algorithm
-separately to $C_1$ and $C_2$. If $i=\ell$ and $j={\ell+1}$, then $C$ was an
-induced cycle and we are done. Otherwise, also apply the algorithm to
-$C_3=v_i,v_{i+1},\ldots,v_j$.
+Backtrack along the search tree from $w$ to find a minimal $u,w$-path $P_3$.
+For each vertex $v\in P_3$, assign $c[v]\leftarrow c_{P_3}$ where $c_{P_3}\in
+\{1,2,3\}-\{c[v_1],c[v_k]\}$.
+
+Make a recursive call with the input $(v_1, v_r, w, u, v_1u)$ to color
+$\text{Int}(C_1)$, where $C_1$ is the cycle formed by the paths
+$v_1,v_2,\ldots,v_r$ and $P_3$, and edges
+$v_1u$, $v_rw$. Iterate through
+$\text{Adj}[u]$ to find the entry for $v_k$. Make a recursive
+call with input $(u, w, v_s, v_k, uv_k)$ to color $\text{Int}(C_2)$, where
+$C_2$ is the cycle formed by the paths
+$P_3$ and $v_k,v_{k-1},\ldots,v_s$, and edges
+$v_ku$, $v_sw$.
+
+If $v_r=v_i$ and $v_s=v_{i+1}$, then $\text{Int}(C)$ has been path $3$-colored.
+Otherwise, the edge $v_rv_s$ is a chord of $C$.
+Iterate through $\text{Adj}[v_r]$ to find the
+entry for $v_s$, and make a recursive call with input
+$(v_r, v_i, v_{i+1}, v_s, v_rv_s)$
+to color the interior of the cycle $C_3=v_r,v_{r+1},\ldots,v_s$.
 \end{algorithm}
 
 \begin{figure}[ht]
 \begin{center}
 \SolidGraph
     \begin{tikzpicture}[scale=0.75]
-  \node (vl) [label=above right:$v_l$] at (2cm, 1cm) {};
+  \node (vl) [label=above right:$v_i$] at (2cm, 1cm) {};
   \node (v1) [label=above left:$v_1$] at (-2cm, 1cm) {};
-  \node (vl1) [label=below right:$v_{l+1}$] at (2cm, -1cm) {};
+  \node (vl1) [label=below right:$v_{i+1}$] at (2cm, -1cm) {};
   \node (vk) [label=below left:$v_k$] at (-2cm, -1cm) {};
   \node (w) [label=above left:$w$] at (0.25cm, 0cm) {};
   \node (u) [label=above right:$u$] at (-1.25cm, 0cm) {};
-  \node (vi) [label=above:$v_i$] at (1cm, 1.5cm) {};
-  \node (vj) [label=below:$v_j$] at (1cm, -1.5cm) {};
+  \node (vi) [label=above:$v_r$] at (1cm, 1.5cm) {};
+  \node (vj) [label=below:$v_s$] at (1cm, -1.5cm) {};
   
   \node (CP) [scale=1.25] [draw=none, fill=none] at (-0.5cm, 1cm) {$C_1$};
   \node (CQ) [scale=1.25] [draw=none, fill=none] at (-0.5cm, -1cm) {$C_2$};
@@ -546,13 +560,13 @@ $C_3=v_i,v_{i+1},\ldots,v_j$.
   \draw (bm) edge[very thick, ->, bend right] (be2);
   \draw (bm) edge[very thick, ->] (be3);
 
-  \node (p0) [label=above right:$v_l$] at (9cm, 1cm) {};
-  \node (q0) [label=below right:$v_{l+1}$] at (9cm, -1cm) {};
-  \node (pi) [label=above:$v_i$] at (8cm, 1.5cm) {};
-  \node (qj) [label=below:$v_j$] at (8cm, -1.5cm) {};
+  \node (p0) [label=above right:$v_i$] at (9cm, 1cm) {};
+  \node (q0) [label=below right:$v_{i+1}$] at (9cm, -1cm) {};
+  \node (pi) [label=above:$v_r$] at (8cm, 1.5cm) {};
+  \node (qj) [label=below:$v_s$] at (8cm, -1.5cm) {};
   
-  \node (pi_1) [label=above:$v_i$] at (7cm, 2cm) {};
-  \node (pn) [label=above left:$v_1$] at (4cm, 1.5cm) {};
+  \node (pi_1) [label=above:$v_r$] at (7cm, 2cm) {};
+  \node (pn) [label=above left:$v_i$] at (4cm, 1.5cm) {};
   \node (t0) [label=above left:$w$] at (6.25cm, 0.5cm) {};
   \node (t1) [label=above right:$u$] at (4.75cm, 0.5cm) {};
   
@@ -560,7 +574,7 @@ $C_3=v_i,v_{i+1},\ldots,v_j$.
   \node (CQ) [scale=1.25] [draw=none, fill=none] at (5.5cm, -1.5cm) {$C_2$};
   \node (Ci) [scale=1.25] [draw=none, fill=none] at (8.5cm, 0cm) {$C_3$};
   
-  \node (qj_1) [label=below:$v_j$] at (7cm, -2cm) {};
+  \node (qj_1) [label=below:$v_s$] at (7cm, -2cm) {};
   \node (qn) [label=below left:$v_k$] at (4cm, -1.5cm) {};
   \node (t0_1) [label=below left:$w$] at (6.25cm, -0.5cm) {};
   \node (t1_1) [label=below right:$u$] at (4.75cm, -0.5cm) {};
@@ -665,9 +679,10 @@ neighbor in $V(H)$. Our strategy will be to construct an induced
 path $P_3=u_1,u_2,\ldots,u_d$ consisting of vertices in $N(P_1)-V(C)$.
 
 \begin{algorithm}\label{A:poh_linear}
-\textbf{Input.} Assume that $C=v_1,v_2,\ldots,v_k$ is an induced cycle in a
-$2$-connected, weakly triangulated plane
+\textbf{Input.} Assume that $C=v_1,v_2,\ldots,v_k$ is an induced cycle of
+length $4$ or more in a $2$-connected, weakly triangulated plane
 graph $G$ with adjacency list representation $\text{Adj}$.
+Let $u\in\text{Int}(C)-C$ be the unique vertex such that $u,v_k,v_1$ is a face.
 
 Let $c$ be a length $n$ array of colors
 representing a $2$-coloring of $C$ such
@@ -680,10 +695,9 @@ Let $S$ be a length $n$ array of integer marks and let $m_{P_1}$ be an integer
 such that for each $v\in\text{Int}(C)-C$ we have $S[v]=m_{P_1}$ if and only if
 $v\in N(P_1)$.
 
-Let $u\in\text{Int}(C)-C$ be the unique vertex such that $v_1,u,v_k$ is a face.
-The vertex $u$ and the entry for $v_k$ in $\text{Adj}[u]$, together
-with $\text{Adj}$, $c$, and $S$, will serve as the concrete
-representation of the algorithm input.
+The concrete input for each call will be the arrays $\text{Adj}$, $c$ and $S$,
+along with the ordered pair $(u, uv_k)$ where $uv_k$ is represented by the
+entry for $v_k$ in $\text{Adj}[u]$.
 
 \textbf{Output.} For each vertex $v\in\text{Int}(C)-C$, a nonzero color will be
 assigned to $c[v]$ such that $c$ represents a path $3$-coloring of
@@ -707,8 +721,8 @@ each such cycle $C'$ with a non-empty interior.
 
 \textbf{Procedure.}
 Store $u_j$, the last
-vertex added to $P_3=u_1,u_2,\ldots,u_j$, along with the entry for
-$u_{j-1}$ in $\text{Adj}[u_j]$. Define $u_0=v_k$ for the purpose
+vertex added to $P_3=u_1,u_2,\ldots,u_j$, along with
+$u_{j-1}$'s entry in $\text{Adj}[u_j]$. Define $u_0=v_k$ for the purpose
 of identifying $u_{j-1}$. Track the
 last edge $u_rv_s$ between $P_3$ and $P_2$ that was encountered,
 represented by
@@ -849,9 +863,9 @@ form an induced cycle $C'$. Each uncolored vertex in
 $N(P_3)\cap V(\text{Int}(C'))$ has already been marked with $m_{P_3}$.
 Let
 $x$ be the neighbor of $u_r$ immediately counter-clockwise from $v_s$.
-If $c[x]=0$, make a recursive call with $u'\leftarrow x$ and
-$u'v_k'\leftarrow xv_s$ to path $3$-color $\text{Int}(C')$. Assign
-$u_rv_s\leftarrow u_jv_t$ to track that $u_jv_t$ is the most recent edge between
+If $c[x]=0$, make a recursive call with input $(x, xv_s)$
+to path $3$-color $\text{Int}(C')$. Assign
+$u_rv_s\leftarrow u_jv_t$ to track $u_jv_t$ as the most recent edge between
 $P_3$ and $P_2$.
 
 \textbf{Case 1.1.3.} Suppose that $c[v]=0$ and $S[v]=m_{P_1}$, that is,
@@ -862,7 +876,7 @@ path. Since $u_j\in N(P_1)$, there exists an edge $u_jv_t$ where $v_t\in P_1$.
 Observe that $D=v_k,v_1,v_2,\ldots,v_t,u_j,u_{j-1},\ldots,u_1$ is a cycle in
 $\text{Int}(C)$ and $y\not\in\text{Int}(D)$. Thus if an edge $yu_e$ exists with
 $u_e\in P_3-u_j$,
-then the entry for $y$ in $\text{Adj}[u_e]$ is between $u_{e-1}$ and
+then $y$'s entry in $\text{Adj}[u_e]$ is between $u_{e-1}$ and
 $u_{e+1}$ counter-clockwise.
 But $y$ would have been encountered before $u_{e+1}$
 when iterating through $\text{Adj}[u_e]$, a contradiction since
@@ -974,8 +988,8 @@ $v=v_t\in P_1$ and $C'=u_j,v_t,v_{t+1},\ldots,v_\ell$ is an
 induced
 cycle and each uncolored vertex in $N(P_3)\cap
 V(\text{Int}(C'))$ has been marked with $m_{P_3}$.
-If $c[z]=0$, make a recursive call with $u'\leftarrow z$ and
-$u'v_k'\leftarrow zv_\ell$ to path $3$-color $\text{Int}(C')$.
+If $c[z]=0$, make a recursive call with input $(z, zv_\ell)$
+to path $3$-color $\text{Int}(C')$.
 Otherwise, $z=v$ and $\text{Int}(C')=C'$.
 
 \textbf{Case 1.2.3.} Suppose that $c[v]\ne 0$ and $c[v]\ne c_{P_1}$.
@@ -987,9 +1001,8 @@ $v_t\in P_1$ and $u_{j-1}v_{t}$ is an edge. Observe that
 $C'=u_j,u_{j-1},v_t,v_{t+1},\ldots,v_\ell$ is an induced cycle. Moreover,
 each uncolored vertex in $N(P_3)\cap
 V(\text{Int}(C'))$ has been marked with $m_{P_3}$.
-If $c[z]=0$, make a recursive call with $u'\leftarrow z$ and
-$u'v_k'\leftarrow zv_\ell$ to color $\text{Int}(C')$. Otherwise,
-$z=v$ and $\text{Int}(C')=C'$.
+If $c[z]=0$, make a recursive call with input $(z, zv_\ell)$ to
+color $\text{Int}(C')$. Otherwise, $z=v$ and $\text{Int}(C')=C'$.
 
 \textbf{Step 2.} If $y\ne\text{NULL}$, then 
 assign $j\leftarrow j+1$, $u_j\leftarrow y$, $y\leftarrow\text{NULL}$,
@@ -2309,7 +2322,8 @@ of entries, but e.g. a doubly linked list would also suffice~\cite{Bro2017}.
 \begin{algorithm}\label{A:hartman_impl}
 \textbf{Input.} Let $C$ be a cycle or length $2$ path in a
 $2$-connected, weakly triangulated plane graph $G$
-represented by augmented adjacency lists. Let $x,y,z\in C$ be
+with augmented adjacency list representation
+$\text{Adj}$. Let $x,y,z\in C$ be
 vertices such that $z\in C[x,y]$.
 
 Let $L$ be an array of lists of colors
@@ -2334,6 +2348,9 @@ $v\in C$, then $S[v]=S[x]$ if and only if $v\in C[x,z]-z$. Let $M$
 be an array of integers such that if $v\in C$, then $M[S[v]]=S[y]$
 if and only if $v\in C[z,y]$.
 
+The concrete input to each call will be the arrays $\text{Adj}$, $L$,
+$N$, $S$, and $M$, along with the ordered pair $(x,y,z)$.
+
 \textbf{Output.} For each $v\in\text{Int}(C)$, all but one color will be
 removed from the list $L[v]$. The remaining color in each list will represent
 a path $L$-coloring of $\text{Int}(C)$
@@ -2356,15 +2373,14 @@ neighbor of $z$ immediately counter-clockwise from $u_1$.
 \textbf{Case 1.} Suppose that $u_1=y$. In this case it must be that
 $z=x$. Assign
 $S[x]$ and $S[y]$ new unique marks. Assign $M[S[x]]\leftarrow S[x]$
-and $M[S[y]]\leftarrow S[y]$. Make a recursive call re-assigning
-$x'\leftarrow y$, $y'\leftarrow x$, and $z'\leftarrow y$.
+and $M[S[y]]\leftarrow S[y]$. Make a recursive call with
+input $(y, x, y)$.
 
 \textbf{Case 2.} Suppose that $z=x$ and $u_1\ne y$. 
 Remove the color in $L[z]$ from $L[u_1]$, and then remove arbitrary
 colors from $L[u_1]$ until a single color remains.
-Assign $x\leftarrow u_1$,
-set $S[u_1]$ to be a new unique mark, assign $M[S[u_1]]\leftarrow S[u_1]$,
-and make a recursive call.
+Set $S[u_1]$ to be a new unique mark, assign $M[S[u_1]]\leftarrow S[u_1]$,
+and make a recursive call with input $(u_1, y, z)$.
 
 \textbf{Case 3.} Suppose that $z\ne x$ and $u_1\ne y$. It is this case that
 makes use of the back references in the augmented adjacency list representation.
@@ -2375,7 +2391,7 @@ $N[u_2]\leftarrow(s_1,s_2)$ where $s_1$ is a reference to the entry
 for $u_1$ in $\text{Adj}[u_2]$, and $s_2$ is a reference to the entry
 for $z$. Remove the color in $L[z]$ from
 $L[u_2]$ and remove the edge $zu_1$ by adjusting
-$N[u_1]$ and $N[z]$. Make a recursive call with the same $x$, $y$, and $z$.
+$N[u_1]$ and $N[z]$. Make a recursive call with the same input $(x, y, z)$.
 
 \textbf{Case 3.2.} Suppose that $S[u_2]\ne 0$, that is, $u_2\in C$. Just as in
 Case~3.2 of the proof of Lemma~\ref{L:hartman3}, we will separately consider
@@ -2399,22 +2415,19 @@ $N[u_2]\leftarrow (s_3+1,s_2)$. To represent the $G_2$,
 assign $N[u_2]\leftarrow (s_1,s_3)$.
 
 \textbf{Case 3.2.1.} Suppose that $S[u_2]=S[x]$, i.e. $u_2\in C[x,z]$. Make a
-recursive call on $G_2$ with $x_2\leftarrow x$,
-$y_2\leftarrow y$, $z_2\leftarrow z$. Assign
+recursive call on $G_2$ with input $(x, y, z)$. Assign
 $S[u_2]$ a new
 unique mark, set $M[S[u_2]]\leftarrow S[u_2]$, and make a recursive call
-on $G_1$ with $x_1,y_1,z_1$ all equal to $u_2$.
+on $G_1$ with input $(u_2, u_2, u_2)$.
 
 \textbf{Case 3.2.2.} Suppose that $z\ne x$ and $S[u_2]\ne 0$, but
 $S[u_2]\ne S[x]$ and $M[S[u_2]]\ne S[y]$. In other words, suppose that
 $u_2\in C[y,x]-x-y$.
 First remove the color in $L[z]$ from $L[u_2]$, if it exists, and then remove
 arbitrary colors until $L[u_2]$ is of length one. Assign $S[u_2]=S[x]$.
-Make a recursive call on $G_1$ with $x_1\leftarrow x$,
-$y_1\leftarrow u_2$, and $z_1\leftarrow x$.
+Make a recursive call on $G_1$ with input $(x, u_2, x)$.
 Assign $S[u_2]$ a new unique mark and $M[S[u_2]]\leftarrow S[u_2]$.
-Make a recursive call on $G_2$
-with $x_2\leftarrow u_2$, $y_2\leftarrow y$, and $z_2\leftarrow z$.
+Make a recursive call on $G_2$ with input $(u_2, y, z)$.
 
 \textbf{Case 3.2.3.} Suppose that $z\ne x$ and $M[S[u_2]]=S[y]$, i.e.
 $u_2\in C[z,y]$. There are
@@ -2422,21 +2435,17 @@ two cases to consider.
 
 \textbf{Case 3.2.3.1.} Suppose that the color in $L[z]$ is in $L[u_2]$. Remove
 all colors from $L[u_2]$ except for the color in $L[z]$.
-Make a recursive call on $G_1$ with $x_1\leftarrow x$,
-$y_1\leftarrow y$, and $z_1\leftarrow u_2$.
+Make a recursive call on $G_1$ with input $(x, y, u_2)$.
 Then assign $S[z]$ and $S[u_2]$ the same new unique mark, and assign
 $M[S[z]]\leftarrow S[z]$. Make a
-recursive call on $G_2$ with $x_2\leftarrow u_2$, $y_2\leftarrow z$,
-and $z_2\leftarrow u_2$.
+recursive call on $G_2$ with input $(u_2, z, u_2)$.
 
 \textbf{Case 3.2.3.2.} Suppose that the color in $L[z]$ is not in $L[u_2]$.
 Assign $M[S[x]]\leftarrow S[y]$. Make a recursive call on $G_1$
-with $x_1\leftarrow x$,
-$y_1\leftarrow y$, and $z_1\leftarrow x$.
+with input $(x, y, x)$.
 Assign $S[z]$ and $S[u_2]$ the same new unique mark, and
 set $M[S[z]]\leftarrow S[z]$. Make a
-recursive call on $G_2$ with $x_2\leftarrow u_2$, $y_2\leftarrow z$,
-and $z_2\leftarrow u_2$.
+recursive call on $G_2$ with input $(u_2, z, u_2)$.
 \end{algorithm}
 
 \begin{figure}
@@ -3217,8 +3226,8 @@ Algorithm~\ref{A:hartman_impl}.
 \section{Experimental performance and parallelism}
 
 A C implementation of each algorithm is available~\cite{Bro2017}.
-For each $i$ from $3\ldots 7$ we generated $100$ random plane triangulations
-of order $10^i$, and each algorithm was run on this set of graphs;
+For each $i$ in $3\ldots 7$, a set of $100$ random plane triangulations was
+generated of order $10^i$. Each algorithm was run on each set of plane graphs,
 see the timings in Figure~\ref{F:benchmark}.
 A breadth-first search implemented with
 a ring buffer queue was run on the same set of graphs
@@ -3232,7 +3241,7 @@ source code is included with the implementation.
 
 The list assignments for Algorithm~\ref{A:hartman_impl} were randomly
 drawn from a set of eight colors. Experiments drawing from larger color sets
-show better performance for Algorithm~\ref{A:hartman_impl}, but also
+showed slightly better performance for Algorithm~\ref{A:hartman_impl}, but also
 resulted in boring colorings with very few long paths.
 
 The performance of
@@ -3286,21 +3295,20 @@ A benchmark was also run to test the asymptotic performance of
 Algorithm~\ref{A:poh_bfs} and
 Algorithm~\ref{A:poh_linear} on the collection of pyramid graphs
 $\{A_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:poh_bfs}; see the timings
-in Figure~\ref{F:pyramid_benchmark}. We selected
-values for $k$ such that
-$n(A_k)=k(k+1)/2+3\approx 10^i$ to make the timings comparable to the other
-benchmarks. Not only did Algorithm~\ref{A:poh_bfs} scale very
-poorly on pyramids as predicted, but Algorithm~\ref{A:poh_linear} performed
-better than breadth-first search on large pyramids. In fact, the times measured for
-Algorithm~\ref{A:poh_linear} scaled almost exactly $1:1$ with $n$.
+in Figure~\ref{F:pyramid_benchmark}. Values of $k$ were selected such that
+$n(A_k)\approx 10^i$. Not only did Algorithm~\ref{A:poh_bfs} scale very
+poorly on pyramids, but Algorithm~\ref{A:poh_linear}
+with a ``flipped'' input scaled almost $1:1$ with $n$ and performed
+better than breadth-first search on large pyramids.
 
 The representation for each graph $A_k$ was generated such that
-adjacency lists for vertices along the same horizontal line
-were stored consecutively in memory. Algorithm~\ref{A:poh_linear}
-was provided an input for $A_k$ such that $P_1$ consisted of the
-bottom two vertices of the outer triangle, and $P_2$ was the
-top vertex. Thus each recursive call colored a horizontal line
-and the memory access pattern was close to linear.
+adjacency lists for vertices along a horizontal line
+were stored consecutively in memory. The standard input
+had $P_1$ consist of the top vertex of the outer triangle,
+and $P_2$ the bottom two vertices, while the ``flipped'' case
+swapped $P_1$ and $P_2$. On the flipped input each recursive call of
+Algorithm~\ref{A:poh_linear} colored a horizontal line
+and the memory access pattern was nearly linear.
 
 \begin{figure}[ht]
 \begin{center}
@@ -3309,17 +3317,27 @@ and the memory access pattern was close to linear.
         & $n\approx10^{7}$ \\
 \hline
 \hline
-    Breadth-first search & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
+    Breadth-first search & 
     $1.04\cdot 10^{4}$ & $1.21\cdot 10^{5}$ &
     $1.49\cdot 10^{6}$ & $2.12\cdot 10^{7}$ &
     $4.88\cdot 10^{8}$ \\
 \hline
-    Algorithm~\ref{A:poh_bfs} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
+    Algorithm~\ref{A:poh_bfs} & 
+    $2.69\cdot 10^{5}$ & $8.63\cdot 10^{6}$ &
+    $3.59\cdot 10^{8}$ & $1.27\cdot 10^{10}$ &
+    $6.77\cdot 10^{11}$ \\
+\hline
+    Algorithm~\ref{A:poh_linear} & 
+    $2.14\cdot 10^{4}$ & $2.34\cdot 10^{5}$ &
+    $2.82\cdot 10^{6}$ & $4.42\cdot 10^{7}$ &
+    $1.13\cdot 10^{9}$ \\
+\hline
+    Algorithm~\ref{A:poh_bfs} (flipped) & 
     $2.66\cdot 10^{5}$ & $8.44\cdot 10^{6}$ &
     $3.79\cdot 10^{8}$ & $3.06\cdot 10^{10}$ &
     $1.08\cdot 10^{12}$ \\
 \hline
-    Algorithm~\ref{A:poh_linear} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
+    Algorithm~\ref{A:poh_linear} (flipped) & 
     $1.98\cdot 10^{4}$ & $1.98\cdot 10^{5}$ &
     $1.99\cdot 10^{6}$ & $2.07\cdot 10^{7}$ &
     $2.05\cdot 10^{8}$ \\
@@ -3444,15 +3462,15 @@ Technically, if we want to avoid even benign data races that don't affect
 correctness, one more small
 modification must be made to the algorithm.
 In Case~3.2.1, if $u_2= x$, then $S[x]$ must be assigned a new unique mark
-in the recursive frame handling the $G_2$ subgraph. This change will
+in the recursive frame handling the $G_2$ subgraph. This will
 prevent future writes to $M[S[x]]$ in the $G_2$ frame from
-interfering with any reads to $M[S[x]]$ that may result from the vertices on the
-outer face of $G_1$ that were marked with $S[v]=S[x]$. In
-Figure~\ref{F:hartman_impl} this would change the mark assigned to the bottom
+interfering with reads to $M[S[x]]$ that may result from the vertices on the
+outer face of $G_1$ marked with $S[x]$. In
+Figure~\ref{F:hartman_impl} the mark assigned to the bottom
 right vertex $x$ of the graph shown in the step at the bottom right of
-the first page from $4$ to $7$ in the recursive frame handling the $G_2$ block.
-The change would then ripple forward as the next unique mark
-assigned would be have to be $8$ rather than $7$, and so on.
+page would change from $4$ to $7$ in the frame handling the $G_2$ block.
+The change would ripple forward as the next unique mark
+would be have to be $8$ rather than $7$, and so on.
 
 Lock contention can be reduced in a similar manner to
 Algorithm~\ref{A:poh_linear} by having each thread maintain a local stack of

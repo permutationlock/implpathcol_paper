@@ -447,8 +447,8 @@ to produce a triangulated plane graph $G'$. Any path $3$-coloring of
 $G'$ will also be a path $3$-coloring of $G$. Thus Theorem~\ref{T:planar3c}
 follows from Lemma~\ref{L:planar3c}.
 
-In the construction of the path $P_3$ in Poh's proof, the
-induced $u,w$-path was picked to be a $u,w$-path of shortest length.
+In Poh's proof, the induced path $P_3$ was picked to be a $u,w$-path of
+shortest length.
 Thus a natural way to implement Poh's algorithm is to locate $u$,
 and then use a breadth-first search
 to construct a $u,w$-path and/or locate
@@ -456,7 +456,8 @@ a chord edge.
 
 \begin{algorithm}\label{A:poh_bfs}
 \textbf{Input.} 
-Let $C=v_1,v_2,\ldots,v_k$ be a cycle in a $2$-connected,
+Let $C=v_1,v_2,\ldots,v_k$ be a cycle or length $2$ path
+in a $2$-connected,
 weakly triangulated plane
 graph $G$ with adjacency list representation $\text{Adj}$.
 Let 
@@ -475,13 +476,14 @@ assigned to $c[v]$ such that $c$ represents a path $3$-coloring of
 $\text{Int}(C)$ extending the original $2$-coloring of $C$. Moreover, if
 $v\in \text{Int}(C)-C$ has a neighbor $u\in C$, then $c[v]\ne c[u]$.
 
-\textbf{Procedure.} Let $u$ be the vertex immediately counter-clockwise from
-$v_k$ in $\text{Adj}[v_1]$.
+\textbf{Base case.} If $v_1=v_i$ and $v_k=v_{i+1}$, then $C$ is a length
+$2$-path and $\text{Int}(C)=C$ is aleady path $2$-colored.
 
-\textbf{Base case.} If $c[u]\ne 0$ and $u\in\{v_i,v_{i+1}\}$, then
-$\text{Int}(C)=C$ is colored.
+\textbf{Recursive step.} Let $u$ be the vertex immediately counter-clockwise
+from $v_k$ in $\text{Adj}[v_1]$, i.e. the next entry in $\text{Adj}[v_1]$
+after $v_1v_k$.
 
-\textbf{Case 1.} Suppose that $c[u]\ne 0$ and $u\not\in\{v_i,v_{i+1}\}$.
+\textbf{Case 1.} Suppose that $c[u]\ne 0$.
 If $c[u]=c[v_k]$, then $u\in P_2$. Make a recursive call with the input
 $(v_1, v_i, v_{i+1}, u, v_1u)$. Otherwise, it must be that $c[u]=c[v_1]$
 and $u\in P_1$. Iterate through $\text{Adj}[u]$ to find the entry for
@@ -501,19 +503,20 @@ For each vertex $v\in P_3$, assign $c[v]\leftarrow c_{P_3}$ where $c_{P_3}\in
 Make a recursive call with the input $(v_1, v_r, w, u, v_1u)$ to color
 $\text{Int}(C_1)$, where $C_1$ is the cycle formed by the paths
 $v_1,v_2,\ldots,v_r$ and $P_3$, and edges
-$v_1u$, $v_rw$. Iterate through
-$\text{Adj}[u]$ to find the entry for $v_k$. Make a recursive
+$v_1u$, $v_rw$.
+
+Iterate through
+$\text{Adj}[u]$ to find the entry for $v_k$.
+Make a recursive
 call with input $(u, w, v_s, v_k, uv_k)$ to color $\text{Int}(C_2)$, where
 $C_2$ is the cycle formed by the paths
 $P_3$ and $v_k,v_{k-1},\ldots,v_s$, and edges
 $v_ku$, $v_sw$.
 
-If $v_r=v_i$ and $v_s=v_{i+1}$, then $\text{Int}(C)$ has been path $3$-colored.
-Otherwise, the edge $v_rv_s$ is a chord of $C$.
-Iterate through $\text{Adj}[v_r]$ to find the
-entry for $v_s$, and make a recursive call with input
+Finally, iterate through $\text{Adj}[v_r]$ to find the
+entry for $v_s$. Make a recursive call with input
 $(v_r, v_i, v_{i+1}, v_s, v_rv_s)$
-to color the interior of the cycle $C_3=v_r,v_{r+1},\ldots,v_s$.
+to color $\text{Int}(C_3)$ where $C_3=v_r,v_{r+1},\ldots,v_s$.
 \end{algorithm}
 
 \begin{figure}[ht]
@@ -598,19 +601,19 @@ $\qquad$
   \node (t2) at (2.45cm, 0cm) {};
   \node (t3) at (-2.45cm, 0cm) {};
 
-    \node (k1) [label=above left:$1$, label=below:$1$] at (-1.25cm, 0.65cm) {};
-    \node (k2) [label=below:$2$] at (-0.5cm, 0.65cm) {};
-    \node (k3) [label=below:$3$] at (0.25cm, 0.65cm) {};
-    \node (kn) [label=below:$k$] at (1.25cm, 0.65cm) {};
+    \node (k1) [label=left:$1$] at (-1.25cm, 0.65cm) {};
+    \node (k2) at (-0.5cm, 0.65cm) {};
+    \node (k3) at (0.25cm, 0.65cm) {};
+    \node (kn) at (1.25cm, 0.65cm) {};
 
-    \node (l1) [label=above left:$2$] at (-0.88cm, 1.15cm) {};
+    \node (l1) [label=left:$2$] at (-0.88cm, 1.15cm) {};
     \node (l2) at (-0.12cm, 1.15cm) {};
     \node (ln) at (0.88cm, 1.15cm) {};
 
-  \node (j1) [label=above left:$3$] at (-0.5cm, 1.65cm) {};
+  \node (j1) [label=left:$3$] at (-0.5cm, 1.65cm) {};
   \node (jn) at (0.5cm, 1.65cm) {};
 
-  \node (p) [label=above left:$k$] at (0cm, 2.4cm) {};
+  \node (p) [label=left:$k$] at (0cm, 2.4cm) {};
 
   \begin{pgfonlayer}{bg}
 	  \draw (t1) edge (t2); \draw (t3) edge (t2); \draw (t1) edge (t3);
@@ -649,27 +652,47 @@ $\Omega(n^{3/2})$ time complexity (right).}\label{F:poh_bfs}
 \end{center}
 \end{figure}
 
+Let $G$ be a triangulated plane graph with $n$ vertices. Let
+$\text{Adj}$ be an adacency list representation of $G$, and
+let $C=v_1,v_2,v_3$ be the outer triangle of $G$ labeled in clockwise order.
+We may compute a path $3$-coloring $c$ of $G$ as follows.
+Create a length $n$ integer array $c$ and initialize each entry to zero.
+Assign $c[v_1]\leftarrow 1$,
+$c[v_2]\leftarrow 2$, and $c[v_3]\leftarrow 2$. Finally, apply
+Algorithm~\ref{A:poh_bfs}
+with input $\text{Adj}$, $c$, and $(v_1, v_1, v_2, v_3, v_1v_3)$.
+
 Unfortunately Algorithm~\ref{A:poh_bfs}
 is not linear. Consider the sequence of ``pyramid graphs''
 $\{A_k\}_{k\in\mathbb{N}}$ depicted in
 Figure~\ref{F:poh_bfs}.
 Fix $k\in\mathbb{N}$ and note that
-$n=n(A_k)=k(k+1)/2+3$. Assume
-that the outer triangle is path $2$-colored such that the top vertex is
-assigned a color distinct from the bottom two. At depth $i$ of
-Algorithm~\ref{A:poh_bfs}
-the shortest path through the interior will be the path of length
-$r=k-i+1$ directly along the base of the inner triangle. A breadth-first search
-of this inner triangle will hit all $r(r+1)/2$ vertices in order to find this
-path. Therefore the total number of operations performed will be
-\[
-    \Theta\left( \sum_{r=1}^k\frac{r(r+1)}{2} \right)
-    =\Theta(k^3)
-    =\Theta(n^{3/2}).
-\]
-So Poh's algorithm implemented with breadth-first search is $\Omega(n^{3/2})$.
+$n=n(A_k)=k(k+1)/2+3$.
+Let $A_{k,i}$ be the pyramid shaped subgraph with
+base the horizontal path labeled $i$ in Figure~\ref{F:poh_bfs}.
+Each ``side''
+of $A_{k,i}$ is a path of $k-i+1$ vertices.
 
-However, the correctness of Poh's proof only relied on
+Assume that
+the outer triangle is $2$-colored such that the top vertex is
+assigned a color distinct from the bottom two. At recursive depth $i$ of
+Algorithm~\ref{A:poh_bfs} the input will have $P_1$ still the top vertex of
+the outer triangle, and $P_2$ the horizontal path labelled $i$
+in Figure~\ref{F:poh_bfs}. The interior will be $A_{k, i+1}$,
+the vertices $u,w$ will be the bottom left and right
+corners, respectively, and the shortest $u,w$-path
+will be the length $r=k-i$ path along the base.
+The breadth-first search of $A_{k,i+1}$ will hit all
+all $n(A_{k,i+1})=r(r+1)/2$ vertices.
+Therefore the number of operations performed over depths $0$ to $k-1$
+will be
+\[
+    \Omega\left( \sum_{r=1}^k\frac{r(r+1)}{2} \right)
+    =\Omega(k^3)
+    =\Omega(n^{3/2}).
+\]
+
+The correctness of Poh's proof, however, only relied on
 locating some induced $u,w$-path.
 We will show that there exists a linear time implementation of Poh's
 algorithm that does not always find the shortest $u,w$-path.
@@ -679,9 +702,10 @@ neighbor in $V(H)$. Our strategy will be to construct an induced
 path $P_3=u_1,u_2,\ldots,u_d$ consisting of vertices in $N(P_1)-V(C)$.
 
 \begin{algorithm}\label{A:poh_linear}
-\textbf{Input.} Assume that $C=v_1,v_2,\ldots,v_k$ is an induced cycle of
-length $4$ or more in a $2$-connected, weakly triangulated plane
-graph $G$ with adjacency list representation $\text{Adj}$.
+\textbf{Input.} Assume that $C=v_1,v_2,\ldots,v_k$ is an induced cycle
+in a $2$-connected, weakly triangulated plane
+graph $G$ with adjacency list representation $\text{Adj}$ such
+that $\text{Int}(C)-C$ is non-empty.
 Let $u\in\text{Int}(C)-C$ be the unique vertex such that $u,v_k,v_1$ is a face.
 
 Let $c$ be a length $n$ array of colors
@@ -711,7 +735,8 @@ in $\text{Int}(C)-C$, but here $V(P_3)\subset N(P_1)$ and $w$
 will not be known prior to constructing $P_3$.
 Each vertex of $P_3$ will be colored with
 $c_{P_3}\in\{1,2,3\}-\{c_{P_1},c_{P_2}\}$. Each $v\in
-N(P_3)-C-P_3$ will be marked $S[v]\leftarrow m_{P_3}$.
+N(P_3)-C-P_3$ will be marked $S[v]\leftarrow m_{P_3}$, where $m_{P_3}$
+is a new unique integer mark.
 
 While constructing $P_3$ we will locate each induced cycle formed by
 vertices in $P_1+P_3$, and each induced cycle formed by
@@ -1851,9 +1876,9 @@ $c[v_3]\leftarrow 2$.
 Iterate through $\text{Adj}[v_1]$ and mark $S[v]\leftarrow 1$ for each
 neighbor $v$ of $v_1$.
 Let $u$ be the vertex immediately counter-clockwise from $v_3$ in
-$\text{Adj}[v_1]$. The vertex $u$ and the entry for $v_3$ in $\text{Adj}[u]$,
-together with $\text{Adj}$, $c$, and $S$ form a valid input for
-Algorithm~\ref{A:poh_linear}.
+$\text{Adj}[v_1]$. Note that if $n(G)>3$, then $u\not\in C$.
+The arrays $\text{Adj}$, $c$, and $S$, together with
+$(u, uv_k)$ form a valid input for Algorithm~\ref{A:poh_linear}.
 
 \section{Path List-Coloring}
 
@@ -3208,9 +3233,9 @@ Create a size $2m+1$
 array of integers $M$ and initialize $M[i]\leftarrow i$ for each
 $i\in\{0,1,2\}$.
 Finally, apply
-Algorithm~\ref{A:hartman_impl} with $x\leftarrow u$, $y\leftarrow u$,
-and $z\leftarrow u$ to reduce each list in $L$ to
-represent a path $L$-coloring of $G$.
+Algorithm~\ref{A:hartman_impl} with the input $\text{Adj}$, $L$,
+$N$, $S$, $M$, and $(u, u, u)$. The remaining color in each
+list in $L$ will represent a path $L$-coloring of $G$.
 
 Every recursive case in Algorithm~\ref{A:hartman_impl} performs a fixed number
 of constant time operations. Each case removes one edge from the graph

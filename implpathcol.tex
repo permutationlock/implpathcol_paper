@@ -1855,16 +1855,6 @@ Figure~\ref{F:poh_example}.}
 \end{center}
 \end{figure}
 
-While executing Algorithm~\ref{A:poh_linear} we iterate through
-the adjacency list of each vertex $v\in G$ exactly twice: once to
-orient $\text{Adj}[v]$
-around a particular edge when $v$ is colored,
-and once to examine each neighbor in $\text{Adj}[v]$ during Step~1.
-Therefore the time complexity of the algorithm is
-$\mathcal{O}(m)=\mathcal{O}(n)$. See Figure~\ref{F:poh_example} 
-and Figure~\ref{F:poh_example_cont} for a concrete example of
-Algorithm~\ref{A:poh_linear}.
-
 Given a triangulated plane graph $G$ with adjacency list representation
 $\text{Adj}$, we can set up the initial conditions for
 Algorithm~\ref{A:poh_linear} as follows. First, create length $n$ integer
@@ -1879,6 +1869,16 @@ Let $u$ be the vertex immediately counter-clockwise from $v_3$ in
 $\text{Adj}[v_1]$. Note that if $n(G)>3$, then $u\not\in C$.
 The arrays $\text{Adj}$, $c$, and $S$, together with
 $(u, uv_k)$ form a valid input for Algorithm~\ref{A:poh_linear}.
+
+While executing Algorithm~\ref{A:poh_linear} we iterate through
+the adjacency list of each vertex $v\in G$ exactly twice: once to
+orient $\text{Adj}[v]$
+around a particular edge when $v$ is colored,
+and once to examine each neighbor in $\text{Adj}[v]$ during Step~1.
+Therefore the time complexity of the algorithm is
+$\mathcal{O}(m)=\mathcal{O}(n)$. See Figure~\ref{F:poh_example} 
+and Figure~\ref{F:poh_example_cont} for a concrete example of
+Algorithm~\ref{A:poh_linear}.
 
 \section{Path List-Coloring}
 
@@ -3286,29 +3286,29 @@ was relatively expensive to construct from a standard adjacency list graph.
 \hline
 \hline
     Breadth-first search & %$1.66\cdot 10^{2}$ & $2.26\cdot 10^3$ &
-    $1.93\cdot 10^{4}$ & $2.64\cdot 10^{5}$ &
-    $3.73\cdot 10^{6}$ & $1.01\cdot 10^{8}$ &
+    $1.95\cdot 10^{4}$ & $2.64\cdot 10^{5}$ &
+    $3.72\cdot 10^{6}$ & $1.01\cdot 10^{8}$ &
     $1.26\cdot 10^{9}$ \\
 \hline
     Algorithm~\ref{A:augment} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $4.38\cdot 10^{4}$ & $6.67\cdot 10^{5}$ &
-    $1.85\cdot 10^{7}$ & $4.15\cdot 10^{8}$ &
-    $4.79\cdot 10^{9}$ \\
+    $4.41\cdot 10^{4}$ & $6.69\cdot 10^{5}$ &
+    $1.83\cdot 10^{7}$ & $4.17\cdot 10^{8}$ &
+    $4.77\cdot 10^{9}$ \\
 \hline
     Algorithm~\ref{A:poh_bfs} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $2.30\cdot 10^{5}$ & $3.43\cdot 10^{6}$ &
-    $5.26\cdot 10^{7}$ & $1.17\cdot 10^{9}$ &
+    $2.31\cdot 10^{5}$ & $3.48\cdot 10^{6}$ &
+    $5.29\cdot 10^{7}$ & $1.17\cdot 10^{9}$ &
     $1.82\cdot 10^{10}$ \\
 \hline
     Algorithm~\ref{A:poh_linear} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $5.32\cdot 10^{4}$ & $6.12\cdot 10^{5}$ &
-    $7.29\cdot 10^{6}$ & $1.31\cdot 10^{8}$ &
-    $1.51\cdot 10^{9}$ \\
+    $5.13\cdot 10^{4}$ & $5.96\cdot 10^{5}$ &
+    $7.12\cdot 10^{6}$ & $1.30\cdot 10^{8}$ &
+    $1.50\cdot 10^{9}$ \\
 \hline
     Algorithm~\ref{A:hartman_impl} & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $6.05\cdot 10^{4}$ & $7.21\cdot 10^{5}$ &
-    $1.04\cdot 10^{7}$ & $1.89\cdot 10^{8}$ &
-    $2.15\cdot 10^{9}$ \\
+    $6.02\cdot 10^{4}$ & $7.17\cdot 10^{5}$ &
+    $1.05\cdot 10^{7}$ & $1.92\cdot 10^{8}$ &
+    $2.19\cdot 10^{9}$ \\
 \end{tabular}
 \caption{Average time (ns) per triangulated plane graph
 (sample size $100$).}
@@ -3415,24 +3415,24 @@ shared stack.
 \hline
 \hline
     1 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $5.32\cdot 10^{4}$ & $6.12\cdot 10^{5}$ &
-    $7.29\cdot 10^{6}$ & $1.31\cdot 10^{8}$ &
-    $1.51\cdot 10^{9}$ \\
+    $5.13\cdot 10^{4}$ & $5.96\cdot 10^{5}$ &
+    $7.12\cdot 10^{6}$ & $1.30\cdot 10^{8}$ &
+    $1.50\cdot 10^{9}$ \\
 \hline
     2 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $5.31\cdot 10^{4}$ & $4.49\cdot 10^{5}$ &
-    $4.36\cdot 10^{6}$ & $7.55\cdot 10^{7}$ &
-    $8.65\cdot 10^{8}$ \\
+    $5.12\cdot 10^{4}$ & $4.26\cdot 10^{5}$ &
+    $4.30\cdot 10^{6}$ & $7.51\cdot 10^{7}$ &
+    $8.53\cdot 10^{8}$ \\
 \hline
     3 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $5.16\cdot 10^{4}$ & $3.47\cdot 10^{5}$ &
-    $3.56\cdot 10^{6}$ & $6.12\cdot 10^{7}$ &
-    $6.59\cdot 10^{8}$ \\
+    $4.86\cdot 10^{4}$ & $3.20\cdot 10^{5}$ &
+    $3.62\cdot 10^{6}$ & $6.01\cdot 10^{7}$ &
+    $6.41\cdot 10^{8}$ \\
 \hline
     4 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $5.33\cdot 10^{4}$ & $3.01\cdot 10^{5}$ &
-    $3.41\cdot 10^{6}$ & $5.26\cdot 10^{7}$ &
-    $5.56\cdot 10^{8}$ \\
+    $4.89\cdot 10^{4}$ & $2.68\cdot 10^{5}$ &
+    $3.12\cdot 10^{6}$ & $5.03\cdot 10^{7}$ &
+    $5.37\cdot 10^{8}$ \\
 \end{tabular}
 \caption{Parallel Algorithm~\ref{A:poh_linear} average time (ns)
 per graph (sample size $100$).}
@@ -3503,7 +3503,7 @@ frames. Unfortunately, if a frame is created that needs to await the coloring
 of a vertex, then it must always be added to the shared pool since we do not
 know which thread will end up coloring that vertex.
 Moreover, if a frame colors a
-vertex that has another frame waiting on it, then the lock must also be
+vertex that has another frame waiting on it, then the lock must be
 acquired.
 
 \begin{figure}[ht]
@@ -3514,24 +3514,24 @@ acquired.
 \hline
 \hline
     1 &
-    $6.05\cdot 10^{4}$ & $7.21\cdot 10^{5}$ &
-    $1.04\cdot 10^{7}$ & $1.89\cdot 10^{8}$ &
-    $2.15\cdot 10^{9}$ \\
+    $6.02\cdot 10^{4}$ & $7.17\cdot 10^{5}$ &
+    $1.05\cdot 10^{7}$ & $1.92\cdot 10^{8}$ &
+    $2.19\cdot 10^{9}$ \\
 \hline
     2 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $7.81\cdot 10^{4}$ & $7.08\cdot 10^{5}$ &
-    $9.05\cdot 10^{6}$ & $1.36\cdot 10^{8}$ &
-    $1.51\cdot 10^{9}$ \\
+    $7.56\cdot 10^{4}$ & $6.84\cdot 10^{5}$ &
+    $8.72\cdot 10^{6}$ & $1.33\cdot 10^{8}$ &
+    $1.48\cdot 10^{9}$ \\
 \hline
     3 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $7.78\cdot 10^{4}$ & $6.50\cdot 10^{5}$ &
-    $8.24\cdot 10^{6}$ & $1.14\cdot 10^{8}$ &
-    $1.20\cdot 10^{9}$ \\
+    $7.51\cdot 10^{4}$ & $6.15\cdot 10^{5}$ &
+    $7.63\cdot 10^{6}$ & $1.08\cdot 10^{8}$ &
+    $1.14\cdot 10^{9}$ \\
 \hline
     4 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $8.43\cdot 10^{4}$ & $6.43\cdot 10^{5}$ &
-    $8.05\cdot 10^{6}$ & $1.03\cdot 10^{8}$ &
-    $1.06\cdot 10^{9}$ \\
+    $8.18\cdot 10^{4}$ & $6.25\cdot 10^{5}$ &
+    $7.32\cdot 10^{6}$ & $9.60\cdot 10^{7}$ &
+    $9.85\cdot 10^{8}$ \\
 \end{tabular}
     \caption{Parallel Algorithm~\ref{A:hartman_impl} average time (ns)
     per graph (sample size $100$).}

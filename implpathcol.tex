@@ -115,7 +115,7 @@
 
 % (NONE)
 
-\date{December 5, 2024}
+\date{February 20, 2025}
 
 \title{Path-Coloring Algorithms for Plane Graphs}
 
@@ -439,17 +439,16 @@ a chord (right).}
 \end{figure}
 
 Let $G$ be a triangulated plane graph. We may trivially path $2$-color the outer
-triangle. Applying Lemma~\ref{L:planar3c} extends this coloring to a path
+triangle. By Lemma~\ref{L:planar3c} this extends to a path
 $3$-coloring of $G$.
-
-For an arbitrary planar graph $G$ we may compute an embedding and add edges
-to produce a triangulated plane graph $G'$. Any path $3$-coloring of
-$G'$ will also be a path $3$-coloring of $G$. Thus Theorem~\ref{T:planar3c}
-follows from Lemma~\ref{L:planar3c}.
+If $G$ is an arbitrary planar graph, we may compute an embedding and add edges
+to produce a triangulated plane graph $G'$. Theorem~\ref{T:planar3c}
+follows immediately as any path coloring of
+$G'$ is also a path coloring of $G$.
 
 A natural way to implement Poh's algorithm is to locate $u$,
 and then use a breadth-first search to construct a minimal
-$u,w$-path and/or locate a chord edge.
+$u,w$-path and/or locate a chord edge, see Algorithm~\ref{A:poh_bfs}.
 
 \begin{algorithm}\label{A:poh_bfs}
 \textbf{Input.} 
@@ -464,7 +463,7 @@ $P_1=v_1,v_2,\ldots,v_\ell$ and $P_2=v_\ell,v_{\ell+1},\ldots,v_k$. Assume that
 $c[v]=0$ for each $v\in\text{Int}(C)-C$.
 
 The concrete input will be $\text{Adj}$, $c$, and the tuple
-$(v_1, v_i, v_{i+1}, v_k, v_1v_k)$ where $v_1v_k$ is represented by
+$(v_1, v_i, v_{i+1}, v_k, v_1v_k)$, where $v_1v_k$ is represented by
 a reference to $v_k$'s entry in $\text{Adj}[v_1]$. 
 
 \textbf{Output.} For each vertex $v\in\text{Int}(C)-C$, a color in
@@ -474,7 +473,7 @@ $\text{Int}(C)$ extending the original $2$-coloring of $C$. Moreover, if
 $v\in \text{Int}(C)-C$ has a neighbor $u\in C$, then $c[v]\ne c[u]$.
 
 \textbf{Base case.} If $v_1=v_i$ and $v_k=v_{i+1}$, then $C$ is a length
-$2$-path and $\text{Int}(C)=C$ is aleady path $2$-colored.
+$2$-path and $\text{Int}(C)=C$ is path $2$-colored.
 
 \textbf{Recursive step.} Let $u$ be the vertex immediately counter-clockwise
 from $v_k$ in $\text{Adj}[v_1]$, i.e. the next entry in $\text{Adj}[v_1]$
@@ -490,13 +489,13 @@ to color $\text{Int}(C')$, where $C'=v_2,v_3,\ldots,v_k$.
 
 \textbf{Case 2.} Suppose that $c[u]=0$ and therefore $u\in \text{Int}(C)-C$.
 Perform a breadth-first search in $\text{Int}(C)-C$ starting from $u$.
-Such a search may be implemented by only searching $v\in G$
+Such a search may be implemented by only visiting $v\in G$
 if $c[v]=0$. Terminate the search upon finding a vertex
 $w$ that has a neighbor $v_r\in P_1$
 immediately counter-clockwise from a neighbor $v_s\in P_2$, i.e.
 $c[v_r]=c[v_1]$ and $c[v_s]=c[v_k]$. Backtrack along the search tree from $w$
 to find a minimal $u,w$-path $P_3$.
-For each vertex $v\in P_3$, assign $c[v]\leftarrow c_{P_3}$ where $c_{P_3}\in
+For each vertex $v\in P_3$, assign $c[v]\leftarrow c_{P_3}$, where $c_{P_3}\in
 \{1,2,3\}-\{c[v_1],c[v_k]\}$.
 
 Make a recursive call with the input $(v_1, v_r, w, u, v_1u)$ to color
@@ -628,7 +627,7 @@ $\qquad$
 \end{figure}
 
 Let $G$ be a triangulated plane graph with $n$ vertices. Let
-$\text{Adj}$ be an adacency list representation of $G$, and
+$\text{Adj}$ be an adjacency list representation of $G$, and
 let $C=v_1,v_2,v_3$ be the outer triangle of $G$ labeled in clockwise order.
 We may compute a path $3$-coloring $c$ of $G$ as follows.
 Create a length $n$ integer array $c$ and initialize each entry to zero.
@@ -647,10 +646,10 @@ Assume that
 the outer triangle is $2$-colored such that the top vertex is
 assigned a color distinct from the bottom two. At recursive depth $i$,
 Algorithm~\ref{A:poh_bfs} will perform a breadth first search of the
-interior pyramid shaped induced subgraph with sides of length $r=k-i$, starting
+pyramid-shaped interior  subgraph with sides of length $r=k-i$, starting
 from the vertex in the bottom left corner. The search will hit all
 $r(r+1)/2$ vertices of the interior pyramid.
-Therefore the number of operations performed will be
+Therefore the total number of operations performed will be
 \[
     \Omega\left( \sum_{r=1}^k\frac{r(r+1)}{2} \right)
     =\Omega(k^3)
@@ -778,14 +777,19 @@ on which Algorithm~\ref{A:poh_bfs} performs poorly.}\label{F:pyramid}
 \end{center}
 \end{figure}
 
-The correctness of Poh's proof, however, only relied on
-locating some induced $u,w$-path.
-We will show that there exists a linear time implementation of Poh's
-algorithm that does not always find the shortest $u,w$-path.
+It is possible to improve Algorithm~\ref{A:poh_bfs} by instead
+performing a bidirectional breadth-first search from $u$ and
+$w$ simultaneously. However, such an implementation will have the
+same lower bound time complexity that was
+computed above. A bidirectional breadth-first search will still visit
+half of the vertices in each interior pyramid of $A_k$, and
+thus only improve the ``bad case'' performance by a constant factor.
 
-For any subgraph $H$ of $G$, let $N(H)$ be the set of vertices in $V(G)$ with a
-neighbor in $V(H)$. Our strategy will be to construct an induced
-path $P_3=u_1,u_2,\ldots,u_d$ consisting of vertices in $N(P_1)-V(C)$.
+The correctness of Poh's proof, however, relied only on locating
+locating an induced $u,w$-path.
+Algorithm~\ref{A:poh_linear} describes a linear time implementation
+of Poh's algorithm that locates and colors an induced $u,w$-path that is not
+always of minimal length.
 
 \begin{algorithm}\label{A:poh_linear}
 \textbf{Input.} Let $C=v_1,v_2,\ldots,v_k$ be an induced cycle
@@ -802,9 +806,11 @@ $P_2=v_{i+1},v_{i+2},\ldots,v_k$. Let $c_{P_1}$ and $c_{P_2}$ be the colors
 for $P_1$ and $P_2$, respectively. Assume $c[v]=0$ for each
 $v\in\text{Int}(C)-C$.
 
+If $H$ is a subgraph of $G$, let $N(H)$ be the set of vertices in $G$ with a
+neighbor in $H$. 
 Let $S$ be a length $n$ array of integer marks and let $m_{P_1}$ be an integer
 such that for each $v\in\text{Int}(C)-C$ we have $S[v]=m_{P_1}$ if and only if
-$v\in N(P_1)$.
+$v\in N(P_1)$, i.e. $v$ has a neighbor in $P_1$.
 
 The concrete input will be the arrays $\text{Adj}$, $c$ and $S$,
 along with the ordered pair $(u, uv_k)$ where $uv_k$ is represented by the
@@ -817,16 +823,14 @@ $\text{Int}(C)$ extending the original $2$-coloring of $C$. Moreover, if
 $v\in N(P_1)-C$, then $c[v]\ne c_{P_1}$, and if $v\in N(P_2)-C$, then
 $c[v]\ne c_{P_2}$.
 
-\textbf{Outline.} As in the proof of Lemma~\ref{L:planar3c} we will
+\textbf{Outline.} We will
 construct a $u,w$-path $P_3$
-in $\text{Int}(C)-C$, but here $V(P_3)\subset N(P_1)$ and $w$
-will not be known prior to constructing $P_3$.
-Each vertex of $P_3$ will be colored with
-$c_{P_3}\in\{1,2,3\}-\{c_{P_1},c_{P_2}\}$. Each $v\in
-N(P_3)-C-P_3$ will be marked $S[v]\leftarrow m_{P_3}$, where $m_{P_3}$
-is a new unique integer mark. For each induced cycle
-$C'$ formed by colored vertices, we will make a recursive call to
-path $3$-color $\text{Int}(C')-C'$.
+in $\text{Int}(C)-C$, as in the proof of Lemma~\ref{L:planar3c},
+such that $V(P_3)\subseteq N(P_1)$. Each $v\in P_3$ will be colored
+$c[v]\leftarrow c_{P_3}\in \{1,2,3\}-\{c_{P_1},c_{P_2}\}$.
+Each $v\in N(P_3)$ will be marked $S[v]\leftarrow m_{P_3}$, where $m_{P_3}$
+is a new unique mark. A recursive call will be made for
+each proper induced cycle in $\text{Int}(C)$ consisting of vertices in $C+P_3$.
 
 \textbf{Procedure.}
 Store $u_j$, the last
@@ -1962,8 +1966,7 @@ around a particular edge when $v$ is colored,
 and once to examine each neighbor in $\text{Adj}[v]$ during Step~1.
 Therefore the time complexity of the algorithm is
 $\mathcal{O}(m)=\mathcal{O}(n)$. See Figure~\ref{F:poh_example} 
-and Figure~\ref{F:poh_example_cont} for a concrete example of
-Algorithm~\ref{A:poh_linear}.
+and Figure~\ref{F:poh_example_cont} for a concrete example.
 
 \section{Path List-Coloring}
 
@@ -2025,10 +2028,10 @@ If $m=1$, then $n(G)= 2$. If $x\ne y$, then $C=x,y$ and $G$ is colored.
 If $x=y$, then the remaining vertex
 $v\in G-C[x,y]$ satisfies $|L(v)|\ge 2$. Choose $c(v)\in L(v)-\{c(x)\}$.
 
-We proceed by induction on $m$ the number of edges. Let
+We proceed by induction on $m$, the number of edges. Let
 $u_1,u_2,\ldots,u_k$ label the neighbors of $z$ in counter-clockwise
-order such that $u_1$ is the vertex immediately counter-clockwise from $z$ around $C$
-and $u_k$ is the vertex clockwise from $z$ around $C$.
+order such that $u_1$ is the vertex immediately counter-clockwise
+from $z$ around $C$ and $u_k$ is the vertex clockwise from $z$ around $C$.
 
 \begin{figure}[ht]
 \begin{center}
@@ -3321,7 +3324,7 @@ Algorithm~\ref{A:hartman_impl}.
 
 \section{Experimental performance and parallelism}
 
-A C implementation of each algorithm is available~\cite{BroFIFO 2017}.
+A C implementation of each algorithm is available~\cite{Bro2017}.
 For each $i$ in $3\ldots 7$, a set of $100$ random plane triangulations
 of order $10^i$ was
 generated. Each algorithm was then run on each set of plane graphs,
@@ -3395,8 +3398,7 @@ $\{A_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:pyramid}; see the timings
 in Figure~\ref{F:pyramid_benchmark}. Values of $k$ were selected such that
 $n(A_k)\approx 10^i$. Not only did Algorithm~\ref{A:poh_bfs} scale very
 poorly on pyramids, but Algorithm~\ref{A:poh_linear}
-with a ``flipped'' input scaled almost $1:1$ with $n$ and performed
-better than breadth-first search on large pyramids.
+with a ``flipped'' input scaled almost $1:1$ with $n$.
 
 The representation for each graph $A_k$ was generated such that
 adjacency lists for vertices along a horizontal line
@@ -3413,11 +3415,6 @@ and the memory access pattern was nearly linear.
     & $n\approx10^3$  & $n\approx10^{4}$ & $n\approx10^{5}$ & $n\approx10^{6}$
         & $n\approx10^{7}$ \\
 \hline
-\hline
-    Breadth-first search & 
-    $1.04\cdot 10^{4}$ & $1.21\cdot 10^{5}$ &
-    $1.49\cdot 10^{6}$ & $2.12\cdot 10^{7}$ &
-    $4.88\cdot 10^{8}$ \\
 \hline
     Algorithm~\ref{A:poh_bfs} & 
     $2.69\cdot 10^{5}$ & $8.63\cdot 10^{6}$ &
@@ -3521,12 +3518,12 @@ triangulations used in Figure~\ref{F:benchmark}.
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
 parallel execution. The first difficulty to consider is that
 the recursive calls made in
-Algorithm~\ref{A:hartman_impl} relied on a strict sequential
-ordering. If we store the mark
+Algorithm~\ref{A:hartman_impl} relied on a sequential
+execution order. If we store the mark
 and neighbor range ($S[v]$ and $N[v]$) for $x$, $y$, and $z$ alongside
-each frame, then the recursive calls become order independent in
+each frame, then the recursive calls in
 Case~3.2.1 with $u_2=x$, Case~3.2.2,
-Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$.
+Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$ become order independent.
 Unfortunately, in Case~3.2.1 with $u_2\ne x$ and Case~3.2.3.2 with $u_2\ne y$,
 the second recursive call will always depend on the reduced color list $L[u_2]$
 produced by the first call.
@@ -3537,11 +3534,11 @@ of frames and a stack of frame references. Recursive frames will be added to the
 pool when they appear in the usual course of the algorithm, but will
 only be pushed to the shared stack when they are ready to be
 executed. For each vertex $v\in G$, maintain an optional reference
-to a frame that will become ready when $v$ has been colored, i.e. had
-its color list reduced to length $1$. To allow
+to a frame that will become ready when $v$ has been colored, i.e. has had
+its color list reduced to length $1$. To allow for
 multiple frames to await the coloring of a single vertex, each frame in the
-object pool will store an ``intrusive linked list,'' that is, an optional
-reference to the next frame in line. When a frame is added to the pool, and
+pool will store an ``intrusive linked list,'' that is, an optional
+reference to the next frame in line. When a frame is added to the pool and
 it needs to await a vertex that has another frame waiting on it,
 the new frame is added to the linked list of the existing frame.
 When a vertex $v$ is colored, 
@@ -3552,7 +3549,7 @@ Another important detail
 is that the new unique face marks assigned to $S$ must be unique
 across all threads, or else we risk corruption and data races against
 the array $M$.
-Uniqueness accross threads can be ensured by using a shared atomic mark
+Uniqueness across threads can be ensured by using a shared atomic mark
 counter.
 Contention can be minimized by having
 threads reserve marks in chunks, rather than performing an
@@ -3651,7 +3648,8 @@ available from\hfil\break
 \bibitem{ChHa2017prep}
 G.~G.~Chappell and C.~Hartman,
 Path choosability of planar graphs,
-in preparation.
+\textit{The Electronic Journal of Combinatorics} \textbf{25} (2018),
+P4.33.
 
 \bibitem{ChKr1969}
 G.~Chartrand and H.~V.~Kronk,

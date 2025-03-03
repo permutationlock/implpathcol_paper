@@ -2521,7 +2521,7 @@ $s_3+1$ a reference to the next entry counter-clockwise from $z$ in
 $\text{Adj}[u_2]$.
 To represent
 the subgraph $G_1$, assign
-$N[u_2]\leftarrow (s_3+1,s_2)$. To represent the $G_2$,
+$N[u_2]\leftarrow (s_3+1,s_2)$. To represent the subgraph $G_2$,
 assign $N[u_2]\leftarrow (s_1,s_3)$.
 
 \textbf{Case 3.2.1.} Suppose that $S[u_2]=S[x]$, i.e. $u_2\in C[x,z]$. Make a
@@ -3325,7 +3325,7 @@ Algorithm~\ref{A:hartman_impl}.
 \section{Experimental performance and parallelism}
 
 A C implementation of each algorithm is available~\cite{Bro2017}.
-For each $i$ in $3\ldots 7$, a set of $100$ random plane triangulations
+For each $i$ in $4\ldots 7$, a set of $100$ random plane triangulations
 of order $10^i$ was
 generated. Each algorithm was then run on each set of plane graphs,
 see the timings in Figure~\ref{F:benchmark}.
@@ -3355,35 +3355,35 @@ was relatively expensive to construct from a standard adjacency list graph.
 
 \begin{figure}[ht]
 \begin{center}
-\begin{tabular}{r||l|l|l|l|l}
-    & $n=10^3$  & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$
+\begin{tabular}{r||l|l|l|l}
+    & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$
         & $n=10^{7}$ \\
 \hline
 \hline
     Breadth-first search & %$1.66\cdot 10^{2}$ & $2.26\cdot 10^3$ &
-    $1.95\cdot 10^{4}$ & $2.64\cdot 10^{5}$ &
-    $3.72\cdot 10^{6}$ & $1.01\cdot 10^{8}$ &
-    $1.26\cdot 10^{9}$ \\
+    $2.54\cdot 10^{5}$ &
+    $3.34\cdot 10^{6}$ & $9.67\cdot 10^{8}$ &
+    $1.27\cdot 10^{9}$ \\
 \hline
     Algorithm~\ref{A:augment} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $4.41\cdot 10^{4}$ & $6.69\cdot 10^{5}$ &
-    $1.83\cdot 10^{7}$ & $4.17\cdot 10^{8}$ &
-    $4.77\cdot 10^{9}$ \\
+    $5.30\cdot 10^{5}$ &
+    $1.92\cdot 10^{7}$ & $4.92\cdot 10^{8}$ &
+    $5.63\cdot 10^{9}$ \\
 \hline
     Algorithm~\ref{A:poh_bfs} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $2.31\cdot 10^{5}$ & $3.48\cdot 10^{6}$ &
-    $5.29\cdot 10^{7}$ & $1.17\cdot 10^{9}$ &
-    $1.82\cdot 10^{10}$ \\
+    $4.04\cdot 10^{6}$ &
+    $6.14\cdot 10^{7}$ & $1.55\cdot 10^{9}$ &
+    $2.52\cdot 10^{10}$ \\
 \hline
     Algorithm~\ref{A:poh_linear} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $5.13\cdot 10^{4}$ & $5.96\cdot 10^{5}$ &
-    $7.12\cdot 10^{6}$ & $1.30\cdot 10^{8}$ &
-    $1.50\cdot 10^{9}$ \\
+    $5.97\cdot 10^{5}$ &
+    $7.07\cdot 10^{6}$ & $1.41\cdot 10^{8}$ &
+    $1.70\cdot 10^{9}$ \\
 \hline
     Algorithm~\ref{A:hartman_impl} & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $6.02\cdot 10^{4}$ & $7.17\cdot 10^{5}$ &
-    $1.05\cdot 10^{7}$ & $1.92\cdot 10^{8}$ &
-    $2.19\cdot 10^{9}$ \\
+    $6.16\cdot 10^{5}$ &
+    $8.77\cdot 10^{6}$ & $1.70\cdot 10^{8}$ &
+    $1.99\cdot 10^{9}$ \\
 \end{tabular}
 \caption{Average time (ns) per triangulated plane graph
 (sample size $100$).}
@@ -3411,30 +3411,30 @@ and the memory access pattern was nearly linear.
 
 \begin{figure}[ht]
 \begin{center}
-\begin{tabular}{r||l|l|l|l|l}
-    & $n\approx10^3$  & $n\approx10^{4}$ & $n\approx10^{5}$ & $n\approx10^{6}$
+\begin{tabular}{r||l|l|l|l}
+    & $n\approx10^{4}$ & $n\approx10^{5}$ & $n\approx10^{6}$
         & $n\approx10^{7}$ \\
 \hline
 \hline
     Algorithm~\ref{A:poh_bfs} & 
-    $2.69\cdot 10^{5}$ & $8.63\cdot 10^{6}$ &
-    $3.59\cdot 10^{8}$ & $1.27\cdot 10^{10}$ &
-    $6.77\cdot 10^{11}$ \\
+    $7.77\cdot 10^{6}$ &
+    $3.09\cdot 10^{8}$ & $1.22\cdot 10^{10}$ &
+    $6.82\cdot 10^{11}$ \\
 \hline
     Algorithm~\ref{A:poh_linear} & 
-    $2.14\cdot 10^{4}$ & $2.34\cdot 10^{5}$ &
-    $2.82\cdot 10^{6}$ & $4.42\cdot 10^{7}$ &
-    $1.13\cdot 10^{9}$ \\
+    $2.52\cdot 10^{5}$ &
+    $3.11\cdot 10^{6}$ & $4.61\cdot 10^{7}$ &
+    $1.17\cdot 10^{9}$ \\
 \hline
     Algorithm~\ref{A:poh_bfs} (flipped) & 
-    $2.66\cdot 10^{5}$ & $8.44\cdot 10^{6}$ &
-    $3.79\cdot 10^{8}$ & $3.06\cdot 10^{10}$ &
-    $1.08\cdot 10^{12}$ \\
+    $7.59\cdot 10^{6}$ &
+    $3.56\cdot 10^{8}$ & $2.76\cdot 10^{10}$ &
+    $1.19\cdot 10^{12}$ \\
 \hline
     Algorithm~\ref{A:poh_linear} (flipped) & 
-    $1.98\cdot 10^{4}$ & $1.98\cdot 10^{5}$ &
-    $1.99\cdot 10^{6}$ & $2.07\cdot 10^{7}$ &
-    $2.05\cdot 10^{8}$ \\
+    $2.20\cdot 10^{5}$ &
+    $2.20\cdot 10^{6}$ & $2.31\cdot 10^{7}$ &
+    $2.31\cdot 10^{8}$ \\
 \end{tabular}
 \caption{Average time (ns) per pyramid graph from Figure~\ref{F:pyramid}.}
     \label{F:pyramid_benchmark}
@@ -3478,30 +3478,30 @@ shared stack.
 
 \begin{figure}[ht]
 \begin{center}
-\begin{tabular}{r||l|l|l|l|l}
-    Threads & $n=10^3$  & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$
+\begin{tabular}{r||l|l|l|l}
+    Threads & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$
         & $n=10^{7}$ \\
 \hline
 \hline
     1 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $5.13\cdot 10^{4}$ & $5.96\cdot 10^{5}$ &
-    $7.12\cdot 10^{6}$ & $1.30\cdot 10^{8}$ &
-    $1.50\cdot 10^{9}$ \\
+    $5.97\cdot 10^{5}$ &
+    $7.07\cdot 10^{6}$ & $1.41\cdot 10^{8}$ &
+    $1.70\cdot 10^{9}$ \\
 \hline
     2 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $5.12\cdot 10^{4}$ & $4.26\cdot 10^{5}$ &
-    $4.30\cdot 10^{6}$ & $7.51\cdot 10^{7}$ &
-    $8.53\cdot 10^{8}$ \\
+    $4.25\cdot 10^{5}$ &
+    $3.92\cdot 10^{6}$ & $7.62\cdot 10^{7}$ &
+    $9.22\cdot 10^{8}$ \\
 \hline
     3 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $4.86\cdot 10^{4}$ & $3.20\cdot 10^{5}$ &
-    $3.62\cdot 10^{6}$ & $6.01\cdot 10^{7}$ &
-    $6.41\cdot 10^{8}$ \\
+    $3.60\cdot 10^{5}$ &
+    $3.08\cdot 10^{6}$ & $5.78\cdot 10^{7}$ &
+    $6.95\cdot 10^{8}$ \\
 \hline
     4 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $4.89\cdot 10^{4}$ & $2.68\cdot 10^{5}$ &
-    $3.12\cdot 10^{6}$ & $5.03\cdot 10^{7}$ &
-    $5.37\cdot 10^{8}$ \\
+    $3.49\cdot 10^{5}$ &
+    $2.80\cdot 10^{6}$ & $4.98\cdot 10^{7}$ &
+    $5.94\cdot 10^{8}$ \\
 \end{tabular}
 \caption{Parallel Algorithm~\ref{A:poh_linear} average time (ns)
 per graph (sample size $100$).}
@@ -3510,8 +3510,7 @@ per graph (sample size $100$).}
 \end{figure}
 
 Benchmarks in Figure~\ref{F:benchmark_poh_thread} showed performance
-improvements for graphs with $10^4$ vertices
-or more when applying the
+improvements when applying the
 parallel Algorithm~\ref{A:poh_linear} to the same set of random plane
 triangulations used in Figure~\ref{F:benchmark}.
 
@@ -3580,30 +3579,30 @@ acquired.
 
 \begin{figure}[ht]
 \begin{center}
-\begin{tabular}{r||l|l|l|l|l}
-    Threads & $n=10^3$  & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$
+\begin{tabular}{r||l|l|l|l}
+    Threads & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$
         & $n=10^{7}$ \\
 \hline
 \hline
     1 &
-    $6.02\cdot 10^{4}$ & $7.17\cdot 10^{5}$ &
-    $1.05\cdot 10^{7}$ & $1.92\cdot 10^{8}$ &
-    $2.19\cdot 10^{9}$ \\
+    $6.16\cdot 10^{5}$ &
+    $8.77\cdot 10^{6}$ & $1.70\cdot 10^{8}$ &
+    $1.99\cdot 10^{9}$ \\
 \hline
     2 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $7.56\cdot 10^{4}$ & $6.84\cdot 10^{5}$ &
-    $8.72\cdot 10^{6}$ & $1.33\cdot 10^{8}$ &
-    $1.48\cdot 10^{9}$ \\
+    $6.23\cdot 10^{5}$ &
+    $6.72\cdot 10^{6}$ & $1.15\cdot 10^{8}$ &
+    $1.31\cdot 10^{9}$ \\
 \hline
     3 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $7.51\cdot 10^{4}$ & $6.15\cdot 10^{5}$ &
-    $7.63\cdot 10^{6}$ & $1.08\cdot 10^{8}$ &
-    $1.14\cdot 10^{9}$ \\
+    $5.81\cdot 10^{5}$ &
+    $5.96\cdot 10^{6}$ & $9.03\cdot 10^{7}$ &
+    $1.01\cdot 10^{9}$ \\
 \hline
     4 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $8.18\cdot 10^{4}$ & $6.25\cdot 10^{5}$ &
-    $7.32\cdot 10^{6}$ & $9.60\cdot 10^{7}$ &
-    $9.85\cdot 10^{8}$ \\
+    $6.26\cdot 10^{5}$ &
+    $6.02\cdot 10^{6}$ & $8.09\cdot 10^{7}$ &
+    $8.88\cdot 10^{8}$ \\
 \end{tabular}
     \caption{Parallel Algorithm~\ref{A:hartman_impl} average time (ns)
     per graph (sample size $100$).}
@@ -3612,11 +3611,10 @@ acquired.
 \end{figure}
 
 Benchmarks in Figure~\ref{F:benchmark_hartman_thread}
-showed small performance benefits when applying the parallel
+showed performance benefits when applying the parallel
 version of Algorithm~\ref{A:hartman_impl} to plane graphs on the order
-of $10^4$ vertices or more, and significant benefits for graphs with
-$10^6$ vertices or more. Once again, the same set of random plane triangulations
-was used as in Figure~\ref{F:benchmark}.
+of $10^6$ vertices or more. Once again, the same set of random plane
+triangulations was used as in Figure~\ref{F:benchmark}.
 
 \begin{thebibliography}{99}
 

@@ -1957,7 +1957,7 @@ neighbor $v$ of $v_1$.
 Let $u$ be the vertex immediately counter-clockwise from $v_3$ in
 $\text{Adj}[v_1]$. Note that if $n(G)>3$, then $u\not\in C$.
 The arrays $\text{Adj}$, $c$, and $S$, together with
-$(u, uv_k)$ form a valid input for Algorithm~\ref{A:poh_linear}.
+$(u, uv_3)$ form a valid input for Algorithm~\ref{A:poh_linear}.
 
 While executing Algorithm~\ref{A:poh_linear} we iterate through
 the adjacency list of each vertex $v\in G$ exactly twice: once to
@@ -3330,7 +3330,7 @@ of order $10^i$ was
 generated. Each algorithm was then run on each set of plane graphs,
 see the timings in Figure~\ref{F:benchmark}.
 A breadth-first search implemented with
-a ring buffer FIFO queue was run on the same set of graphs
+a circular array FIFO queue was run on the same set of graphs
 as a baseline
 algorithm that hits every half-edge of a graph exactly once.
 All binaries 
@@ -3340,7 +3340,7 @@ The benchmark
 source code is included with the implementation.
 
 The list assignments for Algorithm~\ref{A:hartman_impl} were randomly
-drawn from a set of eight colors. Experiments drawing from larger color sets
+drawn from a set of six colors. Experiments drawing from larger color sets
 showed slightly better performance for Algorithm~\ref{A:hartman_impl}, but also
 resulted in boring colorings inducing mostly short paths.
 

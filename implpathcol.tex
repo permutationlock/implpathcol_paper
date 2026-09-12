@@ -150,8 +150,8 @@ We present two efficient algorithms
 to construct a path coloring of a plane graph.
 
 The first algorithm, based on a proof of Poh, %\cite{Poh1990}
-is given a plane graph;
-it produces a path coloring of the given graph
+is given a plane graph, and
+produces a path coloring of the given graph
 using three colors.
 
 The second algorithm,
@@ -160,7 +160,7 @@ by Hartman % \cite{Har1997}
 and \v{S}krekovski, %\cite{Skr1999}
 performs a list-coloring generalization of the above.
 The algorithm is given a plane graph and an assignment of lists of
-three colors to each vertex;
+three colors to each vertex, and it
 it produces a path coloring of the given graph
 in which each vertex receives a color from its list.
 
@@ -212,7 +212,7 @@ to prove a result slightly weaker than Theorem~\ref{T:planar3}.
 
 \medskip
 
-We discuss two efficient path-coloring algorithms
+We discuss two efficient path coloring algorithms
 based on proofs of the above theorems.
 We distinguish between a \defterm{planar} graph---one that
 can be drawn in the plane without crossing edges---and
@@ -244,8 +244,8 @@ discusses how each algorithm may be modified to benefit from parallelism.
 
 We will represent a graph via \textit{adjacency lists}:
 a list, for each vertex $v$, of the neighbors of $v$.
-A vertex can be represented by an integer $0\dots n-1$,
-where $n=n(G)$ is the order of the graph.
+A vertex is represented by an integer $0\dots n-1$,
+where $n=n(G)$ is the graph order.
 
 A plane graph will be specified via
 a \defterm{rotation scheme}:
@@ -495,7 +495,7 @@ $w$ that has a neighbor $v_r\in P_1$
 immediately counter-clockwise from a neighbor $v_s\in P_2$, i.e.
 $c[v_r]=c[v_1]$ and $c[v_s]=c[v_k]$. Backtrack along the search tree from $w$
 to find a minimal $u,w$-path $P_3$.
-For each vertex $v\in P_3$, assign $c[v]\leftarrow c_{P_3}$, where $c_{P_3}\in
+For each vertex $v\in P_3$, assign $c[v]\leftarrow c(P_3)$, where $c(P_3)\in
 \{1,2,3\}-\{c[v_1],c[v_k]\}$.
 
 Make a recursive call with the input $(v_1, v_r, w, u, v_1u)$ to color
@@ -777,19 +777,14 @@ on which Algorithm~\ref{A:poh_bfs} performs poorly.}\label{F:pyramid}
 \end{center}
 \end{figure}
 
-It is possible to improve Algorithm~\ref{A:poh_bfs} by instead
-performing a bidirectional breadth-first search from $u$ and
-$w$ simultaneously. However, such an implementation will have the
-same lower bound time complexity that was
-computed above. A bidirectional breadth-first search will still visit
-half of the vertices in each interior pyramid of $A_k$, and
-thus only improve the ``bad case'' performance by a constant factor.
-
 The correctness of Poh's proof, however, relied only on
 locating an induced $u,w$-path.
 Algorithm~\ref{A:poh_linear} describes a linear time implementation
 of Poh's algorithm that locates and colors an induced $u,w$-path that is not
 always of minimal length.
+
+If $H$ is a subgraph of $G$, let $N(H) = \bigcup_{v\in V(H)} N(v)$ be the set of vertices in $G$ with a
+neighbor in $H$.
 
 \begin{algorithm}\label{A:poh_linear}
 \textbf{Input.} Let $C=v_1,v_2,\ldots,v_k$ be an induced cycle
@@ -802,15 +797,13 @@ let $u\in\text{Int}(C)-C$ be the unique vertex such that $u,v_k,v_1$ is a face.
 Let $c$ be a length $n$ array of colors
 representing a $2$-coloring of $C$ such
 that each color class induces a path, respectively $P_1=v_1,v_2,\ldots,v_i$ and
-$P_2=v_{i+1},v_{i+2},\ldots,v_k$. Let $c_{P_1}$ and $c_{P_2}$ be the colors
+$P_2=v_{i+1},v_{i+2},\ldots,v_k$. Let $c(P_1)$ and $c(P_2)$ be the colors
 for $P_1$ and $P_2$, respectively. Assume $c[v]=0$ for each
 $v\in\text{Int}(C)-C$.
 
-If $H$ is a subgraph of $G$, let $N(H)$ be the set of vertices in $G$ with a
-neighbor in $H$. 
-Let $S$ be a length $n$ array of integer marks and let $m_{P_1}$ be an integer
-such that for each $v\in\text{Int}(C)-C$ we have $S[v]=m_{P_1}$ if and only if
-$v\in N(P_1)$, i.e. $v$ has a neighbor in $P_1$.
+Let $S$ be a length $n$ array of integer marks and let $m(P_1)$ be an integer
+such that for each $v\in\text{Int}(C)-C$ we have $S[v]=m(P_1)$ if and only if
+$v\in N(P_1)$.
 
 The concrete input will be the arrays $\text{Adj}$, $c$ and $S$,
 along with the ordered pair $(u, uv_k)$ where $uv_k$ is represented by the
@@ -820,15 +813,15 @@ entry for $v_k$ in $\text{Adj}[u]$.
 $\{1,2,3\}$ will be
 assigned to $c[v]$ such that $c$ represents a path $3$-coloring of
 $\text{Int}(C)$ extending the original $2$-coloring of $C$. Moreover, if
-$v\in N(P_1)-C$, then $c[v]\ne c_{P_1}$, and if $v\in N(P_2)-C$, then
-$c[v]\ne c_{P_2}$.
+$v\in N(P_1)-C$, then $c[v]\ne c(P_1)$, and if $v\in N(P_2)-C$, then
+$c[v]\ne c(P_2)$.
 
 \textbf{Outline.} We will
 construct a $u,w$-path $P_3$
 in $\text{Int}(C)-C$, as in the proof of Lemma~\ref{L:planar3c},
 such that $V(P_3)\subseteq N(P_1)$. Each $v\in P_3$ will be colored
-$c[v]\leftarrow c_{P_3}\in \{1,2,3\}-\{c_{P_1},c_{P_2}\}$.
-Each $v\in N(P_3)$ will be marked $S[v]\leftarrow m_{P_3}$, where $m_{P_3}$
+$c[v]\leftarrow c(P_3)\in \{1,2,3\}-\{c(P_1),c(P_2)\}$.
+Each $v\in N(P_3)$ will be marked $S[v]\leftarrow m(P_3)$, where $m(P_3)$
 is a new unique mark. A recursive call will be made for
 each proper induced cycle in $\text{Int}(C)$ consisting of vertices in $C+P_3$.
 
@@ -841,7 +834,7 @@ last edge $u_rv_s$ between $P_3$ and $P_2$ that was encountered,
 represented by
 $u_r\in P_3$ and the entry for $v_s\in P_2$ in $\text{Adj}[u_r]$.
 Initialize $j\leftarrow 1$, $u_1\leftarrow u$, $u_rv_s\leftarrow u_1v_k$,
-and color $c[u]\leftarrow c_{P_3}$. 
+and color $c[u]\leftarrow c(P_3)$.
 
 \textbf{Step 1.} Iterate through $\text{Adj}[u_j]$ in counter-clockwise
 order, starting with
@@ -966,14 +959,14 @@ and Case~1.1.4 (right).}\label{F:poh_linear_1}
 \end{center}
 \end{figure}
 
-\textbf{Case 1.1.1.} Suppose $c[v]=0$ and $S[v]\ne m_{P_1}$, that is,
-$v\in\text{Int}(C)-C-N(P_1)$. Assign $S[v]\leftarrow m_{P_3}$.
+\textbf{Case 1.1.1.} Suppose $c[v]=0$ and $S[v]\ne m(P_1)$, that is,
+$v\in\text{Int}(C)-C-N(P_1)$. Assign $S[v]\leftarrow m(P_3)$.
 
-\textbf{Case 1.1.2.} Suppose that $c[v]=c_{P_2}$, that is, $v=v_t\in P_2$.
+\textbf{Case 1.1.2.} Suppose that $c[v]=c(P_2)$, that is, $v=v_t\in P_2$.
 Observe that $P_1'=u_r,u_{r+1},\ldots, u_j$ and $P_2'=v_s,v_{s+1},\ldots,v_t$
 are colored paths that, together with the edges $u_rv_s$ and $u_jv_t$,
 form an induced cycle $C'$. Each uncolored vertex in
-$N(P_3)\cap V(\text{Int}(C'))$ has already been marked with $m_{P_3}$.
+$N(P_3)\cap V(\text{Int}(C'))$ has already been marked with $m(P_3)$.
 Let
 $x$ be the neighbor of $u_r$ immediately counter-clockwise from $v_s$.
 If $c[x]=0$, make a recursive call with input $(x, xv_s)$
@@ -981,10 +974,10 @@ to path $3$-color $\text{Int}(C')$. Assign
 $u_rv_s\leftarrow u_jv_t$ to track $u_jv_t$ as the most recent edge between
 $P_3$ and $P_2$.
 
-\textbf{Case 1.1.3.} Suppose that $c[v]=0$ and $S[v]=m_{P_1}$, that is,
-$v\in N(P_1)-C$. If $y\ne\text{NULL}$, assign $S[v]\leftarrow m_{P_3}$.
+\textbf{Case 1.1.3.} Suppose that $c[v]=0$ and $S[v]=m(P_1)$, that is,
+$v\in N(P_1)-C$. If $y\ne\text{NULL}$, assign $S[v]\leftarrow m(P_3)$.
 Otherwise, assign $y\leftarrow v$ and color
-$c[y]\leftarrow c_{P_3}$. We claim that $u_1,u_2,\ldots,u_j,y$ is an induced
+$c[y]\leftarrow c(P_3)$. We claim that $u_1,u_2,\ldots,u_j,y$ is an induced
 path. Since $u_j\in N(P_1)$, there exists an edge $u_jv_t$ where $v_t\in P_1$.
 Observe that $D=v_k,v_1,v_2,\ldots,v_t,u_j,u_{j-1},\ldots,u_1$ is a cycle in
 $\text{Int}(C)$ and $y\not\in\text{Int}(D)$. Thus if an edge $yu_e$ exists with
@@ -993,15 +986,15 @@ then $y$'s entry in $\text{Adj}[u_e]$ is between $u_{e-1}$ and
 $u_{e+1}$ counter-clockwise.
 But then $y$ would have been encountered before $u_{e+1}$
 when iterating through $\text{Adj}[u_e]$, a contradiction since
-$S[y]=m_{P_1}$.
+$S[y]=m(P_1)$.
 
-\textbf{Case 1.1.4.} Suppose that $c[v]=c_{P_1}$, that is, $v\in P_1$.
+\textbf{Case 1.1.4.} Suppose that $c[v]=c(P_1)$, that is, $v\in P_1$.
 Assign $u_jv_\ell\leftarrow u_jv$. If $y=\text{NULL}$, it must be
 that $v=v_i$ and $u_j=w$.
 To see this, note
 that the neighbor $v'$ of $u_j$ immediately clockwise from $v$ is adjacent
 to $v$, but $v'$ was not assigned to $y$, nor was $u_jv'$ assigned
-to $u_jv_\ell$. Therefore $c[v']=c_{P_2}$, and it must be
+to $u_jv_\ell$. Therefore $c[v']=c(P_2)$, and it must be
 that $v'=v_{i+1}$ and $v=v_i$.
 
 \textbf{Case 1.2.} Suppose that $u_jv_\ell\ne\text{NULL}$. Let $z$ be
@@ -1094,26 +1087,26 @@ and Case~1.2.3 (right).}\label{F:poh_linear_2}
 \end{figure}
 
 \textbf{Case 1.2.1.} Suppose that $c[v]=0$, that is, $v\in\text{Int}(C)-C-P_3$.
-Assign $S[v]\leftarrow m_{P_3}$.
+Assign $S[v]\leftarrow m(P_3)$.
 
-\textbf{Case 1.2.2.} Suppose that $c[v]=c_{P_1}$. Then
+\textbf{Case 1.2.2.} Suppose that $c[v]=c(P_1)$. Then
 $v=v_t\in P_1$ and $C'=u_j,v_t,v_{t+1},\ldots,v_\ell$ is an
 induced
 cycle. Each uncolored vertex in $N(P_3)\cap
-V(\text{Int}(C'))$ has been marked with $m_{P_3}$.
+V(\text{Int}(C'))$ has been marked with $m(P_3)$.
 If $c[z]=0$, make a recursive call with input $(z, zv_\ell)$
 to path $3$-color $\text{Int}(C')$.
 %Otherwise, $z=v$ and $\text{Int}(C')=C'$.
 
-\textbf{Case 1.2.3.} Suppose that $c[v]\ne 0$ and $c[v]\ne c_{P_1}$.
-If $c[v]=c_{P_2}$, then $j=1$, $v=v_k$, $u_jv_\ell=uv_1$, and there are no
+\textbf{Case 1.2.3.} Suppose that $c[v]\ne 0$ and $c[v]\ne c(P_1)$.
+If $c[v]=c(P_2)$, then $j=1$, $v=v_k$, $u_jv_\ell=uv_1$, and there are no
 uncolored neighbors of $u_j$ between $v_\ell$ and $v$.
 
-Suppose that $c[v]=c_{P_3}$. Let $t$ be largest such that
+Suppose that $c[v]=c(P_3)$. Let $t$ be largest such that
 $v_t\in P_1$ and $u_{j-1}v_{t}$ is an edge. Observe that
 $C'=u_j,u_{j-1},v_t,v_{t+1},\ldots,v_\ell$ is an induced cycle. Moreover,
 each uncolored vertex in $N(P_3)\cap
-V(\text{Int}(C'))$ has been marked with $m_{P_3}$.
+V(\text{Int}(C'))$ has been marked with $m(P_3)$.
 If $c[z]=0$, make a recursive call with input $(z, zv_\ell)$ to
 color $\text{Int}(C')$.
 %Otherwise, $z=v$ and $\text{Int}(C')=C'$.
@@ -1980,14 +1973,14 @@ strategy~\cite[Thm.~2.2b]{Skr1999}.
 
 The path list-coloring procedure discussed in this section is
 based on the constructive proofs found in Hartman and
-\v{S}krekovski's papers, but it ``localizes'' the logic to proceed through the
-graph one edge at a time. The resulting algorithm
+\v{S}krekovski's papers, but it ``localizes'' the inductive step to
+consider one edge at a time. The resulting algorithm
 will produce different colorings in some situations.
 
 A \defterm{list assignment} of a graph $G$ is
 a function $L:V(G)\to P_{<\aleph_0}(\mathbb{N})$ assigning
 a finite set of colors to each vertex. If $L$ is a list assignment of $G$,
-an \defterm{$L$-coloring} of $G$ is a coloring function
+an \defterm{$L$-list-coloring} or \defterm{$L$-coloring} of $G$ is a coloring function
 $c:V(G)\to\mathbb{N}$ such that $c(v)\in L(v)$ for each $v\in V(G)$.
 
 Given a graph $G$ and a coloring $c$ of $G$, for each $v\in G$ we
@@ -2026,7 +2019,8 @@ Suppose that $m=|E(G)|\le 2$ and therefore $G=C$.
 If $m=0$, then $n(G)=1$ and $x=y$.
 If $m=1$, then $n(G)= 2$. If $x\ne y$, then $C=x,y$ and $G$ is colored.
 If $x=y$, then the remaining vertex
-$v\in G-C[x,y]$ satisfies $|L(v)|\ge 2$. Choose $c(v)\in L(v)-\{c(x)\}$.
+$v\in G-C[x,y]$ satisfies $|L(v)|\ge 2$. Choose
+$c(v)\in L(v)\setminus\{c(x)\}$.
 
 We proceed by induction on $m$, the number of edges. Let
 $u_1,u_2,\ldots,u_k$ label the neighbors of $z$ in counter-clockwise
@@ -2151,7 +2145,7 @@ Thus any path $L$-coloring of $G-zu_1$ will also be a path $L$-coloring
 of $G$.
 
 \textbf{Case 3.1.}
-Suppose that $u_2\in G-C$. Define $L'(u_2)=L(u_2)-c(z)$ and
+Suppose that $u_2\in G-C$. Define $L'(u_2)=L(u_2)\setminus \{c(z)\}$ and
 $L'(v)=L(v)$ for each $v\in G-u_2$. Note that $|L'(u_2)|\ge |L(v)|-1\ge 2$.
 Let $C'$ be the outer face of $G-zu_1$
 and observe that $C'[x,z]$ is equal to $C[x,z]$ with the edge $u_1z$ removed
@@ -3325,10 +3319,23 @@ Algorithm~\ref{A:hartman_impl}.
 \section{Experimental performance and parallelism}
 
 A C implementation of each algorithm is available~\cite{Bro2017}.
-For each $i$ in $4\ldots 7$, a set of $100$ random plane triangulations
-of order $10^i$ was
-generated. Each algorithm was then run on each set of plane graphs,
+For each $i$ in $4\ldots 7$, a uniform random sample of $100$
+plane triangulations of order $10^i$ was
+generated. Each algorithm was run on a each set of samples,
 see the timings in Figure~\ref{F:benchmark}.
+
+Plane triangulations were sampled using the method of
+Poulalhon and Schaeffer~\cite{Pou2006}.
+The vertices were randomly re-labeled in each sampled graph, and the
+corresponding adjacency list arrays were re-ordered such that the list
+for newly-labelled vertex $0$ came first in memory, followed
+by the list for vertex $1$, and so on. The
+benchmarks results therefore represent each algorithm's
+performance on a set of uniformly sampled random plane triangulations with
+uniformly sampled random representations in memory, independent of
+our specific implementation of the
+Poulalhon-Schaeffer algorithm.
+
 A breadth-first search implemented with
 a circular array FIFO queue was run on the same set of graphs
 as a baseline
@@ -3336,22 +3343,20 @@ algorithm that hits every half-edge of a graph exactly once.
 All binaries 
 were compiled with Clang 19.1.7 and run on a Linux 6.12.9 machine
 with an x86\_64 Intel N100 processor.
-The benchmark
-source code is included with the implementation.
+The benchmark binaries and
+source code are included with the implementation~\cite{Bro2017}.
 
-The list assignments for Algorithm~\ref{A:hartman_impl} were randomly
+The list assignments for Algorithm~\ref{A:hartman_impl} were uniformly
 drawn from a set of six colors. Experiments drawing from larger color sets
 showed slightly better performance for Algorithm~\ref{A:hartman_impl}, but also
-resulted in boring colorings inducing mostly short paths.
+resulted in boring colorings that induced mostly short paths.
 
 The performance of
-Algorithm~\ref{A:hartman_impl} was surprisingly close to
-Algorithm~\ref{A:poh_linear} on the set of random graphs, despite the fact that
-Algorithm~\ref{A:hartman_impl} is more complex and has a larger memory
-footprint.
-However, Algorithm~\ref{A:hartman_impl} required an augmented adjacency list
-representation, which the benchmarks for Algorithm~\ref{A:augment} showed
-was relatively expensive to construct from a standard adjacency list graph.
+Algorithm~\ref{A:hartman_impl} was close to
+Algorithm~\ref{A:poh_linear} on the random sample graphs.
+However, Algorithm~\ref{A:hartman_impl} required an
+augmented adjacency list representation to be computed with
+Algorithm~\ref{A:augment}.
 
 \begin{figure}[ht]
 \begin{center}
@@ -3361,29 +3366,29 @@ was relatively expensive to construct from a standard adjacency list graph.
 \hline
 \hline
     Breadth-first search & %$1.66\cdot 10^{2}$ & $2.26\cdot 10^3$ &
-    $2.54\cdot 10^{5}$ &
-    $3.34\cdot 10^{6}$ & $9.67\cdot 10^{8}$ &
-    $1.27\cdot 10^{9}$ \\
+    $2.82\cdot 10^{5}$ &
+    $3.91\cdot 10^{6}$ & $1.05\cdot 10^{8}$ &
+    $1.31\cdot 10^{9}$ \\
 \hline
     Algorithm~\ref{A:augment} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
     $5.30\cdot 10^{5}$ &
-    $1.92\cdot 10^{7}$ & $4.92\cdot 10^{8}$ &
-    $5.63\cdot 10^{9}$ \\
+    $2.08\cdot 10^{7}$ & $4.20\cdot 10^{8}$ &
+    $4.67\cdot 10^{9}$ \\
 \hline
     Algorithm~\ref{A:poh_bfs} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $4.04\cdot 10^{6}$ &
-    $6.14\cdot 10^{7}$ & $1.55\cdot 10^{9}$ &
-    $2.52\cdot 10^{10}$ \\
+    $4.06\cdot 10^{6}$ &
+    $6.65\cdot 10^{7}$ & $1.94\cdot 10^{9}$ &
+    $3.50\cdot 10^{10}$ \\
 \hline
     Algorithm~\ref{A:poh_linear} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $5.97\cdot 10^{5}$ &
-    $7.07\cdot 10^{6}$ & $1.41\cdot 10^{8}$ &
-    $1.70\cdot 10^{9}$ \\
+    $5.94\cdot 10^{5}$ &
+    $7.30\cdot 10^{6}$ & $1.58\cdot 10^{8}$ &
+    $1.83\cdot 10^{9}$ \\
 \hline
     Algorithm~\ref{A:hartman_impl} & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $6.16\cdot 10^{5}$ &
-    $8.77\cdot 10^{6}$ & $1.70\cdot 10^{8}$ &
-    $1.99\cdot 10^{9}$ \\
+    $6.91\cdot 10^{5}$ &
+    $9.65\cdot 10^{6}$ & $1.88\cdot 10^{8}$ &
+    $2.15\cdot 10^{9}$ \\
 \end{tabular}
 \caption{Average time (ns) per triangulated plane graph
 (sample size $100$).}
@@ -3394,20 +3399,14 @@ was relatively expensive to construct from a standard adjacency list graph.
 A benchmark was also run to test the asymptotic performance of
 Algorithm~\ref{A:poh_bfs} and
 Algorithm~\ref{A:poh_linear} on the collection of pyramid graphs
-$\{A_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:pyramid}; see the timings
-in Figure~\ref{F:pyramid_benchmark}. Values of $k$ were selected such that
-$n(A_k)\approx 10^i$. Not only did Algorithm~\ref{A:poh_bfs} scale very
-poorly on pyramids, but Algorithm~\ref{A:poh_linear}
-with a ``flipped'' input scaled almost $1:1$ with $n$.
-
-The representation for each graph $A_k$ was generated such that
-adjacency lists for vertices along a horizontal line
-were stored consecutively in memory. The standard input
-had $P_1$ consist of the top vertex of the outer triangle,
-and $P_2$ the bottom two vertices, while the ``flipped'' case
-swapped $P_1$ and $P_2$. On the flipped input each recursive call of
-Algorithm~\ref{A:poh_linear} colored a horizontal line
-and the memory access pattern was nearly linear.
+$\{A_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:pyramid}.
+Algorithm~\ref{A:poh_bfs} scaled very
+poorly on pyramids, as expected; see the timings
+in Figure~\ref{F:pyramid_benchmark}. Once again,
+vertex labels and adjacency list memory order were uniformly
+randomized to remove dependence on one particular representation of the
+pyramid graph. Values of $k$ were selected such that
+$n(A_k)\approx 10^i$.
 
 \begin{figure}[ht]
 \begin{center}
@@ -3417,24 +3416,14 @@ and the memory access pattern was nearly linear.
 \hline
 \hline
     Algorithm~\ref{A:poh_bfs} & 
-    $7.77\cdot 10^{6}$ &
-    $3.09\cdot 10^{8}$ & $1.22\cdot 10^{10}$ &
-    $6.82\cdot 10^{11}$ \\
+    $9.67\cdot 10^{6}$ &
+    $4.72\cdot 10^{8}$ & $7.38\cdot 10^{10}$ &
+    $2.96\cdot 10^{12}$ \\
 \hline
     Algorithm~\ref{A:poh_linear} & 
-    $2.52\cdot 10^{5}$ &
-    $3.11\cdot 10^{6}$ & $4.61\cdot 10^{7}$ &
-    $1.17\cdot 10^{9}$ \\
-\hline
-    Algorithm~\ref{A:poh_bfs} (flipped) & 
-    $7.59\cdot 10^{6}$ &
-    $3.56\cdot 10^{8}$ & $2.76\cdot 10^{10}$ &
-    $1.19\cdot 10^{12}$ \\
-\hline
-    Algorithm~\ref{A:poh_linear} (flipped) & 
-    $2.20\cdot 10^{5}$ &
-    $2.20\cdot 10^{6}$ & $2.31\cdot 10^{7}$ &
-    $2.31\cdot 10^{8}$ \\
+    $2.70\cdot 10^{5}$ &
+    $3.82\cdot 10^{6}$ & $1.50\cdot 10^{8}$ &
+    $2.28\cdot 10^{9}$ \\
 \end{tabular}
 \caption{Average time (ns) per pyramid graph from Figure~\ref{F:pyramid}.}
     \label{F:pyramid_benchmark}
@@ -3444,7 +3433,7 @@ and the memory access pattern was nearly linear.
 Both Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl} perform
 recursive calls that operate on
 subgraphs that are disjoint except for select vertices on their
-respective outer faces. Therefore it is theoretically possible to maintain a
+respective outer faces. Therefore it is possible to maintain a
 stack of
 independent recursive frames and have a pool of threads operate on the frames
 concurrently. The amount of parallelism possible with this method is highly
@@ -3484,24 +3473,24 @@ shared stack.
 \hline
 \hline
     1 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $5.97\cdot 10^{5}$ &
-    $7.07\cdot 10^{6}$ & $1.41\cdot 10^{8}$ &
-    $1.70\cdot 10^{9}$ \\
+    $5.94\cdot 10^{5}$ &
+    $7.30\cdot 10^{6}$ & $1.58\cdot 10^{8}$ &
+    $1.83\cdot 10^{9}$ \\
 \hline
     2 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $4.25\cdot 10^{5}$ &
-    $3.92\cdot 10^{6}$ & $7.62\cdot 10^{7}$ &
-    $9.22\cdot 10^{8}$ \\
+    $4.65\cdot 10^{5}$ &
+    $4.49\cdot 10^{6}$ & $9.11\cdot 10^{7}$ &
+    $1.05\cdot 10^{9}$ \\
 \hline
     3 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
     $3.60\cdot 10^{5}$ &
-    $3.08\cdot 10^{6}$ & $5.78\cdot 10^{7}$ &
-    $6.95\cdot 10^{8}$ \\
+    $3.50\cdot 10^{6}$ & $6.80\cdot 10^{7}$ &
+    $7.88\cdot 10^{8}$ \\
 \hline
     4 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $3.49\cdot 10^{5}$ &
-    $2.80\cdot 10^{6}$ & $4.98\cdot 10^{7}$ &
-    $5.94\cdot 10^{8}$ \\
+    $3.14\cdot 10^{5}$ &
+    $2.99\cdot 10^{6}$ & $5.64\cdot 10^{7}$ &
+    $6.57\cdot 10^{8}$ \\
 \end{tabular}
 \caption{Parallel Algorithm~\ref{A:poh_linear} average time (ns)
 per graph (sample size $100$).}
@@ -3511,7 +3500,7 @@ per graph (sample size $100$).}
 
 Benchmarks in Figure~\ref{F:benchmark_poh_thread} showed performance
 improvements when applying the
-parallel Algorithm~\ref{A:poh_linear} to the same set of random plane
+parallel Algorithm~\ref{A:poh_linear} to the same sample of plane
 triangulations used in Figure~\ref{F:benchmark}.
 
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
@@ -3584,25 +3573,25 @@ acquired.
         & $n=10^{7}$ \\
 \hline
 \hline
-    1 &
-    $6.16\cdot 10^{5}$ &
-    $8.77\cdot 10^{6}$ & $1.70\cdot 10^{8}$ &
-    $1.99\cdot 10^{9}$ \\
+    1 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
+    $6.91\cdot 10^{5}$ &
+    $9.65\cdot 10^{6}$ & $1.88\cdot 10^{8}$ &
+    $2.15\cdot 10^{9}$ \\
 \hline
     2 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $6.23\cdot 10^{5}$ &
-    $6.72\cdot 10^{6}$ & $1.15\cdot 10^{8}$ &
-    $1.31\cdot 10^{9}$ \\
+    $6.03\cdot 10^{5}$ &
+    $7.02\cdot 10^{6}$ & $1.24\cdot 10^{8}$ &
+    $1.40\cdot 10^{9}$ \\
 \hline
     3 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $5.81\cdot 10^{5}$ &
-    $5.96\cdot 10^{6}$ & $9.03\cdot 10^{7}$ &
-    $1.01\cdot 10^{9}$ \\
+    $5.03\cdot 10^{5}$ &
+    $5.73\cdot 10^{6}$ & $9.70\cdot 10^{7}$ &
+    $1.06\cdot 10^{9}$ \\
 \hline
     4 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $6.26\cdot 10^{5}$ &
-    $6.02\cdot 10^{6}$ & $8.09\cdot 10^{7}$ &
-    $8.88\cdot 10^{8}$ \\
+    $4.85\cdot 10^{5}$ &
+    $5.69\cdot 10^{6}$ & $8.33\cdot 10^{7}$ &
+    $8.96\cdot 10^{8}$ \\
 \end{tabular}
     \caption{Parallel Algorithm~\ref{A:hartman_impl} average time (ns)
     per graph (sample size $100$).}
@@ -3611,9 +3600,10 @@ acquired.
 \end{figure}
 
 Benchmarks in Figure~\ref{F:benchmark_hartman_thread}
-showed performance benefits when applying the parallel
-version of Algorithm~\ref{A:hartman_impl} to plane graphs on the order
-of $10^6$ vertices or more. Once again, the same set of random plane
+showed some performance benefits when applying the parallel
+version of Algorithm~\ref{A:hartman_impl} to plane graphs, with
+significant benefits only showing for very large graphs.
+The same sample of plane
 triangulations was used as in Figure~\ref{F:benchmark}.
 
 \begin{thebibliography}{99}
@@ -3676,6 +3666,13 @@ On the linear vertex-arboricity of a planar graph,
 \textit{J. Graph Theory}
 \textbf{14} (1990), no. 1,
 73--75.
+
+\bibitem{Pou2006}
+D. Poulalhon and G. Schaeffer,
+Optimal Coding and Sampling of Triangulations,
+\textit{Algorithmica},
+\textbf{46} (2006),
+505--527
 
 \bibitem{Skr1999}
 R.~\v{S}krekovski,

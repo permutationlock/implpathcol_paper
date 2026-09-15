@@ -2411,7 +2411,7 @@ satisfying the constraints of the lemma.
 \end{figure}
 
 \textbf{Case 3.2.3.}
-Suppose that $u_2\in C[z,y]$. Note that $z\ne y$. There are two distinct cases to consider.
+Suppose that $u_2\in C[z,y]$. Note that $z\ne y$. There are two cases to consider.
 
 \textbf{Case 3.2.3.1.} Suppose that $L(z)\cap L(u_2)\ne\emptyset$. Then 
 either $u_2=y$ and $L(z)=L(y)$, or $C[z,y]\ne z,y$.
@@ -2420,8 +2420,10 @@ and $L'(v)=L(v)$ for each $v\in G-u_2$. Find a path $L'$-coloring $c_1$ of $G_1$
 with $x_1=x$, $y_1=y$, and $z_1=u_2$. Then find a path $L'$-coloring $c_2$ of
 $G_2$ with $x_2=u_2$, $y_2=z$, and $z_2=u_2$. Since
 $\text{deg}_{c_1}(u_2)\le 1$ and $\text{deg}_{c_2}(u_2)=1$, it follows
-that $c$ is a path $L$-coloring of $G$
-with the constraints of the lemma.
+that $c$ is a path $L$-coloring of $G$. If $u_2=y$,
+then $z_1=y_1=y$ and $\text{deg}_{c_1}(y)=0$.
+So $\text{deg}_c(y)\le 1$ and
+$c$ satisfies the constraints of the lemma.
 
 \textbf{Case 3.2.3.2.} Suppose that $L(z)\cap L(u_2)=\emptyset$. Find
 a path $L$-coloring $c_1$ of $G_1$ with
@@ -2434,18 +2436,19 @@ $c$ is a path $L$-coloring of $G$.
 
 Suppose $C[z,y]=z,y$. Then it must be that $u_2=y$ and $k=2$.
 Therefore $G_2=C_2=z,y$ and $\text{deg}_c(z)=0$ since
-$c(z)\not\in L(u_2)$. Thus $c$ has the constraints of the lemma.
+$c(z)\not\in L(u_2)$. Thus $c$ follows the constraints of the lemma.
 \ggcnopf
 \end{proof}
 
 Let $G$ be a planar graph and $L$ a list assignment such
-that $|L(v)|\ge 3$ for each $v\in G$. Compute a planar embedding and add edges
-to produce a triangulated plane graph $G'$. Pick $u\in G'$ to be a vertex
-on the outer face and $d\in L(u)$. Define $L'$ to be the list
-assignment such that $L'(u)=\{d\}$ and $L'(v)=L(v)$ for $v\in G'-u$.
-By Lemma~\ref{L:hartman3} there exists a path $L'$-coloring $c$ of $G'$.
-Clearly $c$ is also a path $L$-coloring of $G$.
-Therefore Theorem~\ref{T:planar3} follows immediately from 
+that $|L(v)|\ge 3$ for each $v\in G$. Compute a planar embedding and add
+edges
+to produce a triangulated plane graph $G'$. Pick $u\in G'$ on the outer face
+and $d\in L(u)$. Define the list assignment $L'$ by
+$L'(u)=\{d\}$ and $L'(v)=L(v)$ for $v\in G'-u$.
+By Lemma~\ref{L:hartman3} there exists a path $L'$-coloring $c$ of $G'$,
+and thus a path $L$-coloring of $G$.
+So Theorem~\ref{T:planar3} follows immediately from 
 Lemma~\ref{L:hartman3}.
 
 The proof of Lemma~\ref{L:hartman3} is constructive and may be

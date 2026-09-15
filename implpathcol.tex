@@ -2039,9 +2039,10 @@ Let $c(x)\in L(x)$, $c(y)\in L(y)$, and $c(z)\in L(z)$ be the colors in
 each respective list.
 If $m=0$, then $n(G)=1$ and $c$ is trivially a path $L$-coloring.
 Otherwise $m=1$ and $n(G)= 2$. If $x\ne y$, then $c$ is a
-path $L$-coloring of $G$. Otherwise the remaining
-$v\in G-x$ satisfies $|L(v)|\ge 2$ and we define
-$c(v)\in L(v)\setminus\{c(x)\}$.
+path $L$-coloring of $G$ with the constraints of the lemma.
+Otherwise the remaining
+$v\in G-y$ satisfies $|L(v)|\ge 2$ and we define
+$c(v)\in L(v)\setminus\{c(y)\}$.
 
 We proceed by induction on $m$, the number of edges. Let
 $u_1,u_2,\ldots,u_k$ label the neighbors of $z$ in counter-clockwise
@@ -2152,7 +2153,7 @@ $\quad$
 Suppose that $u_1=y$. Note that $z=x$ since $z\in C[x,y]$. Therefore
 $V(C[z,y])=V(C)$ and $|V(C[z,y])|\ge 3$.
 Apply the lemma to find a path $L$-coloring $c$ of $G_1=G$ with
-$x_1=y$, $y_1=x$, and $z_1=y$ to .
+$x_1=y$, $y_1=x$, and $z_1=y$.
 
 \textbf{Case 2.}
 Suppose that $u_1\ne y$ and $z=x$. Then $u_1\in C-C[x,z]$

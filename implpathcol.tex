@@ -244,17 +244,18 @@ discusses how each algorithm may be modified to benefit from parallelism.
 
 \section{Notation and Terminology}
 
-Let $G$ be a plane graph with $n$ edges and $m$ vertices.
-All subgraphs of $G$ will be considered
+Let $G=(V(G),E(G))$ be a plane graph with $n=|V(G)|$ vertices and
+$m=|E(G)|$ edges. All subgraphs of $G$ will be
 plane graphs with the inherited embedding.
 We say $G$ is \defterm{triangulated} if every face is a $3$-cycle, and
 \defterm{weakly triangulated} if every face besides the
 outer face is a $3$-cycle. By Euler's formula $m\le 3n-6$;
-if $G$ is triangulated, then $m=3n-6$.
+if $G$ is triangulated $m=3n-6$.
 
-If $v\in G$ and $u\in N(v)$, we define $\text{next}_v(u)$ to be
+If $v\in G$ and $u\in N(v)$ a neighbor, define
+$\text{next}_v(u)$ to be
 the neighbor of $v$ immediately counter-clockwise from $u$ around $v$,
-and $\text{prev}_v(u)$ to be the neighbor immediately clockwise.
+and $\text{prev}_v(u)$ the neighbor immediately clockwise.
 
 Let $C$ be a cycle in a $G$. If $u,v\in C$, then we define
 $C[u,v]$ to be the clockwise $u,v$-path
@@ -268,10 +269,12 @@ Let $P$ be a path in $G$. If $u,v\in P$, then
 we define $P[u,v]$ to be the $u,v$-path in $P$.
 We define $\text{Int}(P)=P$.
 
-If $H,K$ are subgraphs of $G$, then
-$H\cup K=(V(H)\cup V(K),E(H)\cup E(K))$ is their union subgraph in $G$.
-Finally, define
-$N(H) = \bigcup_{v\in V(H)} N(v)\setminus V(H)$ be the set of
+Let $H,K$ be subgraphs of $G$. Define their union
+$H\cup K=(V(H)\cup V(K),E(H)\cup E(K))$ and difference
+$H-K=(V(H)\setminus V(K), \{uv\in E(H): u,v\not\in V(K)\})$.
+If $uv\in E(G)$ and $u,v\in H$, then
+$H\cup uv=(V(H),E(H)\cup\{uv\})$ and $H-uv=(V(H),E(H)\setminus\{uv\})$.
+Define $N(H) = \bigcup_{v\in V(H)} N(v)\setminus V(H)$ to be the
 vertices in $G-H$ with a neighbor in $H$.
 
 \section{Graph Representations and Time Complexity}

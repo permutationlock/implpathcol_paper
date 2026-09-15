@@ -2300,20 +2300,20 @@ Define $L'(u_2)=\{c_2(u_2)\}$ and $L'(v)=L(v)$ for each
 $v\in G_1-u_2$. Find a path $L'$-coloring
 $c_1$ of $G_1$ with $x_1=y_1=z_1=u_2$. Since 
 $\text{deg}_{c_1}(u_2)=0$, it follows that $c$ is a path $L$-coloring of $G$
-satisfying the lemma.
+satisfying the constraints of the lemma.
 
 \textbf{Case 3.2.2.}
-Suppose that $u_2\in C[y,x]-x-y$. Pick $c(u_2)\in L(u_2)-c(z)$. Define
-$L'(u_2)=\{c(u_2)\}$ and $L'(v)=L(v)$ for each $v\in G-u_2$. 
+Suppose that $u_2\in C[y,x]-x-y$. Pick $d\in L(u_2)\setminus L(z)$. Define
+$L'(u_2)=\{d\}$ and $L'(v)=L(v)$ for each $v\in G-u_2$. 
 Observe that
-$x\in C_1$ and $z,y\in C_2$. Apply the inductive hypothesis to find path
+$x\in C_1$ and $z,y\in C_2$. Apply the inductive hypothesis to find a path
 $L'$-coloring $c_1$ of
 $G_1$ with $x_1=z_1=x$ and $y_1=u_2$.
 Then find a path
 $L'$-coloring $c_2$ of $G_2$ with $x_2=u_2$, $y_2=y$, and
 $z_2=z$. Note that $\text{deg}_{c_1}(u_2)\le 1$ and
-$\text{deg}_{c_2}(u_2)\le 1$, and thus $c$ is a path $L$-coloring of $G$
-satisfying the lemma.
+$\text{deg}_{c_2}(u_2)\le 1$, thus $c$ is a path $L$-coloring of $G$
+satisfying the constraints of the lemma.
 
 \begin{figure}[ht]
 \begin{center}
@@ -2404,27 +2404,29 @@ satisfying the lemma.
 \textbf{Case 3.2.3.}
 Suppose that $u_2\in C[z,y]$. Note that $z\ne y$. There are two distinct cases to consider.
 
-\textbf{Case 3.2.3.1.} Suppose that $c(z)\in L(u_2)$. Then 
-either $u_2=y$ and $L(z)\cap L(y)=\{c(z)\}$, or $C[z,y]\ne z,y$.
-Define $L'(u_2)=\{c(z)\}$
+\textbf{Case 3.2.3.1.} Suppose that $L(z)\cap L(u_2)\ne\emptyset$. Then 
+either $u_2=y$ and $L(z)=L(y)$, or $C[z,y]\ne z,y$.
+Define $L'(u_2)=L(z)$
 and $L'(v)=L(v)$ for each $v\in G-u_2$. Find a path $L'$-coloring $c_1$ of $G_1$
 with $x_1=x$, $y_1=y$, and $z_1=u_2$. Then find a path $L'$-coloring $c_2$ of
 $G_2$ with $x_2=u_2$, $y_2=z$, and $z_2=u_2$. Since
 $\text{deg}_{c_1}(u_2)\le 1$ and $\text{deg}_{c_2}(u_2)=1$, it follows
-that $c$ is a path $L$-coloring of $G$.
+that $c$ is a path $L$-coloring of $G$
+with the constraints of the lemma.
 
-\textbf{Case 3.2.3.2.} Suppose that $c(z)\not\in L(u_2)$. Find
+\textbf{Case 3.2.3.2.} Suppose that $L(z)\cap L(u_2)=\emptyset$. Find
 a path $L$-coloring $c_1$ of $G_1$ with
 $x_1=x$, $y_1=y$, and $z_1=x$. Define $L'(u_2)=\{c_1(u_2)\}$ and $L'(v)=L(v)$
 for each $v\in G_2-u_2$. Then find a path $L'$-coloring $c_2$ of $G_2$
 with $x_2=u_2$, $y_2=z$, and $z_2=u_2$. Because
-$C[z_2,y_2]=z_2,y_2$ and $L'(z_2)\cap L'(y_2)=\emptyset$, it is
-guaranteed that $\text{deg}_{c_2}(u_2)=\text{deg}_{c_2}(z_2)=0$. Thus
+$C[z_2,y_2]=z_2,y_2$ and $L'(z_2)\cap L'(y_2)=\emptyset$, we must have
+$\text{deg}_{c_2}(u_2)=\text{deg}_{c_2}(z_2)=0$. Thus
 $c$ is a path $L$-coloring of $G$.
 
-Suppose that $C[z,y]=z,y$. Then it must be that $u_2=y$ and $k=2$.
+Suppose $C[z,y]=z,y$. Then it must be that $u_2=y$ and $k=2$.
 Therefore $G_2=C_2=z,y$ and $\text{deg}_c(z)=0$ since
-$c(z)\not\in L(u_2)$.\ggcnopf
+$c(z)\not\in L(u_2)$. Thus $c$ has the constraints of the lemma.
+\ggcnopf
 \end{proof}
 
 Let $G$ be a planar graph and $L$ a list assignment such

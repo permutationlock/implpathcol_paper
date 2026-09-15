@@ -847,10 +847,12 @@ We will simultaneously mark the vertices
 in $N(P_3)-V(C)$ with $m(P_3)$, and recursively
 color $\text{Int}(C)-C-P_3$.
 
-Assign $v_0\leftarrow u_2$, $v_1\leftarrow u$, and
+Assign $v_1\leftarrow u$ and
 $j\leftarrow 1$. Assign $i\leftarrow 1$ and
 $v_is\leftarrow uu_2$, where $v_is$ represents the entry
-for $s$ in $\text{Adj}[v_i]$.
+for $s$ in $\text{Adj}[v_i]$. Additionally, assign
+$v_0\leftarrow u_2$ so that $v_{i-1}$ is defined for
+all $i\in\{1,2,\ldots,j\}$.
 
 \textbf{Step 2.} Assign $c[v_j]\leftarrow c[u]$.
 We will iterate through the neighbors of $v_j$, starting after $v_{j-1}$.
@@ -3348,7 +3350,7 @@ Algorithm~\ref{A:hartman_impl}.
 \section{Experimental Performance and Parallelism}
 
 A C implementation of each algorithm is available~\cite{Bro2017}.
-For each $i$ in $4\ldots 7$, a uniform random sample of $100$
+For each $i$ from $3\ldots 7$, a uniform random sample of $100$
 plane triangulations of order $10^i$ was
 generated. Each algorithm was run on a each set of samples,
 see the timings in Figure~\ref{F:benchmark}.
@@ -3432,8 +3434,8 @@ poorly on pyramids, as expected; see the timings
 in Figure~\ref{F:pyramid_benchmark}. Once again,
 vertex labels were uniformly
 shuffled to remove dependence on a particular representation.
-Values of $k$ were selected such that
-$n(A_k)\approx 10^i$.
+For each $n=10^i$ we selected the closest integer $k$ to
+$\sqrt{2n-6}$ so that $n(A_k)\approx n$.
 
 \begin{figure}[ht]
 \begin{center}
@@ -3457,7 +3459,7 @@ $n(A_k)\approx 10^i$.
 \end{center}
 \end{figure}
 
-Both Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl} perform
+Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl} perform
 recursive calls that operate on
 subgraphs that are disjoint except for select vertices on their
 respective outer faces. Therefore it is possible to maintain a

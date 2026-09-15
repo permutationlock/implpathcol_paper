@@ -268,8 +268,11 @@ Let $P$ be a path in $G$. If $u,v\in P$, then
 we define $P[u,v]$ to be the $u,v$-path in $P$.
 We define $\text{Int}(P)=P$.
 
-If $H$ is a subgraph of $G$, let $N(H) = \bigcup_{v\in V(H)} N(v)\setminus V(H)$ be the set of vertices in $G-H$ with a
-neighbor in $H$.
+If $H,K$ are subgraphs of $G$, then
+$H\cup K=(V(H)\cup V(K),E(H)\cup E(K))$ is their union subgraph in $G$.
+Finally, define
+$N(H) = \bigcup_{v\in V(H)} N(v)\setminus V(H)$ be the set of
+vertices in $G-H$ with a neighbor in $H$.
 
 \section{Graph Representations and Time Complexity}
 
@@ -390,8 +393,8 @@ note that $P_3$ is an induced subgraph of $G-C$.
 
 Color each vertex of $P_3$ with the color in $\{1,2,3\}- S$ not used
 in the $2$-coloring of
-$C$. Let $C_1=P_1+P_3+uu_1+ww_1$ and
-$C_2=P_2+P_3+uu_2+ww_2$. The subgraphs
+$C$. Let $C_1=P_1\cup P_3\cup uu_1\cup ww_1$ and
+$C_2=P_2\cup P_3\cup uu_2\cup ww_2$. The subgraphs
 $\text{Int}(C_1)$ and $\text{Int}(C_2)$ together with the coloring $c$
 each satisfy the requirements of the lemma. By the inductive hypothesis
 there exist extensions of $c$ to a path
@@ -402,8 +405,8 @@ $3$-coloring of $G$.
 
 Suppose $C$ is not an induced subgraph. Then there
 exists an edge $v_1v_2\in E(G)-E(C)$ with $v_1\in P_1$ and $v_2\in P_2$. Let
-$C_1=C[v_2,v_1]+v_1v_2$
-and $C_2=C[v_1,v_2]+v_1v_2$.
+$C_1=C[v_2,v_1]\cup v_1v_2$
+and $C_2=C[v_1,v_2]\cup v_1v_2$.
 By the inductive hypothesis, there exists an extension of $c$ to a path
 $3$-coloring of $\text{Int}(C_1)$ and $\text{Int}(C_2)$. Again
 the subgraphs only share vertices on their outer faces, and thus the
@@ -504,10 +507,10 @@ of $G$.
 \textbf{Case 1.} Suppose that $c[u]\ne 0$.
 If $c[u]=c[u_2]$, then $u\in P_2$.
 Make a recursive call with the input $(u_1, w_1, u, w_2, u_1u)$ to color
-$\text{Int}(C[u_1,u]+u_1u)$. Otherwise, $c[u]=c[v_1]$ and
+$\text{Int}(C[u_1,u]\cup u_1u)$. Otherwise, $c[u]=c[v_1]$ and
 $u\in P_1$. Iterate through $\text{Adj}[u]$ to find the entry for
 $u_2$. Make a recursive call with the input $(u, w_1, u_2, w_2, uu_2)$
-to color $\text{Int}(C[u,u_2]+uu_2)$. 
+to color $\text{Int}(C[u,u_2]\cup uu_2)$. 
 
 \textbf{Case 2.} Suppose that $c[u]=0$, i.e. $u\in \text{Int}(C)-C$.
 Perform a breadth-first search in $\text{Int}(C)-C$ starting from $u$;
@@ -516,7 +519,7 @@ if $c[v]=0$. Terminate the search upon finding a vertex
 $w$ with a neighbor $v_2$ with $c[v_2]=c[u_2]$ and $c[\text{next}_w(v_2)]=c[u_1]$,
 i.e. $v_2\in P_2$ and $v_1=\text{next}_w(v_2)\in P_1$. Backtrack along the
 search tree from $w$ to find a minimal $u,w$-path $P_3$.
-For each vertex $v\in P_3$, assign $c[v]\leftarrow c(P_3)$, where $c(P_3)\in
+For each vertex $v\in P_3$, assign $c[v]\leftarrow d$, where $d\in
 \{1,2,3\}-\{c[u_1],c[u_2]\}$.
 
 Iterate through
@@ -526,11 +529,11 @@ To color the remaining vertices we make three recursive calls:
 \begin{enumerate}
 \itemsep0em
 \item{with input $(u_1, v_1, u, w, u_1u)$ to color
-$\text{Int}(C_1)$, where $C_1=C[u_1,v_1]+P_3+v_1u+v_1w$;}
+$\text{Int}(C_1)$, where $C_1=C[u_1,v_1]\cup P_3\cup v_1u\cup v_1w$;}
 \item{with input $(u, w, u_2, v_2, uu_2)$ to color
-$\text{Int}(C_2)$, where $C_2=C[v_2,u_2]+P_3+uu_2+wv_2$;}
+$\text{Int}(C_2)$, where $C_2=C[v_2,u_2]\cup P_3\cup uu_2\cup wv_2$;}
 \item{with input $(v_1, w_1, v_2, w_2, v_1v_2)$
-to color $\text{Int}(C_3)$, where $C_3=C[v_1,v_2]+v_1v_2$.}
+to color $\text{Int}(C_3)$, where $C_3=C[v_1,v_2]\cup v_1v_2$.}
 \end{enumerate}
 All remaining vertices in $\text{Int}(C)-C-P_3$ are now colored and we
 are done.
@@ -814,12 +817,12 @@ representing a $2$-coloring of $C$ such
 that each color class induces a path, respectively $P_1=C[u_1,w_1]$ and
 $P_2=C[w_2,u_2]$ for $u_1,u_2,w_1,w_2\in C$. Assume $c[v]=0$ for each
 $v\in\text{Int}(C)-C$.
-Let $S$ be a length $n$ array of integer marks and let $m(P_1)$ be an integer
-such that for each $v\in\text{Int}(C)-C$ we have $S[v]=m(P_1)$ if and only if
+Let $S$ be a length $n$ array of integer marks and let $\ell_1$ be an integer
+such that for each $v\in\text{Int}(C)-C$ we have $S[v]=\ell_1$ if and only if
 $v\in N(P_1)$.
 
 The concrete input will be the arrays $\text{Adj}$, $c$ and $S$,
-along with the ordered pair $(u_1, u_1u_2, m(P_1))$ where $u_1u_2$ is
+along with the ordered pair $(u_1, u_1u_2, \ell_1)$ where $u_1u_2$ is
 represented by the entry for $u_2$ in $\text{Adj}[u_1]$.
 
 \textbf{Output.} For each vertex $v\in\text{Int}(C)-C$, a color in
@@ -840,11 +843,11 @@ Suppose that $c[u]=0$, i.e. $u\in\text{Int}(C)-C$.
 
 \textbf{Step 1.}
 Assign $c[u]$ the remaining color in $\{1,2,3\}\setminus\{c[u_1],c[u_2]\}$.
-Let $m(P_3)$ be a new unique mark. We will
+Let $\ell_3$ be a new unique mark. We will
 iteratively construct an induced $u,w$-path $P_3=v_1,v_2,\ldots, v_j$
 with vertices $N(P_1)$, starting from $v_1=u$, and color it with $c[u]$.
 We will simultaneously mark the vertices
-in $N(P_3)-V(C)$ with $m(P_3)$, and recursively
+in $N(P_3)-V(C)$ with $\ell_3$, and recursively
 color $\text{Int}(C)-C-P_3$.
 
 Assign $v_1\leftarrow u$ and
@@ -863,19 +866,19 @@ in $\text{Adj}[v_j]$.
 
 \textbf{Step 3.} There are several cases to consider.
 
-\textbf{Case 3.1.} Suppose $c[v]=0$ and $S[v]\ne m(P_1)$.
-Assign $S[v]\leftarrow m(P_3)$ and $v\leftarrow\text{next}_{v_j}(v)$.
+\textbf{Case 3.1.} Suppose $c[v]=0$ and $S[v]\ne \ell_1$.
+Assign $S[v]\leftarrow \ell_3$ and $v\leftarrow\text{next}_{v_j}(v)$.
 Go to Step 3.
 
 \textbf{Case 3.2.} Suppose $c[v]=c[u_2]$, i.e. $v\in P_2$.
-Make a recursive call with input $(v_i, v_is, m(P_3))$ to color
-$\text{Int}(P_3[v_i,v_j]+C[v,s]+v_is+v_jv)$.
+Make a recursive call with input $(v_i, v_is, \ell_3)$ to color
+$\text{Int}(P_3[v_i,v_j]\cup C[v,s]\cup v_is\cup v_jv)$.
 Assign $i\leftarrow j$, $v_js\leftarrow v_jv$, and
 $v\leftarrow\text{next}_{v_j}(v)$. Go to Step 3.
 
-\textbf{Case 3.3.} Suppose that $c[v]=0$ and $S[v]=m(P_1)$.
+\textbf{Case 3.3.} Suppose that $c[v]=0$ and $S[v]=\ell_1$.
 If $y=\text{NULL}$, assign $y\leftarrow v$.
-Assign $S[v]\leftarrow m(P_3)$ and
+Assign $S[v]\leftarrow \ell_3$ and
 $v\leftarrow\text{next}_{v_j}(v)$. Go to Step 3.
 
 \textbf{Case 3.4.} Suppose that $c[v]=c[u_1]$, i.e. $v=p_1(v_j)\in P_1$.
@@ -891,19 +894,19 @@ $\text{prev}_{v_j}(v)\in P_2$.
 neighbors of $v_j$ counter-clockwise past $t$.
 
 \textbf{Case 4.1.} Suppose that $c[v]=0$. Assign
-$S[v]\leftarrow m(P_3)$ and $v\leftarrow\text{next}_{v_j}(v)$.
+$S[v]\leftarrow \ell_3$ and $v\leftarrow\text{next}_{v_j}(v)$.
 Go to Step 4.
 
 \textbf{Case 4.2.} Suppose that $c[v]\ne 0$. Make a recursive
-call with input $(v_j, v_jt, m(P_3))$.
+call with input $(v_j, v_jt, \ell_3)$.
 
 If $c[v]=c[u_1]$, i.e. $v\in P_1$, then the recursive
-call colors $\text{Int}(C[v,t]+v_j+v_jt+v_jv)$.
+call colors $\text{Int}(C[v,t]\cup v_j\cup v_jt\cup v_jv)$.
 Assign $v_jt\leftarrow v_jv$. Go to Step 4.
 
 Otherwise,
 $v=v_{j-1}$ and the recursive call
-colors $\text{Int}(C[p_1(v),t]+P_3[v,v_j]+vp_1(v)+v_jt)$.
+colors $\text{Int}(C[p_1(v),t]\cup P_3[v,v_j]\cup vp_1(v)\cup v_jt)$.
 Go to Step 5. (Note that we do not need to compute $p_1(v)$.)
 
 \textbf{Step 5.} If $y\ne\text{NULL}$,
@@ -1127,7 +1130,7 @@ We claim that the path $P_3=v_1,v_2,\ldots,v_j$ constructed in
 Algorithm~\ref{A:poh_linear} is always an induced path in $G$.
 Suppose that $v_kv_j\in E(G)$ with $0<k<j-1$. Observe that
 \[
-    D = C[u_2,p_1(v_{j-1})]+P_3[v_1,v_{j-1}]+u_2v_1+
+    D = C[u_2,p_1(v_{j-1})]\cup P_3[v_1,v_{j-1}]\cup u_2v_1\cup 
         v_{j-1} p_1(v_{j-1})
 \]
 is a cycle in $G$ with $v_{k-1},v_k,v_{k+1}\in D$ and
@@ -2182,8 +2185,8 @@ to find a path $L'$-coloring of $G_1$ with $x_1=x$, $y_1=y$, $z_1=z$.
 \textbf{Case 3.2.}
 Suppose that $u_2\in C$. Observe that $u_2$ is a cut-vertex of
 $G-zu_1$.
-Define $C_1=C[u_2,u_1]+u_1u_2$ and
-$C_2=C[z,u_2]+zu_2$. Define $G_1=\text{Int}(C_1)$ and $G_2=\text{Int}(C_2)$.
+Define $C_1=C[u_2,u_1]\cup u_1u_2$ and
+$C_2=C[z,u_2]\cup zu_2$. Define $G_1=\text{Int}(C_1)$ and $G_2=\text{Int}(C_2)$.
 The subgraphs $G_1$ and $G_2$ are the two biconnected components (blocks) of
 $G-zu_1$. Note that if $k=2$, then $G_1=G-z$ and $G_2=z,u_2$.
 

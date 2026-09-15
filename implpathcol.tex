@@ -3343,7 +3343,7 @@ is $\mathcal{O}(m)=\mathcal{O}(n)$. See Figure~\ref{F:hartman_impl} and
 Figure~\ref{F:hartman_impl_cont} for a concrete example of
 Algorithm~\ref{A:hartman_impl}.
 
-\section{Experimental performance and parallelism}
+\section{Experimental Performance and Parallelism}
 
 A C implementation of each algorithm is available~\cite{Bro2017}.
 For each $i$ in $4\ldots 7$, a uniform random sample of $100$
@@ -3357,9 +3357,10 @@ The vertices were randomly re-labeled in each sampled graph, and the
 corresponding adjacency list arrays were re-ordered in memory such that
 the list for newly-labeled vertex $0$ came first in memory, followed
 by the list for vertex $1$, and so on. The
-benchmarks results represent each algorithm's
-performance on a set of uniformly sampled plane triangulations with
-uniformly sampled representations in memory.
+benchmarks results therefore represent each algorithm's
+performance on a set of uniformly sampled plane triangulations,
+each with a
+uniformly sampled representation layout in memory.
 The list assignments for Algorithm~\ref{A:hartman_impl} were uniformly
 drawn from a set of six colors.
 

@@ -2344,8 +2344,8 @@ satisfying the constraints of the lemma.
 
     \draw (cs) edge [very thick]
         node[above=0.2cm, shape=rectangle, draw=none, fill=white,
-                text width=2.7cm]
-            {if $c(z)\in L(u_2)$}
+                text width=3.0cm]
+            {$L(z)\cap L(u_2)\ne\emptyset$}
         (cm);
     \draw (cm) edge[very thick, ->, bend right] (ce1);
     \draw (cm) edge[very thick, ->, bend left] (ce2);
@@ -2373,8 +2373,8 @@ satisfying the constraints of the lemma.
 
     \draw (bs) edge [very thick]
         node[above=0.2cm, shape=rectangle, draw=none, fill=white,
-                text width=2.7cm]
-            {if $c(z)\not\in L(u_2)$}
+                text width=3.0cm]
+            {$L(z)\cap L(u_2)=\emptyset$}
         (bm);
     \draw (bm) edge[very thick, ->, bend left] (be1);
     \draw (bm) edge[very thick, ->, bend right] (be2);

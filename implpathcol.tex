@@ -169,14 +169,17 @@ Implementations are available for all algorithms that are described.
 
 \section{Introduction}
 
-A \defterm{(simple) graph} $G=(V,E)$ is a set $V(G)$ of vertices
-and a set $E(G)$ of unordered pairs of vertices. We write $n(G)=|V(G)|$
+A \defterm{(finite, simple) graph} $G=(V,E)$ is a finite set $V(G)$ of
+\defterm{vertices}
+and a set $E(G)$ of \defterm{edges}: unordered pairs of vertices.
+We write $n(G)=|V(G)|$
 and $m(G)=|E(G)|$ for the number of vertices and edges, respectively.
 Vertices
 $u,v\in V(G)$ are \defterm{neighbors} if $uv\in E(G)$; we say $u,v$ are
-\defterm{incident} to $uv$. The set of neighbors of $v$ is written
-$N(v)$. The degree of $v$ is $\text{deg}(v)=|N(v)|$.
-We write $v\in G$ and $uv\in G$ when it is clear $v$ is a vertex and $uv$ an edge.
+\defterm{incident} to $uv$. We write $N(v)$ for the set of neighbors of $v$.
+The degree of $v$ is $\text{deg}(v)=|N(v)|$.
+We often simply write $v\in G$ or $uv\in G$ when it is clear that
+$v$ is a vertex or $uv$ an edge.
 
 We say $H$ is a subgraph of $G$ if
 $V(H)\subseteq V(G)$ and $E(H)\subseteq E(G)$. If $S\subseteq V(G)$,
@@ -228,7 +231,7 @@ a finite set of colors to each vertex. An
 coloring $c:V(G)\to\mathbb{N}$ such that $c(v)\in L(v)$ for each $v\in V(G)$.
 A graph is \defterm{path $k$-choosable} if it admits a path $L$-coloring
 for any list assignment $L$ with at least $k$ colors in each list,
-i.e. $|L(v)|\ge 3$ for each $v\in G$.
+i.e. $|L(v)|\ge k$ for each $v\in G$.
 
 See West~\cite{Wes2000} for a more thorough overview of graph
 theoretic terms.
@@ -308,7 +311,8 @@ $m=3n-6$ if $G$ is triangulated, so $\mathcal{O}(m)=\mathcal{O}(n)$ and
 it is equivalent to take the input size
 to be $m$.
 Arbitrary planar graphs may be
-plane embedded and triangulated in $\mathcal{O}(n)$ time, see Boyer and
+plane embedded and triangulated in $\mathcal{O}(n)$ time, see Hopcroft
+and Tarjan~\cite{Hop1974} or Boyer and
 Myrvold~\cite{BoMy2004}.
 
 We will represent $G$ for computation via
@@ -1145,13 +1149,13 @@ $\quad$
     \end{pgfonlayer}
 \end{tikzpicture}
 \caption{Algorithm~\ref{A:poh_linear}, Case~4.2 when $v\in P_1$ (left)
-and $v\in P_3$ (middle). Also, a sketch of why $P_3$ is an
+and when $v=v_{j-1}$ (middle). Also, a sketch of why $P_3$ is an
 induced path (right).}
 \label{F:poh_linear_2}
 \end{center}
 \end{figure}
 
-We claim that the path $P_3=v_1,v_2,\ldots,v_j$ constructed in 
+We claim that the path $P_3=v_1,v_2,\ldots,v_j$ in 
 Algorithm~\ref{A:poh_linear} is always an induced path in $G$.
 Suppose that $v_kv_j\in E(G)$ with $0<k<j-1$. Observe that
 \[
@@ -2185,7 +2189,7 @@ $y_1=y$, and $z_1=z$.
 \textbf{Case 3.}
 Suppose that $u_1\ne y$ and $z\ne x$. 
 Our strategy will be to apply the inductive hypothesis to
-the blocks of $G-zu_1$.
+the blocks (maximal biconnected subgraphs) of $G-zu_1$.
 Because $u_1\in C[x,z]$, it is guaranteed that $L(u_1)\cap L(z)=\emptyset$.
 Thus any path $L$-coloring of $G-zu_1$ is also a path $L$-coloring
 of $G$.
@@ -2204,7 +2208,7 @@ Suppose that $u_2\in C$. Observe that $u_2$ is a cut-vertex of
 $G-zu_1$, i.e. $G-zu_1-u_2$ is disconnected.
 Define $C_1=C[u_2,u_1]\cup u_1u_2$ and
 $C_2=C[z,u_2]\cup zu_2$. Let $G_1=\text{Int}(C_1)$ and $G_2=\text{Int}(C_2)$.
-The subgraphs $G_1$ and $G_2$ are the two biconnected components (blocks) of
+The subgraphs $G_1$ and $G_2$ are the two blocks of
 $G-zu_1$. Note that if $k=2$, then $G_1=G-z$ and $G_2=z,u_2$.
 
 In each subsequent case we will apply the inductive
@@ -2490,8 +2494,8 @@ or three, and for $v\in \text{Int}(C)-C$ the list
 $L[v]$ has length three. Furthermore, for each $v\in C[x,z] - z$ assume
 that $L[v]$ does not contain the color in $L[z]$.
 
-Let $N$ be an array of pairs of
-references such that for each $v\in C$ the pair $N[v]=(r_1,r_2)$ contains
+Let $N$ be an array such that for each $v\in C$, $N[v]=(r_1,r_2)$
+contains
 a reference $r_1$ to the $\text{Adj}[v]$ entry for neighbor the
 immediately counter-clockwise
 from $v$
@@ -3378,7 +3382,8 @@ A C implementation of each algorithm is available~\cite{Bro2017}.
 For each $i$ from $3\ldots 7$, a uniform random sample of $100$
 plane triangulations of order $10^i$ was
 generated. Each algorithm was run on a each set of samples,
-see the timings in Figure~\ref{F:benchmark}.
+see the timings in Figure~\ref{F:benchmark} and the plot
+in Figure~\ref{F:plot}.
 
 Plane triangulations were sampled using the method of
 Poulalhon and Schaeffer~\cite{Pou2006}.
@@ -3419,27 +3424,27 @@ the time required by Algorithm~\ref{A:augment}.
         & $n=10^{7}$ \\
 \hline
 \hline
-    Breadth-first search & %$1.66\cdot 10^{2}$ & $2.26\cdot 10^3$ &
+    (\textcolor{black}{Black}) BFS & %$1.66\cdot 10^{2}$ & $2.26\cdot 10^3$ &
     $9.72\cdot 10^{4}$ & $2.82\cdot 10^{5}$ &
     $3.94\cdot 10^{6}$ & $1.04\cdot 10^{8}$ &
     $1.31\cdot 10^{9}$ \\
 \hline
-    Algorithm~\ref{A:augment} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
+    (\textcolor{green}{Green}) Algorithm~\ref{A:augment} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
     $3.35\cdot 10^{4}$ & $5.34\cdot 10^{5}$ &
     $2.10\cdot 10^{7}$ & $4.15\cdot 10^{8}$ &
     $4.65\cdot 10^{9}$ \\
 \hline
-    Algorithm~\ref{A:poh_bfs} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
+    (\textcolor{brown}{Brown}) Algorithm~\ref{A:poh_bfs}  & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
     $2.24\cdot 10^{5}$ & $4.02\cdot 10^{6}$ &
     $6.78\cdot 10^{7}$ & $1.99\cdot 10^{9}$ &
     $3.57\cdot 10^{10}$ \\
 \hline
-    Algorithm~\ref{A:poh_linear} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
+    (\textcolor{red}{Red}) Algorithm~\ref{A:poh_linear} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
     $4.63\cdot 10^{4}$ & $5.99\cdot 10^{5}$ &
     $7.38\cdot 10^{6}$ & $1.58\cdot 10^{8}$ &
     $1.83\cdot 10^{9}$ \\
 \hline
-    Algorithm~\ref{A:hartman_impl} & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
+    (\textcolor{blue}{Blue}) Algorithm~\ref{A:hartman_impl} & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
     $4.59\cdot 10^{4}$ & $6.46\cdot 10^{5}$ &
     $9.89\cdot 10^{6}$ & $1.84\cdot 10^{8}$ &
     $2.12\cdot 10^{9}$ \\
@@ -3456,7 +3461,7 @@ Algorithm~\ref{A:poh_linear} on the collection of pyramid graphs
 $\{A_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:pyramid}.
 Algorithm~\ref{A:poh_bfs} scaled very
 poorly on pyramids, as expected; see the timings
-in Figure~\ref{F:pyramid_benchmark}. Once again,
+in Figure~\ref{F:pyramid_benchmark} and plot in Figure~\ref{F:plot}. Once again,
 vertex labels were uniformly
 shuffled to remove dependence on a particular representation.
 For each $n=10^i$ we selected the closest integer $k$ to
@@ -3469,18 +3474,80 @@ $\sqrt{2n-6}$ so that $n(A_k)\approx n$.
         & $n\approx10^{7}$ \\
 \hline
 \hline
-    Algorithm~\ref{A:poh_bfs} & 
+    (\textcolor{brown}{Brown}) Algorithm~\ref{A:poh_bfs} & 
     $2.59\cdot 10^{5}$ & $8.71\cdot 10^{6}$ &
     $4.78\cdot 10^{8}$ & $7.38\cdot 10^{10}$ &
     $2.95\cdot 10^{12}$ \\
 \hline
-    Algorithm~\ref{A:poh_linear} & 
+    (\textcolor{red}{Red}) Algorithm~\ref{A:poh_linear} & 
     $1.95\cdot 10^{4}$ & $2.07\cdot 10^{5}$ &
     $3.49\cdot 10^{6}$ & $1.48\cdot 10^{8}$ &
     $2.26\cdot 10^{9}$ \\
 \end{tabular}
 \caption{Average time (ns) per pyramid graph from Figure~\ref{F:pyramid} (sample size 30).}
     \label{F:pyramid_benchmark}
+\end{center}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{center}
+\begin{tikzpicture}
+  \draw[very thin,color=gray,xstep=1.25,ystep=1.0] (-0.1,-0.1) grid (5.1, 6.1);
+  \node at (-0.6, 0.0) {$10^4$};
+  \node at (-0.6, 1.0) {$10^5$};
+  \node at (-0.6, 2.0) {$10^6$};
+  \node at (-0.6, 3.0) {$10^7$};
+  \node at (-0.6, 4.0) {$10^8$};
+  \node at (-0.6, 5.0) {$10^9$};
+  \node at (-0.6, 6.0) {$10^{10}$};
+  \node at (0.0,-0.6) {$10^3$};
+  \node at (1.25,-0.6) {$10^4$};
+  \node at (2.5,-0.6) {$10^5$};
+  \node at (3.75,-0.6) {$10^6$};
+  \node at (5.0,-0.6) {$10^7$};
+
+  \draw[->] (-0.2,0) -- (5.2,0) node[right] {$n$};
+  \draw[->] (0,-0.2) -- (0,6.25) node[above] {time (ns)};
+
+  \draw[very thick,color=black] (0, -0.009*1.3333) -- (1.25, 1.088*1.3333) -- (2.5, 1.947*1.3333) -- (3.75, 3.013*1.3333)
+    -- (5, 3.838*1.3333);
+  \draw[very thick,color=brown] (0, 1.013*1.3333) -- (1.25, 1.953*1.3333) -- (2.5, 2.873*1.3333) -- (3.75, 3.974*1.3333)
+    -- (5, 4.915*1.3333);
+  \draw[very thick,color=red] (0, 0.499*1.3333) -- (1.25, 1.333*1.3333) -- (2.5, 2.151*1.3333) -- (3.75, 3.149*1.3333)
+    -- (5, 3.947*1.3333);
+  \draw[very thick,color=blue] (0, 0.495*1.3333) -- (1.25, 1.358*1.3333) -- (2.5, 2.245*1.3333) -- (3.75, 3.199*1.3333)
+    -- (5, 3.995*1.3333);
+  \draw[very thick,color=green] (0, 0.525) -- (1.25, 1.728) -- (2.5, 3.322) -- (3.75, 4.617)
+    -- (5, 5.667);
+\end{tikzpicture}
+$\quad$
+\begin{tikzpicture}
+  \draw[very thin,color=gray,xstep=1.25,ystep=0.75] (-0.1,-0.1) grid (5.1, 6.1);
+  \node at (-0.6, 0.0) {$10^4$};
+  \node at (-0.6, 0.75) {$10^5$};
+  \node at (-0.6, 1.5) {$10^6$};
+  \node at (-0.6, 2.25) {$10^7$};
+  \node at (-0.6, 3.0) {$10^8$};
+  \node at (-0.6, 3.75) {$10^9$};
+  \node at (-0.6, 4.5) {$10^{10}$};
+  \node at (-0.6, 5.25) {$10^{11}$};
+  \node at (-0.6, 6.0) {$10^{12}$};
+  \node at (0.0,-0.4) {$10^3$};
+  \node at (1.25,-0.4) {$10^4$};
+  \node at (2.5,-0.4) {$10^5$};
+  \node at (3.75,-0.4) {$10^6$};
+  \node at (5.0,-0.4) {$10^7$};
+
+  \draw[->] (-0.2,0) -- (5.2,0) node[right] {$n$};
+  \draw[->] (0,-0.2) -- (0,6.25) node[above] {time (ns)};
+
+  \draw[very thick,color=brown] (0, 1.060) -- (1.25, 2.205) -- (2.5, 3.510) -- (3.75,  5.151)
+    -- (5, 6.352);
+  \draw[very thick,color=red] (0, 0.216) -- (1.25, 0.987) -- (2.5, 1.907) -- (3.75, 3.128)
+    -- (5, 4.016);
+\end{tikzpicture}
+\caption{Plot of Figure~\ref{F:benchmark} (left) and Figure~\ref{F:pyramid_benchmark} (right).}
+    \label{F:plot}
 \end{center}
 \end{figure}
 
@@ -3708,9 +3775,14 @@ Acyclic colorings of planar graphs,
 \bibitem{Har1997}
 C.~M.~Hartman,
 \textit{Extremal Problems in Graph Theory},
-Ph.D. Thesis,
-University of Illinois,
+Ph.D. Thesis, University of Illinois,
 1997.
+
+\bibitem{Hop1974}
+J.E.~Hopcroft and R.E.~Tarjan,
+Efficient Planarity Testing,
+\textit{Journal of the ACM}
+\textbf{21} (1974), 549-568
 
 \bibitem{Poh1990}
 K.~S.~Poh,
@@ -3722,7 +3794,7 @@ On the linear vertex-arboricity of a planar graph,
 \bibitem{Pou2006}
 D. Poulalhon and G. Schaeffer,
 Optimal Coding and Sampling of Triangulations,
-\textit{Algorithmica},
+\textit{Algorithmica}
 \textbf{46} (2006),
 505--527
 

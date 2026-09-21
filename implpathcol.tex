@@ -42,12 +42,26 @@
 \setlength{\oddsidemargin}{0pt}
 \setlength{\evensidemargin}{0pt}
 
+\newcommand{\adj}[2]{{}^{#1}{#2}}
+\newcommand{\nxt}{\text{next}}
+\newcommand{\prv}{\text{prev}}
+
 % SET UP SECTION NUMBERING
 
 \setcounter{secnumdepth}{1}
 % Number sections, but not subsections
 
 % BREAK THEOREM STYLE
+\makeatletter
+\patchcmd{\newtheoremstyle}
+  {\def\@tempb{\newline}}
+  {\def\@tempb{\newline}\edef\@tempa{\unexpanded\expandafter{\@car#8\@nil}}}
+  {}{}
+\patchcmd{\newtheoremstyle}
+  {\def\thmheadnl{\newline}}
+  {\def\thmheadnl{#8}}
+  {}{}
+\makeatother
 
 \newtheoremstyle{break}% name
   {}%         Space above, empty = `usual value'
@@ -56,7 +70,7 @@
   {}%         Indent amount (empty = no indent, \parindent = para indent)
   {\bfseries}% Thm head font
   {.}%        Punctuation after thm head
-  {\newline}% Space after thm head: \newline = linebreak
+  {\newline\hspace*{\parindent}}% Space after thm head: \newline = linebreak
   {}%         Thm head spec
 
 % DEFINE THEOREM-LIKE STRUCTURES
@@ -178,8 +192,8 @@ Vertices
 $u,v\in V(G)$ are \defterm{neighbors} if $uv\in E(G)$; we say $u,v$ are
 \defterm{incident} to $uv$. We write $N(v)$ for the set of neighbors of $v$.
 The degree of $v$ is $\text{deg}(v)=|N(v)|$.
-We often simply write $v\in G$ or $uv\in G$ when it is clear that
-$v$ is a vertex or $uv$ an edge.
+We write $v\in G$ or $uv\in G$ if it is clear
+$v$ is a vertex or $uv$ is an edge.
 
 We say $H$ is a subgraph of $G$ if
 $V(H)\subseteq V(G)$ and $E(H)\subseteq E(G)$. If $S\subseteq V(G)$,
@@ -221,8 +235,10 @@ A \defterm{(vertex) coloring} of a graph $G$ is a map
 $c:V(G)\to\mathbb{N}$; a $k$-coloring, $k\in\mathbb{N}$,
 is map $c:V(G)\to\{1,2,\ldots,k\}$. The color class of $d\in\mathbb{N}$
 is the set $c^{-1}(d)\subseteq V(G)$. A \defterm{path coloring}
-is a coloring such that each color class induces a union of disjoint
-paths. A graph $G$ is \defterm{path $k$-colorable} if $G$
+is a coloring where each color class induces a union of disjoint
+paths (more commonly a \emph{disjoint union} of paths,
+but union and disjoint union coincide for disjoint subgraphs).
+A graph $G$ is \defterm{path $k$-colorable} if $G$
 admits a path $k$-coloring.
 A \defterm{list assignment} of a graph $G$ is
 a map $L:V(G)\to \mathcal{P}_{\text{fin}}(\mathbb{N})$ assigning
@@ -266,19 +282,19 @@ to prove a result slightly weaker than Theorem~\ref{T:planar3}.
 
 \medskip
 
-We discuss two efficient path coloring algorithms
+We discuss two path coloring algorithms
 based on proofs of the above theorems.
 
-In Section~2 we outline our graph representations
+In Section~\ref{S:representation} we outline our graph representations
 and the basis for our computations of time complexity.
 
-Section~3 covers an algorithm
+Section~\ref{S:path_color} covers an algorithm
 based on Poh's proof of Theorem~\ref{T:planar3c}.
 The algorithm is given a plane graph;
 it produces a path coloring of the given graph
 using three colors.
 
-Section~4 covers an algorithm
+Section~\ref{S:path_choose} covers an algorithm
 based Hartman's proof of Theorem~\ref{T:planar3},
 along with the proof of \v{S}krekovski mentioned above.
 The algorithm is given a plane graph
@@ -286,22 +302,23 @@ and an assignment of a list of three colors to each vertex;
 it produces a path coloring of the given graph
 in which each vertex receives a color from its list.
 
-Section~5 provides benchmark results for implementations of each
-algorithm~\cite{Bro2017}. The section also
+Section~\ref{S:performance} provides benchmark results for
+implementations of each algorithm~\cite{Bro2017}. The section also
 discusses how each algorithm may be modified to benefit from parallelism.
 
 
-\section{Graph Representations and Time Complexity}
+\section{Graph Representations and Time Complexity}\label{S:representation}
 
-A plane graph $G$ is \defterm{triangulated} if every face is a
-\defterm{triangle}: a length $3$ cycle. If every face but the
-outer face is a triangle, then $G$ is
-\defterm{weakly triangulated}.
-We say $G$ is \defterm{connected} if given any $u,v\in G$, there exists a
+A graph $G$ is \defterm{connected} if given any $u,v\in G$, there exists a
 $u,v$-path in $G$,
 and \defterm{biconnected} if $G-v$ is connected
 for every $v\in G$.
-If $G$ is biconnected and $n(G)\ge 3$, then the outer face is a cycle.
+A plane graph $G$ is \defterm{triangulated} if it is connected
+and $n(G)\le 2$, or if every face is a
+\defterm{triangle} (a cycle of length $3$). If every face but the
+outer face is a triangle, then $G$ is
+\defterm{weakly triangulated}.
+If $G$ is biconnected and $n(G)\ge 3$, then its outer face is a cycle.
 
 The input for each algorithm will be a biconnected, weakly triangulated
 plane graph $G$ with $n$ vertices and $m$ edges.
@@ -319,64 +336,83 @@ We will represent $G$ for computation via
 \textit{adjacency lists}:
 a list, for each vertex $v$, of the neighbors of $v$.
 A vertex is represented by an integer $0\dots n-1$.
-The order of each
-adjacency list represents the embedding.
-For $v\in G$ and $u\in N(v)$, we define
-$\text{next}_v(u)$ to be
-the neighbor of $v$ immediately counter-clockwise from $u$ around $v$,
-and $\text{prev}_v(u)$ the neighbor immediately clockwise.
+The order of each list represents the embedding. In algorithms
+$N(v)$ will refer to the adacency list.
 
-In Section~4, given an edge $uv$, we will need a constant time operation to
-find $v$'s entry in $u$'s adjacency list from $u$'s entry in $v$'s list.
-We define an \defterm{augmented adjacency list} to be an adjacency list such
-that for
-every edge $uv$ a reference to $v$'s entry in
-$u$'s list is stored in $u$'s entry in $v$'s list, and vice versa. Given an
-adjacency list representation of a graph, an augmented
-adjacency list representation may be constructed in $\mathcal{O}(m)$ time.
+Let $v\in G$ and $u\in N(v)$. Define $\nxt_v(u)\in N(v)$ to be
+the neighbor counter-clockwise from $u$ around $v$,
+and $\prv_v(u)\in N(V)$ the neighbor clockwise from $u$.
+In algorithms
+$\adj{v}{u}$ will be a reference to $u$'s entry in $N(v)$, i.e.
+$\adj{v}{u}$ represents both $u$ and the position of $u$ in the
+list $N(v)$;
+define $\nxt(\adj{v}{u})=\adj{v}{(\nxt_v(u))}$ and
+$\prv(\adj{v}{u})=\adj{v}{(\prv_v(u))}$.
+
+In Section~\ref{S:path_color} we'll only need our representation to be
+able to compute $\nxt(\adj{v}{u})$ in constant time from $\adj{v}{u}$.
+In Section~\ref{S:path_choose} however, we'll also need the ability to
+find $\prv(\adj{v}{u})$ and the \defterm{back reference} $\adj{u}{v}$
+from $\adj{v}{u}$ in constant time.
+Representing $N(v)$ via an array or
+doubly linked list solves computing $\prv(\adj{v}{u})$, but
+back references require a different representation.
+We define an \defterm{augmented adjacency list} to be an adjacency
+list that stores the pair $(u,\adj{u}{v})$ for each neighbor $u$ of $v$,
+rather than just the vertex $u$. Given an
+adjacency list representation, an augmented
+representation may be constructed in $\mathcal{O}(m)$ time. 
 
 \begin{algorithm}\label{A:augment}
-\textbf{Input.} An adjacency list representation Adj of a graph $G$.
+\textbf{Input.} An adjacency list representation $N$ of a graph $G$.
 
-\textbf{Output.} An augmented adjacency list representation AugAdj of
-$G$ with the same rotation scheme as Adj.
+\textbf{Output.} An augmented adjacency list representation $N^*$ of
+$G$ with the same rotation scheme as $N$.
 
-\textbf{Step 1.} Construct an augmented adjacency list representation AugAdj
-with the same rotation scheme as Adj, leaving the reference portion of each
-entry uninitialized.
+\textbf{Step 1.} For each $v\in G$ construct an
+augmented adjacency list $N^*(v)$
+with the rotation scheme of $N(v)$, leaving the
+$\adj{u}{v}$ portion of each entry $(u,\adj{u}{v})$ in $N^*(v)$
+uninitialized.
 
-\textbf{Step 2.} For each vertex $v$ construct an array $\text{Wrk}[v]$
+\textbf{Step 2.} For each vertex $v$ construct an array $\text{Wrk}(v)$
 of vertex-reference pairs with length $\text{deg}(v)$. For each $v$ from
 $0$ to $n-1$ iterate through
-$\text{AugAdj}[v]$. For each neighbor $u$ in $\text{AugAdj}[v]$ append the pair
-$(v,r_v(u))$ to
-$\text{Wrk}[u]$, where $r_v(u)$ is a reference to $u$'s entry in
-$\text{AugAdj}[v]$.
+$N^*(v)$. For each neighbor $u$ in $N^*(v)$ append the pair
+$(v,\adj{v}{u})$ to $\text{Wrk}(u)$,
+where $\adj{v}{u}$ is a reference to $u$'s entry $N^*(v)$.
 
 \textbf{Step 3.} For each $v$ from $n-1$ to $0$ iterate through
-$\text{Wrk}[v]$. Upon reaching a pair $(u,r_u(v))$ in $\text{Wrk}[v]$ the
-last element of $\text{Wrk}[u]$ will be $(v,r_v(u))$; see the paragraph below. Use
-$r_u(v)$ and $r_v(u)$ to look up and assign references for the edge $uv$ in
-AugAdj$[u]$ and AugAdj$[v]$. Remove $(v,r_v(u))$ from the back of
-$\text{Wrk}[u]$.
+$\text{Wrk}(v)$. Upon reaching a pair $(u,\adj{u}{v})$ in
+$\text{Wrk}(v)$ the
+last element of $\text{Wrk}(u)$ will be $(v,\adj{v}{u})$;
+see the below. Lookup the entry $\adj{v}{u}$ in $N^*(v)$ and
+initialize the back reference $\adj{u}{v}$, and vice versa.
+Remove $(v,\adj{v}{u})$ from the back of $\text{Wrk}(u)$.
 \end{algorithm}
 
-After completing Step $2$ in Algorithm~\ref{A:augment} the array $\text{Wrk}[v]$
+After completing Step $2$ in Algorithm~\ref{A:augment} the array $\text{Wrk}(v)$
 will contain
-a pair $(u,r_u(v))$ for each neighbor $u$ of $v$, sorted in increasing order by
-the neighbor $u$.
+$(u,\adj{u}{v})$ for each neighbor $u$ of $v$, sorted in increasing
+order by the neighbor $u$.
 Suppose that $v$ is the current vertex at a given iteration of Step $3$ in
 Algorithm~\ref{A:augment}. For each edge $uw\in E(G)$ such that
 $u<w$ and $v<w$, prior iterations of Step 3 will have initialized the
-references for $uw$ in $\text{AugAdj}[u]$ and $\text{AugAdj}[w]$, and also
-removed the pair
-$(w,r_w(u))$ from $\text{Wrk}[u]$. Therefore for each $(u,r_u(v))$ in
-$\text{Wrk}[v]$, the array $\text{Wrk}[u]$ will contain only entries for
-vertices $w$ where $w\le v$. Since $\text{Wrk}[u]$ is sorted in
-increasing order by the neighboring vertices, the last element of
-$\text{Wrk}[u]$ must be $(v,r_v(u))$.
+back references for $\adj{w}{u}$ in $N^*(u)$ and $\adj{u}{w}$ in $N^*(w)$,
+and removed the pair
+$(w,\adj{w}{u})$ from $\text{Wrk}(u)$. Therefore for each
+$(u,\adj{u}{v})$ in
+$\text{Wrk}(v)$, the array $\text{Wrk}(u)$ will contain only entries for
+vertices $w$ where $w\le v$. So the last element of
+$\text{Wrk}(u)$ must be $(v,\adj{v}{u})$.
 
-\section{Path Coloring}
+The $N^*$ notation above was just to distinguish between the two
+representations: if an algorithm has an input graph represented
+by augmented adjacency lists, we'll still refer to $v$'s list via $N(v)$,
+but we may make use of the fact that $\adj{u}{v}$ is accessible from
+from $\adj{v}{u}$.
+
+\section{Path Coloring}\label{S:path_color}
 
 In this section we describe a linear time algorithm to path $3$-color
 plane graphs. Let's first recount Poh's path $3$-coloring strategy.
@@ -506,58 +542,60 @@ $u,w$-path and/or locate a chord edge, see Algorithm~\ref{A:poh_bfs}.
 \textbf{Input.} 
 Let $C$ be a cycle or length $2$ path
 in a weakly triangulated plane graph $G$.
-Let $\text{Adj}$ be an adjacency list representation of $G$.
 Let  $c$ be a length $n$ array representing a $2$-coloring of $C$ such
-that each color class induces a path, respectively
+that each color class induces a nonempty path, respectively
 $P_1=C[u_1,w_1]$ and $P_2=C[w_2,u_2]$ for $u_1,u_2,w_1,w_2\in C$.
-Assume $c[v]=0$ for each $v\in\text{Int}(C)-C$.
+Assume $c(v)=0$ for each $v\in\text{Int}(C)-C$.
 
-The concrete input will be $\text{Adj}$, $c$, and the tuple
-$(u_1, w_1, u_2, w_2, u_1u_2)$, where $u_1u_2$ is represented by
-a reference to $u_2$'s entry in $\text{Adj}[u_1]$. 
+The concrete input will be $G$, $c$, and the tuple
+$(u_1, w_1, \adj{{u_1}}{u_2}, w_2)$. 
 
 \textbf{Output.} For each vertex $v\in\text{Int}(C)-C$, a color in
 $\{1,2,3\}$ will be
-assigned to $c[v]$ such that $c$ represents a path $3$-coloring of
+assigned to $c(v)$ such that $c$ represents a path $3$-coloring of
 $\text{Int}(C)$ extending the original $2$-coloring of $C$. Moreover, if
-$v\in \text{Int}(C)-C$ has a neighbor $u\in C$, then $c[v]\ne c[u]$.
+$v\in \text{Int}(C)-C$ has a neighbor $u\in C$, then $c(v)\ne c(u)$.
 
 \textbf{Base case.} If $u_1=w_1$ and $u_2=w_2$, then $C$ is a length
 $2$-path and $\text{Int}(C)=C$ is path $2$-colored.
 
 \textbf{Recursive case.}
-Let $u\leftarrow\text{next}_{u_1}(u_2)$. Note that $u,u_2,u_1$ is a face
-of $G$.
+Let $\adj{{u_1}}{u}\leftarrow\nxt(\adj{{u_1}}{u_2})$.
+Note that $u,u_2,u_1$ is a face of $G$, see Figure~\ref{F:poh_bfs}.
 
-\textbf{Case 1.} Suppose that $c[u]\ne 0$.
-If $c[u]=c[u_2]$, then $u\in P_2$.
-Make a recursive call with the input $(u_1, w_1, u, w_2, u_1u)$ to color
-$\text{Int}(C[u_1,u]\cup u_1u)$. Otherwise, $c[u]=c[v_1]$ and
-$u\in P_1$. Iterate through $\text{Adj}[u]$ to find the entry for
-$u_2$. Make a recursive call with the input $(u, w_1, u_2, w_2, uu_2)$
+\textbf{Case 1.} Suppose that $c(u)\ne 0$.
+If $c(u)=c(u_2)$, then $u\in P_2$.
+Make a recursive call with the input $(u_1, w_1, \adj{u_1}{u}, w_2)$
+to color
+$\text{Int}(C[u_1,u]\cup u_1u)$. Otherwise, $c(u)=c(v_1)$ and
+$u\in P_1$. Iterate through $N(u)$ to find $\adj{u}{u_2}$.
+Make a recursive call with the input
+$(u, w_1, \adj{u}{u_2}, w_2)$
 to color $\text{Int}(C[u,u_2]\cup uu_2)$. 
 
-\textbf{Case 2.} Suppose that $c[u]=0$, i.e. $u\in \text{Int}(C)-C$.
+\textbf{Case 2.} Suppose that $c(u)=0$, i.e. $u\in \text{Int}(C)-C$.
 Perform a breadth-first search in $\text{Int}(C)-C$ starting from $u$;
 such a search may be implemented by visiting $v\in G$ only
-if $c[v]=0$. Terminate the search upon finding a vertex
-$w$ with a neighbor $v_2$ with $c[v_2]=c[u_2]$ and $c[\text{next}_w(v_2)]=c[u_1]$,
-i.e. $v_2\in P_2$ and $v_1=\text{next}_w(v_2)\in P_1$. Backtrack along the
+if $c(v)=0$. Terminate the search upon finding a vertex
+$w$ with a pair of subsequent neighbors $\adj{w}{v_2}$
+and $\adj{w}{v_1}=\nxt(\adj{w}{v_2})$ such that $c(v_2)=c(u_2)$ and
+$c(v_1)=c(u_1)$,
+i.e. $v_2\in P_2$ and $v_1\in P_1$. Backtrack along the
 search tree from $w$ to find a minimal $u,w$-path $P_3$.
-For each vertex $v\in P_3$, assign $c[v]\leftarrow d$, where $d\in
-\{1,2,3\}\setminus\{c[u_1],c[u_2]\}$.
+For each vertex $v\in P_3$, assign $c(v)\leftarrow d$, where $d\in
+\{1,2,3\}\setminus\{c(u_1),c(u_2)\}$.
 
 Iterate through
-$\text{Adj}[u]$ to find $uu_2$, i.e. the entry for $u_2$.
-Similarly, iterate through $\text{Adj}[v_1]$ to find $v_1v_2$.
+$N(u)$ and $N(v_1)$ to find $\adj{u}{u_2}$ and
+$\adj{v_1}{v_2}$.
 To color the remaining vertices we make three recursive calls:
 \begin{enumerate}
 \itemsep0em
-\item{with input $(u_1, v_1, u, w, u_1u)$ to color
+\item{with $(u_1, v_1, \adj{{u_1}}{u}, w)$ to color
 $\text{Int}(C_1)$, where $C_1=C[u_1,v_1]\cup P_3\cup v_1u\cup v_1w$;}
-\item{with input $(u, w, u_2, v_2, uu_2)$ to color
+\item{with $(u,  w, \adj{u}{u_2}, v_2)$ to color
 $\text{Int}(C_2)$, where $C_2=C[v_2,u_2]\cup P_3\cup uu_2\cup wv_2$;}
-\item{with input $(v_1, w_1, v_2, w_2, v_1v_2)$
+\item{with $(v_1,  w_1, \adj{{v_1}}{v_2}, w_2)$
 to color $\text{Int}(C_3)$, where $C_3=C[v_1,v_2]\cup v_1v_2$.}
 \end{enumerate}
 All remaining vertices in $\text{Int}(C)-C-P_3$ are now colored and we
@@ -676,10 +714,11 @@ $\text{Adj}$ be an adjacency list representation of $G$, and
 let $C=v_1,v_2,v_3$ be the outer triangle of $G$ labeled in clockwise order.
 We may compute a path $3$-coloring $c$ of $G$ as follows.
 Create a length $n$ integer array $c$ and initialize each entry to zero.
-Assign $c[v_1]\leftarrow 1$,
-$c[v_2]\leftarrow 2$, and $c[v_3]\leftarrow 2$. Finally, apply
+Assign $c(v_1)\leftarrow 1$,
+$c(v_2)\leftarrow 2$, and $c(v_3)\leftarrow 2$. Finally, apply
 Algorithm~\ref{A:poh_bfs}
-with input $\text{Adj}$, $c$, and $(v_1, v_1, v_2, v_3, v_1v_3)$.
+with input $\text{Adj}$, $c$, and
+$(v_1, v_1, \adj{{v_1}}{v_2}, v_3)$.
 
 Unfortunately, Algorithm~\ref{A:poh_bfs}
 is not linear. Consider the sequence of ``pyramid graphs''
@@ -832,106 +871,118 @@ For a subraph $H$ of $G$, define $N(H)$ to be the
 vertices in $G-H$ with a neighbor in $H$.
 For $P_1=C[u_1,w_1]$ let $p_1:N(P_1)\to V(P_1)$ be the function that
 maps each vertex to its furthest clockwise neighbor along $P_1$,
-i.e. $V(P_1[p_1(v),w_1])\cap N(v)=\{p_1(v)\}$.
+i.e. $V(C[p_1(v),w_1])\cap N(v)=\{p_1(v)\}$.
 
 \begin{algorithm}\label{A:poh_linear}
 \textbf{Input.} Let $C$ be an induced cycle
 in a weakly triangulated plane
 graph $G$.
-Let $\text{Adj}$ be an adjacency list representation of $G$.
-Let $c$ be a length $n$ array of colors
+Let $c$ be a length $n$ array
 representing a $2$-coloring of $C$ such
 that each color class induces a path, respectively $P_1=C[u_1,w_1]$ and
-$P_2=C[w_2,u_2]$ for $u_1,u_2,w_1,w_2\in C$. Assume $c[v]=0$ for each
+$P_2=C[w_2,u_2]$ for $u_1,u_2,w_1,w_2\in C$. Assume $c(v)=0$ for each
 $v\in\text{Int}(C)-C$.
-Let $S$ be a length $n$ array of integer marks and let $\ell_1$ be an integer
-such that for each $v\in\text{Int}(C)-C$ we have $S[v]=\ell_1$ if and only if
+Let $S$ be a length $n$ integer array and let $\ell_1$ be an integer
+such that for each $v\in\text{Int}(C)-C$ we have $S(v)=\ell_1$ if and only if
 $v\in N(P_1)$.
 
-The concrete input will be the arrays $\text{Adj}$, $c$ and $S$,
-along with the ordered pair $(u_1, u_1u_2, \ell_1)$ where $u_1u_2$ is
-represented by the entry for $u_2$ in $\text{Adj}[u_1]$.
+The concrete input will be $G$, $c$ and $S$,
+along with the ordered pair $(u_1, \adj{{u_1}}{u_2}, \ell_1)$.
 
 \textbf{Output.} For each vertex $v\in\text{Int}(C)-C$, a color in
 $\{1,2,3\}$ will be
-assigned to $c[v]$ such that $c$ represents a path $3$-coloring of
+assigned to $c(v)$ such that $c$ represents a path $3$-coloring of
 $\text{Int}(C)$ extending the original $2$-coloring of $C$. Moreover, if
-$v\in N(P_1)$, then $c[v]\ne c[u_1]$, and if $v\in N(P_2)$, then
-$c[v]\ne c[u_2]$.
+$v\in N(P_1)$, then $c(v)\ne c(u_1)$, and if $v\in N(P_2)$, then
+$c(v)\ne c(u_2)$.
 
-\textbf{Procedure.} Assign $u\leftarrow\text{next}_{u_1}(u_2)$.
+\textbf{Procedure.} Assign $\adj{u_1}{u}\leftarrow\nxt(\adj{u_1}{u_2})$.
 
 \textbf{Base case.}
-If $c[u]\ne 0$, then
+If $c(u)\ne 0$, then
 $u=w_2$ or $u=w_1$. Thus $C$ is a face and we are done. 
 
 \textbf{Recursive case.}
-Suppose that $c[u]=0$, i.e. $u\in\text{Int}(C)-C$.
+Suppose that $c(u)=0$, i.e. $u\in\text{Int}(C)-C$.
 
 \textbf{Step 1.}
-Assign $c[u]$ the remaining color in $\{1,2,3\}\setminus\{c[u_1],c[u_2]\}$.
-Let $\ell_3$ be a new unique mark. We will
+Assign $c(u)\leftarrow d$ where $d\in \{1,2,3\}\setminus\{c(u_1),c(u_2)\}$.
+Let $\ell_3=\max_{v\in G}S(v)+1$. We will
 iteratively construct an induced $u,w$-path $P_3=v_1,v_2,\ldots, v_j$
-with vertices $N(P_1)$, starting from $v_1=u$, and color it with $c[u]$.
+with $v_1,v_2,\ldots,v_j\in N(P_1)$, starting from $v_1=u$,
+and color it with $c(u)$.
 We will simultaneously mark the vertices
 in $N(P_3)\setminus V(C)$ with $\ell_3$, and recursively
 color $\text{Int}(C)-C-P_3$.
 
-Assign $j\leftarrow 1$ and $v_j\leftarrow u$.
-Assign $i\leftarrow 1$ and
-$v_is\leftarrow uu_2$, where $v_is$ represents the entry
-for $s$ in $\text{Adj}[v_i]$. Additionally, assign
-$v_0\leftarrow u_2$ so that $v_{j-1}$ is defined.
+Assign $j\leftarrow 1$ and $v_j\leftarrow u$;
+set $v_0\leftarrow u_2$ so that $v_{j-1}$ is defined.
+Assign $i\leftarrow 1$ and $\adj{v_i}{s}\leftarrow \adj{v_i}{u_2}$;
+here $\adj{v_i}{s}$ stores the last edge $v_is$ encountered where
+$v_i\in P_3$ and
+$s\in P_2$.
 
-\textbf{Step 2.} Assign $c[v_j]\leftarrow c[u]$.
-We will iterate through the neighbors of $v_j$, starting after $v_{j-1}$.
-Assign $v\leftarrow \text{next}_{v_j}(v_{j-1})$ and
-$y\leftarrow\text{NULL}$. Also assign $v_jt\leftarrow\text{NULL}$,
-where $v_jt$ will represent an optional entry for a neighbor $t$
-in $\text{Adj}[v_j]$.
+\textbf{Step 2.} Assign $c(v_j)\leftarrow c(u)$.
+We will iterate through $N(v_j)$, starting after
+$v_{j-1}$.
+Find $\adj{v_j}{v_{j-1}}$ in $N(v_j)$ and set
+$\adj{v_j}{v}\leftarrow \nxt(\adj{v_j}{v_{j-1}})$.
+Set $y\leftarrow\text{NULL}$; here
+$y$ will store the first neighbor of $v_j$
+clockwise from $v_{j-1}$ that is in
+$N(P_1)\setminus V(C)$ (if any).
+Set $\adj{v_j}{t}\leftarrow\text{NULL}$; here
+$\adj{v_j}{t}$ will store the last edge $v_jt$ encountered
+such that $t\in P_1$ (if any).
 
-\textbf{Step 3.} There are several cases to consider.
+\textbf{Step 3.} We first consider the neighbors of $v_j$ between
+$v_{j-1}$ and $p_1(v_j)$ counter-clockwise. It will be useful
+to refer to Figure~\ref{F:poh_linear_1}.
 
-\textbf{Case 3.1.} Suppose $c[v]=0$ and $S[v]\ne \ell_1$, i.e.
+\textbf{Case 3.1.} Suppose that $c(v)=0$ and $S(v)\ne \ell_1$, i.e.
 $v\in\text{Int}(C)-C-N(P_1)$.
-Assign $S[v]\leftarrow \ell_3$ and $v\leftarrow\text{next}_{v_j}(v)$.
+Assign $S(v)\leftarrow \ell_3$ and
+$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$.
 Go to Step 3.
 
-\textbf{Case 3.2.} Suppose $c[v]=c[u_2]$, i.e. $v\in P_2$.
-Make a recursive call with input $(v_i, v_is, \ell_3)$ to color
-$\text{Int}(P_3[v_i,v_j]\cup C[v,s]\cup v_is\cup v_jv)$.
-Assign $i\leftarrow j$, $v_js\leftarrow v_jv$, and
-$v\leftarrow\text{next}_{v_j}(v)$. Go to Step 3.
+\textbf{Case 3.2.} Suppose that $c(v)=c(u_2)$, i.e. $v\in P_2$.
+Make a recursive call with input $(v_i, \adj{v_i}{s}, \ell_3)$
+to color $\text{Int}(P_3[v_i,v_j]\cup C[v,s]\cup v_is\cup v_jv)$.
+Assign $i\leftarrow j$, $\adj{v_i}{s}\leftarrow \adj{v_j}{v}$, and
+$\adj{v_j}{v}=\nxt(\adj{v_j}{v})$. Go to Step 3.
 
-\textbf{Case 3.3.} Suppose that $c[v]=0$ and $S[v]=\ell_1$, i.e.
-$v\in N(P_1)$.
+\textbf{Case 3.3.} Suppose that $c(v)=0$ and $S(v)=\ell_1$, i.e.
+$v\in N(P_1)\setminus V(C)$.
 If $y=\text{NULL}$, assign $y\leftarrow v$.
-Assign $S[v]\leftarrow \ell_3$ and
-$v\leftarrow\text{next}_{v_j}(v)$. Go to Step 3.
+Assign $S(v)\leftarrow \ell_3$ and
+$\adj{v_j}{v}=\nxt(\adj{v_j}{v})$. Go to Step 3.
 
-\textbf{Case 3.4.} Suppose that $c[v]=c[u_1]$, i.e. $v=p_1(v_j)\in P_1$.
-Assign $v_jt\leftarrow v_jv$ and
-$v\leftarrow\text{next}_{v_j}(v)$. Go to Step 4.
+\textbf{Case 3.4.} Suppose that $c(v)=c(u_1)$, i.e. $v=p_1(v_j)\in P_1$.
+Assign $\adj{v_j}{t}\leftarrow \adj{v_j}{v}$ and
+$\adj{v_j}{v}=\nxt(\adj{v_j}{v})$. Go to Step 4.
 
-Note that if $y=\text{NULL}$, then $v_j=w$. Since $v\in P_1$,
-$\text{prev}_{v_j}(v)\not\in N(P_1)$,
-and $\text{prev}_{v_j}(v)\not\in P$, we must have
-$\text{prev}_{v_j}(v)\in P_2$.
+Note that if $y=\text{NULL}$, then $v_j=w$. To see this, observe that
+since $v\in P_1$,
+$\prv_{v_j}(v)\in N(P_1)$,
+and $\prv_{v_j}(v)\not\in P_1$, we must have
+$\prv_{v_j}(v)\in C-P_1=P_2$.
 
-\textbf{Step 4.} We now consider the
-neighbors of $v_j$ counter-clockwise past $t$.
+\textbf{Step 4.} We now consider
+neighbors of $v_j$ between $p_1(v_j)$ and $v_{j-1}$ counter-clockwise.
+Note that we must have $\adj{v_j}{t}\ne\text{NULL}$.
+Refer to Figure~\ref{F:poh_linear_2}.
 
-\textbf{Case 4.1.} Suppose that $c[v]=0$, i.e. $v\in\text{Int}(C)-C-P_3$.
-Assign $S[v]\leftarrow \ell_3$ and $v\leftarrow\text{next}_{v_j}(v)$.
+\textbf{Case 4.1.} Suppose that $c(v)=0$, i.e. $v\in\text{Int}(C)-C-P_3$.
+Assign $S(v)\leftarrow \ell_3$ and $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$.
 Go to Step 4.
 
-\textbf{Case 4.2.} Suppose that $c[v]\ne 0$, i.e. $v\in C$ or
+\textbf{Case 4.2.} Suppose that $c(v)\ne 0$, i.e. $v\in C$ or
 $v\in P_3$. Make a recursive
-call with input $(v_j, v_jt, \ell_3)$.
+call with input $(v_j, \adj{v_j}{t}, \ell_3)$.
 
-If $c[v]=c[u_1]$, i.e. $v\in P_1$, then the recursive
+If $c(v)=c(u_1)$, i.e. $v\in P_1$, then the recursive
 call colors $\text{Int}(C[v,t]\cup v_j\cup v_jt\cup v_jv)$.
-Assign $v_jt\leftarrow v_jv$. Go to Step 4.
+Assign $\adj{v_j}{t}\leftarrow\adj{v_j}{v}$. Go to Step 4.
 
 Otherwise,
 $v=v_{j-1}$ and the recursive call
@@ -1166,7 +1217,7 @@ is a cycle in $G$ with $v_{k-1},v_k,v_{k+1}\in D$ and
 $v_{j}\not\in\text{Int}(D)$, see Figure~\ref{F:poh_linear_2} (right).
 Therefore $v_kv_j\not\in\text{Int}(D)$ and
 $v_kv_j$ lies between $v_{k-1}$ and $v_{k+1}$ counter-clockwise
-in $\text{Adj}[v_k]$. But $v_{k+1}$ is the first neighbor
+in $N(v_k)$. But $v_{k+1}$ is the first neighbor
 in $N(P_1)$ counter-clockwise from $v_{k-1}$ around $v_k$, a contradiction.
 
 % \begin{figure}
@@ -1575,7 +1626,7 @@ in $N(P_1)$ counter-clockwise from $v_{k-1}$ around $v_k$, a contradiction.
 %         \end{pgfonlayer}
 % \end{tikzpicture}
 % \caption{An example of Algorithm~\ref{A:poh_linear}. Each vertex $v\in G$ is
-% labeled with $c[v]$ if $c[v]>0$, and labeled with $-S[v]$ otherwise.}
+% labeled with $c(v)$ if $c(v)>0$, and labeled with $-S(v)$ otherwise.}
 % \label{F:poh_example}
 % \end{center}
 % \end{figure}
@@ -1989,29 +2040,30 @@ in $N(P_1)$ counter-clockwise from $v_{k-1}$ around $v_k$, a contradiction.
 % \end{figure}
 
 Given a triangulated plane graph $G$ with adjacency list representation
-$\text{Adj}$, we can apply
+we can apply
 Algorithm~\ref{A:poh_linear} as follows. First, create length $n$ integer
 arrays for $c$ and $S$, initializing each entry to zero.
 Let $C=v_1,v_2,v_3$ be the outer triangle of $G$,
 labeled in clockwise order.
-Color $c[v_1]\leftarrow 1$, $c[v_2]\leftarrow 2$, and
-$c[v_3]\leftarrow 2$.
-Iterate through $\text{Adj}[v_1]$ and mark $S[v]\leftarrow 1$ for each
+Color $c(v_1)\leftarrow 1$, $c(v_2)\leftarrow 2$, and
+$c(v_3)\leftarrow 2$.
+Iterate through $N(v_1)$ and mark $S(v)\leftarrow 1$ for each
 neighbor $v$ of $v_1$.
-The arrays $\text{Adj}$, $c$, and $S$, together with
-$(v_1, v_1v_3, 1)$ form a valid input for Algorithm~\ref{A:poh_linear}.
+Then $G$, $c$, $S$,
+$(v_1, \adj{v_1}{v_3}, 1)$ form a valid input for
+Algorithm~\ref{A:poh_linear}.
 
 While executing Algorithm~\ref{A:poh_linear} we iterate through
 the adjacency list of each vertex $v\in G$ exactly twice: once when
 $v$ is colored and added to a path $P_3$ in Step 2 to
-locate the entry for $v_{j-1}$,
-and once to examine each neighbor in $\text{Adj}[v_j]$ during Steps~3-4.
+locate $\adj{{v_j}}{v_{j-1}}$,
+and once to examine each neighbor in $N(v_j)$ during Steps~3-4.
 Therefore the time complexity of the algorithm is
 $\mathcal{O}(m)=\mathcal{O}(n)$.
 % See Figure~\ref{F:poh_example} 
 % and Figure~\ref{F:poh_example_cont} for a concrete example.
 
-\section{Path List-Coloring}
+\section{Path List-Coloring}\label{S:path_choose}
 
 In this section we describe a linear time algorithm to path color
 plane graphs such that each vertex receives a color from a specified list.
@@ -2025,7 +2077,7 @@ The path list-coloring procedure discussed in this section is
 based on the constructive proofs found in Hartman and
 \v{S}krekovski's papers. For those familiar
 with Hartman's proof: if $x=z$, then our $G,x,y$ match
-with those in \cite[Lemma.~4.2]{Har1997}, but our
+those in \cite[Lemma.~4.2]{Har1997}, but our
 $G$ is always biconnected;
 we follow Hartman's iterative procedure to color a path
 $P$ clockwise from $x$ along $C$, but we proceed inductively,
@@ -2170,6 +2222,7 @@ $\quad$
 \end{tikzpicture}
     \caption{The proof of Lemma~\ref{L:hartman3}, Case~1 (left), Case~2
     (middle), and Case~3.1 (right).}
+    \label{F:hartman_1}
 \end{center}
 \end{figure}
 
@@ -2189,7 +2242,7 @@ $y_1=y$, and $z_1=z$.
 \textbf{Case 3.}
 Suppose that $u_1\ne y$ and $z\ne x$. 
 Our strategy will be to apply the inductive hypothesis to
-the blocks (maximal biconnected subgraphs) of $G-zu_1$.
+the \defterm{blocks} (maximal biconnected subgraphs) of $G-zu_1$.
 Because $u_1\in C[x,z]$, it is guaranteed that $L(u_1)\cap L(z)=\emptyset$.
 Thus any path $L$-coloring of $G-zu_1$ is also a path $L$-coloring
 of $G$.
@@ -2204,7 +2257,7 @@ L'(z)=\emptyset$, we may apply the inductive hypothesis
 to find a path $L'$-coloring of $G_1$ with $x_1=x$, $y_1=y$, $z_1=z$.
 
 \textbf{Case 3.2.}
-Suppose that $u_2\in C$. Observe that $u_2$ is a cut-vertex of
+Suppose that $u_2\in C$. Observe that $u_2$ is a \defterm{cut-vertex} of
 $G-zu_1$, i.e. $G-zu_1-u_2$ is disconnected.
 Define $C_1=C[u_2,u_1]\cup u_1u_2$ and
 $C_2=C[z,u_2]\cup zu_2$. Let $G_1=\text{Int}(C_1)$ and $G_2=\text{Int}(C_2)$.
@@ -2315,7 +2368,7 @@ $\quad$
         \draw (ybp) edge [dashed, bend left] (vbp);
     \end{pgfonlayer}\end{tikzpicture}
 \caption{The proof of Lemma~\ref{L:hartman3}, Case~3.2.1 (left) and
-Case~3.2.2 (right).}
+Case~3.2.2 (right).}\label{F:hartman_3_2}
 \end{center}
 \end{figure}
 
@@ -2425,6 +2478,7 @@ satisfying the constraints of the lemma.
     \end{pgfonlayer}
 \end{tikzpicture}
     \caption{The proof of Lemma~\ref{L:hartman3}, Case~3.2.3.}
+    \label{F:hartman_3_2_3}
 \end{center}
 \end{figure}
 
@@ -2470,146 +2524,176 @@ So Theorem~\ref{T:planar3} follows immediately from
 Lemma~\ref{L:hartman3}.
 
 The proof of Lemma~\ref{L:hartman3} may be
-implemented as a linear time algorithm for plane graphs represented by
-augmented adjacency lists.
-We will assume that both forward and backward iteration in augmented adjacency
-lists
-is a constant time operation, i.e. given $u\in G$ and an entry for
-an edge $uv$ in $\text{Adj}[u]$, $\text{next}_{u}(v)$ and
-$\text{prev}_{u}(v)$ can be computed in constant time. 
-The
-available C implementation represents each augmented adjacency list as an array
-of entries, but e.g. a doubly linked list would also suffice~\cite{Bro2017}.
+implemented as a linear time algorithm for plane graphs.
+For $v\in G$ and $u\in N(v)$, we will assume that
+$\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and $\adj{u}{v}$ can be
+computed in constant time from the entry $\adj{v}{u}$;
+see augmented adjacency lists in Section~\ref{S:representation}.
 
 \begin{algorithm}\label{A:hartman_impl}
 \textbf{Input.} Let $C$ be a cycle or length $2$ path in a
 weakly triangulated plane graph $G$.
 Let $x,y,z\in C$ be vertices such that $z\in C[x,y]$.
-Let $\text{Adj}$ be an augmented adjacency list representation of $G$.
 
-Let $L$ be an array of lists of colors
-such that for $v\in\{x,y,z\}$ the list $L[v]$ has length one,
-for $v\in C-\{x,y,z\}$ the list $L[v]$ has length two
+Let $L$ be a length $n$ array of lists of colors
+such that for $v\in\{x,y,z\}$ the list $L(v)$ has length one,
+for $v\in C-\{x,y,z\}$ the list $L(v)$ has length two
 or three, and for $v\in \text{Int}(C)-C$ the list
-$L[v]$ has length three. Furthermore, for each $v\in C[x,z] - z$ assume
-that $L[v]$ does not contain the color in $L[z]$.
+$L(v)$ has length three. Furthermore, for each $v\in C[x,z] - z$ assume
+that $L(v)$ does not contain the color in $L(z)$.
 
-Let $N$ be an array such that for each $v\in C$, $N[v]=(r_1,r_2)$
-contains
-a reference $r_1$ to the $\text{Adj}[v]$ entry for neighbor the
-immediately counter-clockwise
-from $v$
-around $C$, and a reference $r_2$
-to the entry for the neighbor immediately clockwise from $v$ around $C$.
+Let $B,F$ be length $n$ arrays such that for each $v\in C$ we have
+$B(v)=\adj{v}{b}$ and $F(v)=\adj{v}{f}$, where
+$b$ is the vertex immediately counter clockwise
+from $v$ around $C$,
+and $f$ is the vertex
+immediately clockwise from $v$ around $C$.
 
-Let $S$ be an array of
-integers such that if $v\in C$, then $S[v]\ne 0$, and if
-$v\in \text{Int}(C)-C$, then $S[v]=0$. Also, if
-$v\in C$, then $S[v]=S[x]$ if and only if $v\in C[x,z]-z$. Let $M$
-be an array of integers such that if $v\in C$, then $M[S[v]]=S[y]$
-if and only if $v\in C[z,y]$.
+Let $S$ be a length $n$ integer array such
+that $S(v)\ne 0$ if and only if $v\in C$, and
+$S(v)=S(x)$ if and only if $v\in C[x,z]-z$.
+Let $\text{max}(S)=\text{max}_{v\in G} S(v)$ and
+$m_C=m(\text{Int}(C))$.
+If $z\ne x$, then define $\ell=\text{max}(S)$.
+If $z=x$ and $C[y,x]\ne y,x$, define $\ell=\text{max}(S)+1$.
+Otherwise, define $\ell=\text{max}(S)+2$. Assume
+$\ell < 2(m-m_C) + 4$.
 
-The concrete input will be $\text{Adj}$, $L$,
-$N$, $S$, $M$, and the tuple $(x,y,z)$.
+Let $M$
+be a length $2m+2$ integer array such that if $v\in C$,
+then $M(S(v))=S(y)$ if and only if $v\in C[z,y]$.
+
+The concrete input will be $G$, $L$,
+$B$, $F$, $S$, $M$, and the tuple $(x,y,z)$.
 
 \textbf{Output.} For each $v\in\text{Int}(C)$, all but one color will be
-removed from the list $L[v]$. The remaining color in each list will represent
+removed from the list $L(v)$. The remaining color in each list will represent
 a path $L$-coloring of $\text{Int}(C)$
 such that $\text{deg}_c(x)\le1$, $\text{deg}_c(y)\le1$, and
-$\text{deg}_c(z)\le1$. If $z=y$, or if $C[z,y]=z,y$ and $L[z]$ did
-not contain the color in $L[y]$, then $\text{deg}_c(z)=0$.
+$\text{deg}_c(z)\le1$. If $z=y$, or if $C[z,y]=z,y$ and $L(z)$ did
+not contain the color in $L(y)$, then $\text{deg}_c(z)=0$. Moreover,
+afterwards $\text{max}(S)\le\ell+2(m_C-1)$.
 
-\textbf{Procedure.} Let $N[z]=(r_1,r_2)$. Assign the vertex $u_1$ to be
-the neighbor of $z$ corresponding to $r_1$.
+\textbf{Procedure.} Assign $\adj{z}{u_1}\leftarrow B(z)$.
 
-\textbf{Base case.} If $r_1=r_2$, then $C=z,u_1$
+\textbf{Base case.} If $B(z)=F(z)$, then $C=z,u_1$
 is a length $2$ path. If $u_1\ne x$ and $u_1\ne y$, remove the
-color in $L[z]$ from $L[u_1]$. If more than one color still remains in
-$L[u_1]$, remove arbitrary colors until a single color remains.
+color in $L(z)$ from $L(u_1)$, if it exists, then remove further colors
+until one color remains. Note that
+$m_C=1$ and $\text{max}(S)\le\ell+ 2(m_C-1)=\ell$ by definition.
 
-\textbf{Recursive case.} Suppose that $r_1\ne r_2$. Note that
-$n(C)>2$ and therefore $C$ is a cycle. Assign
-$u_2\leftarrow\text{next}_{z}(u_1)$.
+\textbf{Recursive case.} Suppose that $B(z)\ne F(z)$.
+Note that $n(C)>2$ and therefore $C$ is a cycle. Assign
+$\adj{z}{u_2}\leftarrow\nxt(\adj{z}{u_1})$. That
+$\text{max}(S)\le\ell+2(m_C-1)$ is immediate for Cases~1, 2,
+and 3.1, so we only argue Case~3.2.
+It will be useful to refer to
+Figures~\ref{F:hartman_1}, \ref{F:hartman_3_2}, and
+\ref{F:hartman_3_2_3}.
 
-\textbf{Case 1.} Suppose that $u_1=y$. Then $z=x$, since $z\in C[x,y]$. Assign
-$S[x]$ and $S[y]$ the same new unique mark. Assign $M[S[x]]\leftarrow S[x]$.
-Make a recursive tail call with the input $(y, x, y)$.
+\textbf{Case 1.} Suppose that $u_1=y$. Then $z=x$, since $z\in C[x,y]$.
+Set $S(x)\leftarrow \text{max}(S)+1$ and
+$S(y)\leftarrow S(x)$.
+Assign $M(S(x))\leftarrow S(x)$.
+Make a recursive call with the input $(y, x, y)$.
 
 \textbf{Case 2.} Suppose that $z=x$ and $u_1\ne y$. 
-Remove the color in $L[z]$ from $L[u_1]$, and then remove arbitrary
-colors from $L[u_1]$ until a single color remains.
-Set $S[u_1]$ to be a new unique mark, assign $M[S[u_1]]\leftarrow S[u_1]$,
+Remove the color in $L(z)$ from $L(u_1)$, if it exists, then remove
+further colors until one color remains.
+Assign $S(u_1)\leftarrow \text{max}(S)+1$
+and $M(S(u_1))\leftarrow S(u_1)$,
 and make a recursive call with input $(u_1, y, z)$.
 
-\textbf{Case 3.} Suppose that $z\ne x$ and $u_1\ne y$. It is this case that
-makes use of the back references in the augmented adjacency list representation.
+\textbf{Case 3.} Suppose that $z\ne x$ and $u_1\ne y$.
+Remove $zu_1$ by assigning $F(u_1)\leftarrow\prv(\adj{u_1}{z})$
+and $B(z)\leftarrow\nxt(\adj{z}{u_1})$;
+refer
+to Figure~\ref{F:hartman_1} (right),
+Figure~\ref{F:hartman_3_2}, and Figure~\ref{F:hartman_3_2_3}.
 
-\textbf{Case 3.1.} Suppose that $S[u_2]=0$, that is, $u_2\in
-\text{Int}(C)-C$. Assign $S[u_2]\leftarrow S[x]$ and initialize
-$N[u_2]\leftarrow(s_1,s_2)$ where $s_1$ is a reference to the entry
-for $u_1$ in $\text{Adj}[u_2]$, and $s_2$ is a reference to the entry
-for $z$. Remove the color in $L[z]$ from
-$L[u_2]$ and remove the edge $zu_1$ by adjusting
-$N[u_1]$ and $N[z]$. Make a recursive call with the same input $(x, y, z)$.
+\textbf{Case 3.1.} Suppose that $S(u_2)=0$, that is, $u_2\in
+\text{Int}(C)-C$. Assign $S(u_2)\leftarrow S(x)$ and initialize
+$B(u_2)\leftarrow\adj{u_2}{u_1}=\nxt(\adj{u_2}{z})$ and
+$F(u_2)\leftarrow\adj{u_2}{z}$;
+refer to Figure~\ref{F:hartman_1} (right).
+Remove the color in $L(z)$ from
+$L(u_2)$.
+Make a recursive call with the same input $(x, y, z)$.
 
-\textbf{Case 3.2.} Suppose that $S[u_2]\ne 0$, that is, $u_2\in C$. Just as in
+\textbf{Case 3.2.} Suppose that $S(u_2)\ne 0$, that is, $u_2\in C$. Just as in
 Case~3.2 of the proof of Lemma~\ref{L:hartman3}, we will separately consider
 the two blocks $G_1$ and $G_2$ of $\text{Int}(C)-zu_1$.
+Note that $m_C-1=m(G_1)+m(G_2)$.
 
-It is simple to remove the edge $zu_1$ by adjusting $N[z]$ and $N[u_1]$ to
-exclude
-the corresponding entries. It remains
+As we've already removed the edge $zu_1$ by
+adjusting $B(z)$ and $F(u_1)$, it remains
 to ``split'' the
-neighborhood of $u_2$ at the edge $u_2z$ such that the recursive call on $G_1$
-considers only the neighbors of $u_2$ counter-clockwise from $z$, and the call
-on $G_2$ considers $z$ and all neighbors clockwise from $z$.
+neighborhood of $u_2$ at the edge $\adj{u_2}{z}$ such that the recursive
+call on $G_1$ considers only the neighbors of $u_2$ counter-clockwise
+from $z$, and the call
+on $G_2$ considers $z$ and all neighbors clockwise from $z$;
+refer
+to Figure~\ref{F:hartman_3_2} and
+Figure~\ref{F:hartman_3_2_3}.
 
-Let $N[u_2]=(s_1,s_2)$. Let $s_3$ be a reference to $z$'s entry in
-$\text{Adj}[u_2]$ and
-$s_4$ a reference to $\text{next}_{u_2}(z)$'s entry.
-To represent
-the subgraph $G_1$, assign
-$N[u_2]\leftarrow (s_4,s_2)$. To represent the subgraph $G_2$,
-assign $N[u_2]\leftarrow (s_1,s_3)$.
+Store $\adj{u_2}{b}\leftarrow B(u_2)$ and
+$\adj{u_2}{f}\leftarrow F(u_2)$.
+To represent $G_1$, assign $B(u_2)\leftarrow\nxt(\adj{u_2}{z})$
+and $F(u_2)\leftarrow\adj{u_2}{f}$.
+To represent $G_2$,
+assign $B(u_2)\leftarrow\adj{u_2}{b}$
+and $F(u_2)\leftarrow\adj{u_2}{z}$.
 
-\textbf{Case 3.2.1.} Suppose that $S[u_2]=S[x]$, i.e. $u_2\in C[x,z]$. Make a
-recursive call on $G_2$ with input $(x, y, z)$. Assign
-$S[u_2]$ a new
-unique mark, set $M[S[u_2]]\leftarrow S[u_2]$, and make a recursive call
+\textbf{Case 3.2.1.} Suppose that $S(u_2)=S(x)$, i.e. $u_2\in C[x,z]$. Make a
+recursive call on $G_2$ with input $(x, y, z)$;
+afterwards $\text{max}(S)\le\ell + 2m(G_1)-2$.
+Assign $S(u_2)\leftarrow\text{max}(S)+1$ and
+$M(S(u_2))\leftarrow S(u_2)$, and make a recursive call
 on $G_1$ with input $(u_2, u_2, u_2)$.
+Finally, observe that
+$\text{max}(S)\le\ell + 2m(G_1)-2 + 1 + 2m(G_2)-1<\ell+2(m_C-1)$.
 
-\textbf{Case 3.2.2.} Suppose that $z\ne x$ and $S[u_2]\ne 0$, but
-$S[u_2]\ne S[x]$ and $M[S[u_2]]\ne S[y]$. In other words, suppose that
+\textbf{Case 3.2.2.} Suppose that $z\ne x$ and $S(u_2)\ne 0$, but
+$S(u_2)\ne S(x)$ and $M(S(u_2))\ne S(y)$. In other words, suppose that
 $u_2\in C[y,x]-x-y$.
-First remove the color in $L[z]$ from $L[u_2]$, if it exists, and then remove
-arbitrary colors until $L[u_2]$ is of length one. Assign $S[u_2]=S[x]$.
-Make a recursive call on $G_1$ with input $(x, u_2, x)$.
-Assign $S[u_2]$ a new unique mark and $M[S[u_2]]\leftarrow S[u_2]$.
-Make a recursive call on $G_2$ with input $(u_2, y, z)$.
+First remove the color in $L(z)$ from $L(u_2)$, if it exists, then remove
+further colors until one remains. Set $S(u_2)\leftarrow S(x)$.
+Make a recursive call on $G_1$ with input $(x, u_2, x)$;
+afterwards $\text{max}(S)\le\ell +2m(G_1)$.
+Set $S(u_2)\leftarrow\text{max}(S)+1$ and
+$M(S(u_2))\leftarrow S(u_2)$, and
+make a recursive call on $G_2$ with input $(u_2, y, z)$.
+Finally, observe that
+$\text{max}(S)\le\ell + 2m(G_1) + 1 + 2m(G_2)-2<\ell+2(m_C-1)$.
 
-\textbf{Case 3.2.3.} Suppose that $z\ne x$ and $M[S[u_2]]=S[y]$, i.e.
+\textbf{Case 3.2.3.} Suppose that $z\ne x$ and $M(S(u_2))=S(y)$, i.e.
 $u_2\in C[z,y]$. There are
 two cases to consider.
 
-\textbf{Case 3.2.3.1.} Suppose that the color in $L[z]$ is in $L[u_2]$. Remove
-all colors from $L[u_2]$ except for the color in $L[z]$.
-Make a recursive call on $G_1$ with input $(x, y, u_2)$.
-Then assign $S[z]$ and $S[u_2]$ the same new unique mark, and assign
-$M[S[z]]\leftarrow S[z]$. Make a
-recursive call on $G_2$ with input $(u_2, z, u_2)$.
+\textbf{Case 3.2.3.1.} Suppose that the color in $L(z)$ is in $L(u_2)$. Remove
+all colors from $L(u_2)$ except for the color in $L(z)$.
+Make a recursive call on $G_1$ with input $(x, y, u_2)$;
+afterwards $\text{max}(S)\le\ell + 2m(G_1)-2$.
+Assign
+$S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$,
+and $M(S(z))\leftarrow S(z)$. Make a
+recursive call on $G_2$ with input $(u_2, z, u_2)$. Finally, observe that
+$\text{max}(S)\le\ell + 2m(G_1)-2 + 1 + 2m(G_2) - 1<\ell+2(m_C-1)$.
 
-\textbf{Case 3.2.3.2.} Suppose that the color in $L[z]$ is not in $L[u_2]$.
-Assign $M[S[x]]\leftarrow S[y]$. Make a recursive call on $G_1$
-with input $(x, y, x)$.
-Assign $S[z]$ and $S[u_2]$ the same new unique mark, and
-set $M[S[z]]\leftarrow S[z]$. Make a
-recursive call on $G_2$ with input $(u_2, z, u_2)$.
+\textbf{Case 3.2.3.2.} Suppose that the color in $L(z)$ is not in $L(u_2)$.
+Assign $M(S(x))\leftarrow S(y)$. Make a recursive call on $G_1$
+with input $(x, y, x)$; afterwards $\text{max}(S)\le\ell + 2m(G_1)$.
+Assign $S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$, and
+$M(S(z))\leftarrow S(z)$. Make a
+recursive call on $G_2$ with input $(u_2, z, u_2)$. Observe
+$\text{max}(S)\le\ell + 2m(G_1) + 1 + 2m(G_2) - 1=\ell+2(m_C-1)$.
 
-Note that this is the only case
-where $M[S[v]]$ is set a value other than $S[v]$.
-Setting $M[S[x]]\leftarrow S[y]$ effectively ``joins''
-$C[x,u_1]$ and $C[u_2,y]$ into $C_1[z_1,y_1]$ in $G_1$ without needing
-to re-mark each vertex in $C[x,u_1]$ with $S[y]$, see Figure~8.
+Note that this is the only case where
+$M(S(v))$ is set a value other than $S(v)$.
+Setting $M(S(x))\leftarrow S(y)$ effectively ``joins''
+$C[x,u_1]$ onto $C[u_2,y]$ to represent $C_1[z_1,y_1]$ in $G_1$,
+without having to re-mark each vertex in $C[x,u_1]$ with $S(y)$;
+see Figure~8.
 \end{algorithm}
 
 \begin{figure}
@@ -2928,7 +3012,7 @@ $y$};
                 \draw (v4) edge [dotted] (v6);
         \end{pgfonlayer}
 \end{tikzpicture}
-\caption{An example of Algorithm~\ref{A:hartman_impl}. Each vertex $v\in G$ is labeled with $S[v],L[v]$.}
+\caption{An example of Algorithm~\ref{A:hartman_impl}. Each vertex $v\in G$ is labeled with $S(v),L(v)$.}
 \label{F:hartman_impl}
 \end{center}
 \end{figure}
@@ -2952,7 +3036,7 @@ $y$};
         \node (v7) [label=right:{0,\{3,4,5\}}] at (1.340525cm, 0.632695cm) {};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {};
 
-        \node (M) [shape=rectangle, draw=none, fill=white] at (0.0cm, -2.4cm) {$M[4]\leftarrow 3$};
+        \node (M) [shape=rectangle, draw=none, fill=white] at (0.0cm, -2.4cm) {$M(4)\leftarrow 3$};
 
         \begin{pgfonlayer}{bg}
                 \draw (v2) edge [double, very thick] (v7);
@@ -3348,35 +3432,34 @@ Figure~\ref{F:hartman_impl} and Figure~\ref{F:hartman_impl_cont}.}
 
 Let $G$ be a triangulated plane graph
 represented by augmented adjacency
-lists. Let $L$ be a size $n$ array of color lists of length $3$,
+lists. Let $L$ be a length $n$ array of color lists of length $3$,
 representing a list assignment of $G$. We may path $L$-color $G$ using
 Algorithm~\ref{A:hartman_impl} as follows.
 
-Create an array of reference pairs $N$ of size $n$, and initialize $N[v]$
-for each $v\in C$ on the outer face of $G$ to satisfy
-the requirements of Algorithm~\ref{A:hartman_impl}. Create a size $n$ array of
-integers $S$, and initialize $S[v]\leftarrow 1$ for each $v\in C$ and
-$S[v]\leftarrow 0$ for each $v\in G-C$. Pick an arbitrary $u\in C$,
-assign $S[u]\leftarrow 2$, and remove all but one color from $L[u]$.
-Create a size $m+1$ array of integers $M$ and initialize
-$M[i]\leftarrow i$ for each $i\in\{0,1,2\}$.
-Finally, apply
-Algorithm~\ref{A:hartman_impl} with the input $\text{Adj}$, $L$,
-$N$, $S$, $M$, and $(u, u, u)$. The remaining color in each
+Create length $n$ arrays $B,F$ and initialize $B(v)$
+and $F(v)$ for each $v\in C$ on the outer face of $G$.
+Create a length $n$ integer array
+$S$ and initialize $S(v)\leftarrow 1$ for each $v\in C$ and
+$S(v)\leftarrow 0$ for each $v\in G-C$. Pick any $u\in C$,
+assign $S(u)\leftarrow 2$, and remove all but one color from $L(u)$.
+Create a length $2m+2$ array of integers $M$ and initialize
+$M(i)\leftarrow i$ for each $i\in\{0,1,2\}$.
+Finally, apply Algorithm~\ref{A:hartman_impl} with the input $G$, $L$,
+$B$, $F$, $S$, $M$, and $(u, u, u)$. The remaining color in each
 list in $L$ will represent a path $L$-coloring of $G$.
 
 Every recursive case in Algorithm~\ref{A:hartman_impl} performs a fixed number
 of constant time operations. Each case removes one edge from the graph
 representation,
 except for Case~1 and Case~2. In Case~1 a single recursive call is made
-with an input that will not itself satisfy Case~1. In Case~2 a recursive
+with an input that will satisfy Case~2. In Case~2 a recursive
 call is made with an input that will not itself satisfy Case~1 or Case~2.
 Therefore the number of operations performed
 is $\mathcal{O}(m)=\mathcal{O}(n)$. See Figure~\ref{F:hartman_impl} and
 Figure~\ref{F:hartman_impl_cont} for a concrete example of
 Algorithm~\ref{A:hartman_impl}.
 
-\section{Experimental Performance and Parallelism}
+\section{Experimental Performance and Parallelism}\label{S:performance}
 
 A C implementation of each algorithm is available~\cite{Bro2017}.
 For each $i$ from $3\ldots 7$, a uniform random sample of $100$
@@ -3391,7 +3474,7 @@ The vertices were randomly re-labeled in each sampled graph, and the
 corresponding adjacency list arrays were re-ordered in memory such that
 the list for newly-labeled vertex $0$ came first in memory, followed
 by the list for vertex $1$, and so on. The
-benchmarks results therefore represent each algorithm's
+benchmark results therefore represent each algorithm's
 performance on a set of uniformly sampled plane triangulations,
 each with a
 uniformly sampled representation layout in memory.
@@ -3463,8 +3546,7 @@ Algorithm~\ref{A:poh_bfs} scaled very
 poorly on pyramids, as expected; see the timings
 in Figure~\ref{F:pyramid_benchmark} and plot in Figure~\ref{F:plot}. Once again,
 vertex labels were uniformly
-shuffled to remove dependence on a particular representation
-memory layout.
+shuffled.
 For each $n=10^i$ we selected the closest integer $k$ to
 $\sqrt{2n-6}$ so that $n(A_k)\approx n$.
 
@@ -3508,7 +3590,7 @@ $\sqrt{2n-6}$ so that $n(A_k)\approx n$.
   \node at (5.0,-0.4) {$10^7$};
 
   \draw[->] (-0.2,0) -- (5.2,0) node[right] {$n$};
-  \draw[->] (0,-0.2) -- (0,6.25) node[above] {time (ns)};
+  \draw[->] (0,-0.2) -- (0,6.25) node[above] {Time (ns)};
 
   \draw[very thick,color=black] (0, -0.009*1.3333) -- (1.25, 1.088*1.3333) -- (2.5, 1.947*1.3333) -- (3.75, 3.013*1.3333)
     -- (5, 3.838*1.3333);
@@ -3540,7 +3622,7 @@ $\quad$
   \node at (5.0,-0.4) {$10^7$};
 
   \draw[->] (-0.2,0) -- (5.2,0) node[right] {$n$};
-  \draw[->] (0,-0.2) -- (0,6.25) node[above] {time (ns)};
+  \draw[->] (0,-0.2) -- (0,6.25) node[above] {Time (ns)};
 
   \draw[very thick,color=brown] (0, 1.060) -- (1.25, 2.205) -- (2.5, 3.510) -- (3.75,  5.151)
     -- (5, 6.352);
@@ -3630,13 +3712,13 @@ Algorithm~\ref{A:hartman_impl} is trickier to adapt to
 parallel execution. The first difficulty to consider is that
 the recursive calls made in
 Algorithm~\ref{A:hartman_impl} relied on a sequential
-execution order. If we store the mark
-and neighbor range ($S[v]$ and $N[v]$) for $x$, $y$, and $z$ alongside
+execution order. If we save a local copy of
+$S(v), B(v), F(v)$ for each $v\in\{x, y,z\}$ alongside
 each frame, then the recursive calls in
 Case~3.2.1 with $u_2=x$, Case~3.2.2,
 Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$ become order independent.
 Unfortunately, in Case~3.2.1 with $u_2\ne x$ and Case~3.2.3.2 with $u_2\ne y$,
-the second recursive call will always depend on the reduced color list $L[u_2]$
+the second recursive call will always depend on the reduced color list $L(u_2)$
 produced by the first call.
 
 The hurdle of dependent frames can be overcome by maintaining a shared
@@ -3657,34 +3739,26 @@ walk the linked list of frames waiting on $v$
 and push a reference to each frame onto the shared stack.
 
 Another important detail
-is that the new unique face marks assigned to $S$ must be unique
+is that each new face mark $\text{max}(S)+1$ assigned to $S$ must be unique
 across all threads, or else we risk corruption and data races against
 the array $M$.
-Uniqueness across threads can be ensured by using a shared atomic mark
-counter.
+Uniqueness across threads can be ensured by using a shared atomic
+counter to track $\text{max}(S)$.
 Contention can be minimized by having
 threads reserve marks in chunks, rather than performing an
 atomic fetch-add operation for each new mark.
 
-In Case~3.2.1, if $u_2= x$, then $S[x]$ must be assigned a new unique mark
+In Case~3.2.1, if $u_2= x$, then $S(x)$ should be assigned a new mark
 in the recursive frame handling the $G_2$ subgraph to
-prevent future writes to $M[S[x]]$ from
-interfering with reads to $M[S[x]]$ regarding the vertices on the
-outer face of $G_1$ marked with $S[x]$. In
+prevent future writes to $M(S(x))$ from
+interfering with reads from $M(S(x))$ regarding the vertices on the
+outer face of $G_1$ marked with $S(x)$; technically this is optional,
+as the data race will never affect the outcome of the algorithm. In
 Figure~\ref{F:hartman_impl} the mark assigned to the bottom
 right vertex $x$ of the graph in the step at the bottom right of the
 page would change from $4$ to $7$ in the $G_2$ block.
 This would then ripple forward, with the next new mark being
 an $8$, and so on.
-
-Lock contention can be reduced in a similar manner to
-Algorithm~\ref{A:poh_linear} by having each thread maintain a local stack of
-frames. Unfortunately, if a frame is created that needs to await the coloring
-of a vertex, then it must be added to the shared pool since any thread
-may color that vertex.
-Moreover, if a frame colors a
-vertex that has another frame waiting on it, then the lock must be
-acquired.
 
 \begin{figure}[ht]
 \begin{center}
@@ -3719,12 +3793,18 @@ acquired.
 \end{center}
 \end{figure}
 
+Lock contention can be reduced in a similar manner to
+Algorithm~\ref{A:poh_linear} by having each thread maintain a local stack of
+frames. If a frame needs to await the coloring
+of a vertex, then it must be added to the shared pool since any thread
+may color that vertex. Moreover, if a frame colors a
+vertex that another frame is waiting on, then the lock must be
+acquired.
+
 Benchmarks in Figure~\ref{F:benchmark_hartman_thread}
 showed some benefit to the parallel
 version of Algorithm~\ref{A:hartman_impl} when $n\ge 10^4$, with
-significant performance improvements only appearing for very large graphs.
-The same sample of plane
-triangulations was used as in Figure~\ref{F:benchmark}.
+significant performance improvements appearing for very large graphs.
 
 \begin{thebibliography}{99}
 

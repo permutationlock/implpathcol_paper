@@ -3793,9 +3793,9 @@ an $8$, and so on.
 \end{center}
 \end{figure}
 
-Lock contention can be reduced in a similar manner to
+Lock contention can be reduced the same as in
 Algorithm~\ref{A:poh_linear} by having each thread maintain a local stack of
-frames. If a frame needs to await the coloring
+frames, but if a frame needs to await the coloring
 of a vertex, then it must be added to the shared pool since any thread
 may color that vertex. Moreover, if a frame colors a
 vertex that another frame is waiting on, then the lock must be

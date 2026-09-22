@@ -568,11 +568,11 @@ Note that $u,u_2,u_1$ is a face of $G$, see Figure~\ref{F:poh_bfs}.
 If $c(u)=c(u_2)$, then $u\in P_2$.
 Make a recursive call with the input $(u_1, w_1, \adj{u_1}{u}, w_2)$
 to color
-$\text{Int}(C[u_1,u]\cup u_1u)$. Otherwise, $c(u)=c(v_1)$ and
+$\text{Int}(C_1)$ where $C_1=C[u_1,u]\cup u_1u$. Otherwise, $c(u)=c(v_1)$ and
 $u\in P_1$. Iterate through $N(u)$ to find $\adj{u}{u_2}$.
 Make a recursive call with the input
 $(u, w_1, \adj{u}{u_2}, w_2)$
-to color $\text{Int}(C[u,u_2]\cup uu_2)$. 
+to color $\text{Int}(C_1)$, where $C_1=[u,u_2]\cup uu_2$. 
 
 \textbf{Case 2.} Suppose that $c(u)=0$, i.e. $u\in \text{Int}(C)-C$.
 Perform a breadth-first search in $\text{Int}(C)-C$ starting from $u$;
@@ -612,6 +612,7 @@ are done.
   \node (vi1) [label=below right:$w_2$] at (0.5cm, -0.75cm) {};
   \node (vk) [label=below left:$u_2$] at (-2cm, -0.75cm) {};
   \node (u) [label=above right:$u$] at (-1.25cm, -1.05cm) {};
+  \node (C1) [scale=1.25] [draw=none, fill=none] at (-0.7cm, -0.05cm) {$C_1$};
   \draw (v1) edge (vk);
   \draw (v1) edge (u);
   \draw (vk) edge (u);
@@ -624,6 +625,7 @@ are done.
   \node (pvi1) [label=below right:$w_2$] at (0.5cm, 2.0cm) {};
   \node (pvk) [label=below left:$u_2$] at (-2cm, 2.0cm) {};
   \node (pu) [label=below right:$u$] at (-1.25cm, 3.55cm) {};
+  \node (CP1) [scale=1.25] [draw=none, fill=none] at (-0.7cm, 2.55cm) {$C_1$};
   \draw (pv1) edge (pvk);
   \draw (pv1) edge (pu);
   \draw (pvk) edge (pu);

@@ -233,7 +233,8 @@ and the edge $v_1v_k$.
 
 A \defterm{(vertex) coloring} of a graph $G$ is a map
 $c:V(G)\to\mathbb{N}$; a $k$-coloring, $k\in\mathbb{N}$,
-is map $c:V(G)\to\{1,2,\ldots,k\}$. The color class of $d\in\mathbb{N}$
+is a map $c:V(G)\to\{1,2,\ldots,k\}$. The \defterm{color class} of
+$d\in\mathbb{N}$
 is the set $c^{-1}(d)\subseteq V(G)$. A \defterm{path coloring}
 is a coloring where each color class induces a union of disjoint
 paths (more commonly a \emph{disjoint union} of paths,
@@ -315,9 +316,10 @@ and \defterm{biconnected} if $G-v$ is connected
 for every $v\in G$.
 A plane graph $G$ is \defterm{triangulated} if it is connected
 and $n(G)\le 2$, or if every face is a
-\defterm{triangle} (a cycle of length $3$). If every face but the
+\defterm{triangle} (a cycle with $3$ vertices). If every face but
+(maybe) the
 outer face is a triangle, then $G$ is
-\defterm{weakly triangulated}.
+\defterm{weakly triangulated}; a triangulated graph is weakly-triangulated.
 If $G$ is biconnected and $n(G)\ge 3$, then its outer face is a cycle.
 
 The input for each algorithm will be a biconnected, weakly triangulated
@@ -328,12 +330,11 @@ $m=3n-6$ if $G$ is triangulated, so $\mathcal{O}(m)=\mathcal{O}(n)$ and
 it is equivalent to take the input size
 to be $m$.
 Arbitrary planar graphs may be
-plane embedded and triangulated in $\mathcal{O}(n)$ time, see e.g. Hopcroft
+plane embedded and triangulated (by adding edges) in $\mathcal{O}(n)$ time, see e.g. Hopcroft
 and Tarjan~\cite{Hop1974} or Boyer and
 Myrvold~\cite{BoMy2004}.
 
-We will represent $G$ for computation via
-\textit{adjacency lists}:
+We will represent $G$ for computation via \textit{adjacency lists}:
 a list, for each vertex $v$, of the neighbors of $v$.
 A vertex is represented by an integer $0\dots n-1$.
 The order of each list represents the embedding. In algorithms
@@ -345,7 +346,7 @@ and $\prv_v(u)\in N(V)$ the neighbor clockwise from $u$.
 In algorithms
 $\adj{v}{u}$ will be a reference to $u$'s entry in $N(v)$, i.e.
 $\adj{v}{u}$ represents both $u$ and the position of $u$ in the
-list $N(v)$;
+adjacency list $N(v)$;
 define $\nxt(\adj{v}{u})=\adj{v}{(\nxt_v(u))}$ and
 $\prv(\adj{v}{u})=\adj{v}{(\prv_v(u))}$.
 
@@ -408,7 +409,7 @@ $\text{Wrk}(u)$ must be $(v,\adj{v}{u})$.
 
 The $N^*$ notation above was just to distinguish between the two
 representations: if an algorithm has an input graph represented
-by augmented adjacency lists, we'll still refer to $v$'s list via $N(v)$,
+by augmented adjacency lists, we'll simply refer to $v$'s list via $N(v)$,
 but we may make use of the fact that $\adj{u}{v}$ is accessible from
 from $\adj{v}{u}$.
 
@@ -709,15 +710,14 @@ $\qquad$
 \end{center}
 \end{figure}
 
-Let $G$ be a triangulated plane graph. Let
-$\text{Adj}$ be an adjacency list representation of $G$, and
+Let $G$ be a triangulated plane graph and
 let $C=v_1,v_2,v_3$ be the outer triangle of $G$ labeled in clockwise order.
 We may compute a path $3$-coloring $c$ of $G$ as follows.
 Create a length $n$ integer array $c$ and initialize each entry to zero.
 Assign $c(v_1)\leftarrow 1$,
 $c(v_2)\leftarrow 2$, and $c(v_3)\leftarrow 2$. Finally, apply
 Algorithm~\ref{A:poh_bfs}
-with input $\text{Adj}$, $c$, and
+with input $G$, $c$, and
 $(v_1, v_1, \adj{{v_1}}{v_2}, v_3)$.
 
 Unfortunately, Algorithm~\ref{A:poh_bfs}
@@ -904,17 +904,20 @@ $u=w_2$ or $u=w_1$. Thus $C$ is a face and we are done.
 
 \textbf{Recursive case.}
 Suppose that $c(u)=0$, i.e. $u\in\text{Int}(C)-C$.
+Let $d\in \{1,2,3\}\setminus\{c(u_1),c(u_2)\}$.
+Let $\ell_3=\max_{v\in G}S(v)+1$. We will
+construct an induced $u,w$-path $P_3=v_1,v_2,\ldots, v_j$
+such that $v_1,v_2,\ldots,v_j\in N(P_1)$,
+and color each $v\in P_3$ with $c(v)\leftarrow d$.
+We'll also mark each $v\in N(P_3)\setminus V(C)$
+with $S(v)\leftarrow\ell_3$, decompose
+$\text{Int}(P_3\cup P_k\cup uu_k\cup ww_k)$
+into subgraphs bounded by maximal induced cycles (for each $k=1,2$),
+and make a recursive call for each such cycle.
+It may be useful
+to refer to Figures~\ref{F:poh_linear_1} and \ref{F:poh_linear_2}.
 
 \textbf{Step 1.}
-Assign $c(u)\leftarrow d$ where $d\in \{1,2,3\}\setminus\{c(u_1),c(u_2)\}$.
-Let $\ell_3=\max_{v\in G}S(v)+1$. We will
-iteratively construct an induced $u,w$-path $P_3=v_1,v_2,\ldots, v_j$
-with $v_1,v_2,\ldots,v_j\in N(P_1)$, starting from $v_1=u$,
-and color it with $c(u)$.
-We will simultaneously mark the vertices
-in $N(P_3)\setminus V(C)$ with $\ell_3$, and recursively
-color $\text{Int}(C)-C-P_3$.
-
 Assign $j\leftarrow 1$ and $v_j\leftarrow u$;
 set $v_0\leftarrow u_2$ so that $v_{j-1}$ is defined.
 Assign $i\leftarrow 1$ and $\adj{v_i}{s}\leftarrow \adj{v_i}{u_2}$;
@@ -922,7 +925,7 @@ here $\adj{v_i}{s}$ stores the last edge $v_is$ encountered where
 $v_i\in P_3$ and
 $s\in P_2$.
 
-\textbf{Step 2.} Assign $c(v_j)\leftarrow c(u)$.
+\textbf{Step 2.} Assign $c(v_j)\leftarrow d$.
 We will iterate through $N(v_j)$, starting after
 $v_{j-1}$.
 Find $\adj{v_j}{v_{j-1}}$ in $N(v_j)$ and set
@@ -936,30 +939,27 @@ $\adj{v_j}{t}$ will store the last edge $v_jt$ encountered
 such that $t\in P_1$ (if any).
 
 \textbf{Step 3.} We first consider the neighbors of $v_j$ between
-$v_{j-1}$ and $p_1(v_j)$ counter-clockwise. It will be useful
-to refer to Figure~\ref{F:poh_linear_1}.
+$v_{j-1}$ and $p_1(v_j)$ counter-clockwise. Each execution of Step~3
+will handle one neighbor: $\adj{v_j}{v}$.
+Refer to Figure~\ref{F:poh_linear_1}.
 
-\textbf{Case 3.1.} Suppose that $c(v)=0$ and $S(v)\ne \ell_1$, i.e.
-$v\in\text{Int}(C)-C-N(P_1)$.
-Assign $S(v)\leftarrow \ell_3$ and
+\textbf{Case 3.1.} Suppose that $c(v)=0$, i.e. $v\in\text{Int}(C)-C$.
+If $S(v)=\ell_1$, i.e. $v\in N(P_1)$, and $y=\text{NULL}$, then set
+$y\leftarrow v$. Set $S(v)\leftarrow \ell_3$ and
 $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$.
-Go to Step 3.
+Go back to Step 3.
 
 \textbf{Case 3.2.} Suppose that $c(v)=c(u_2)$, i.e. $v\in P_2$.
 Make a recursive call with input $(v_i, \adj{v_i}{s}, \ell_3)$
-to color $\text{Int}(P_3[v_i,v_j]\cup C[v,s]\cup v_is\cup v_jv)$.
+to color $\text{Int}(C_1)$, where
+$C_1=P_3[v_i,v_j]\cup C[v,s]\cup v_is\cup v_jv$;
+see Figure~\ref{F:poh_linear_1}.
 Assign $i\leftarrow j$, $\adj{v_i}{s}\leftarrow \adj{v_j}{v}$, and
-$\adj{v_j}{v}=\nxt(\adj{v_j}{v})$. Go to Step 3.
+$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Go back to Step 3.
 
-\textbf{Case 3.3.} Suppose that $c(v)=0$ and $S(v)=\ell_1$, i.e.
-$v\in N(P_1)\setminus V(C)$.
-If $y=\text{NULL}$, assign $y\leftarrow v$.
-Assign $S(v)\leftarrow \ell_3$ and
-$\adj{v_j}{v}=\nxt(\adj{v_j}{v})$. Go to Step 3.
-
-\textbf{Case 3.4.} Suppose that $c(v)=c(u_1)$, i.e. $v=p_1(v_j)\in P_1$.
+\textbf{Case 3.3.} Suppose that $c(v)=c(u_1)$, i.e. $v=p_1(v_j)\in P_1$.
 Assign $\adj{v_j}{t}\leftarrow \adj{v_j}{v}$ and
-$\adj{v_j}{v}=\nxt(\adj{v_j}{v})$. Go to Step 4.
+$\adj{v_j}{v}=\nxt(\adj{v_j}{v})$. Proceed to Step 4.
 
 Note that if $y=\text{NULL}$, then $v_j=w$. To see this, observe that
 since $v\in P_1$,
@@ -969,34 +969,69 @@ $\prv_{v_j}(v)\in C-P_1=P_2$.
 
 \textbf{Step 4.} We now consider
 neighbors of $v_j$ between $p_1(v_j)$ and $v_{j-1}$ counter-clockwise.
-Note that we must have $\adj{v_j}{t}\ne\text{NULL}$.
-Refer to Figure~\ref{F:poh_linear_2}.
+Each execution of Step~4 will handle one neighbor: $\adj{v_j}{v}$.
+Note that $\adj{v_j}{t}\ne\text{NULL}$.
 
 \textbf{Case 4.1.} Suppose that $c(v)=0$, i.e. $v\in\text{Int}(C)-C-P_3$.
 Assign $S(v)\leftarrow \ell_3$ and $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$.
-Go to Step 4.
+Go back to Step 4.
 
 \textbf{Case 4.2.} Suppose that $c(v)\ne 0$, i.e. $v\in C$ or
 $v\in P_3$. Make a recursive
-call with input $(v_j, \adj{v_j}{t}, \ell_3)$.
+call with input $(v_j, \adj{v_j}{t}, \ell_3)$ to color $\text{Int}(C_1)$,
+where both the definition of $C_1$ and the next steps to take depend
+on $c(v)$. Refer to Figure~\ref{F:poh_linear_2}.
 
-If $c(v)=c(u_1)$, i.e. $v\in P_1$, then the recursive
-call colors $\text{Int}(C[v,t]\cup v_j\cup v_jt\cup v_jv)$.
-Assign $\adj{v_j}{t}\leftarrow\adj{v_j}{v}$. Go to Step 4.
+If $c(v)=c(u_1)$, i.e. $v\in P_1$, then
+$C_1=C[v,t]\cup v_j\cup v_jt\cup v_jv$.
+Assign $\adj{v_j}{t}\leftarrow\adj{v_j}{v}$ and
+$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Go back to Step 4.
 
 Otherwise,
-$v=v_{j-1}$ and the recursive call
-colors $\text{Int}(C[p_1(v),t]\cup P_3[v,v_j]\cup vp_1(v)\cup v_jt)$.
-Go to Step 5. (Note that we do not need to compute $p_1(v)$.)
+$v=v_{j-1}$ (either $j>1$ and $v\in P_3$, or $j=1$ and
+$v=u_2\in P_2$).
+Then $C_1=C[p_1(v),t]\cup P_3[v,v_j]\cup vp_1(v)\cup v_jt$
+(we don't compute $p_1(v)$). Proceed to Step 5. 
 
 \textbf{Step 5.} If $y\ne\text{NULL}$,
 assign $j\leftarrow j+1$, $v_j\leftarrow y$, and
-go to Step 2. Otherwise, $v_j=w$ and we are done.
+go back to Step 2. Otherwise, $v_j=w$ and we are done.
 \end{algorithm}
 
 \begin{figure}[ht]
 \begin{center}
 \SolidGraph
+\begin{tikzpicture}[scale=1.6]
+    \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
+    \node (vp) [label=above:${p_1(v_j)}$] at (1.625cm, 1.25cm) {};
+    \node (vi) [label=above:${w_1}$] at (2.5cm, 1.0cm) {};
+    \node (vi1) [label=below:${w_2}$] at (2.5cm, 0.0cm) {};
+    \node (vs) [label=below:${s}$] at (0.75cm, -0.25cm) {};
+    \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
+    \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
+    \node (ur) [label=above:${v_r}$] at (0.75cm, 0.5cm) {};
+    \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
+    \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
+    \node (y) [label=below:${v}$] at (2.0cm, 0.4cm) {};
+
+    \begin{pgfonlayer}{bg}
+        \draw (v1) edge[dashed, bend left=15] (vp);
+        \draw (vp) edge[dashed] (vi);
+        \draw (vi) edge (vi1);
+        \draw (vi1) edge[dashed, bend left=15] (vs);
+        \draw (vs) edge[dashed] (vk);
+        \draw (vk) edge (v1);
+        \draw (v1) edge (u1);
+        \draw (vs) edge (ur);
+        \draw (vk) edge (u1);
+        \draw (u1) edge[dashed] (ur);
+        \draw (ur) edge[dashed] (uj1);
+        \draw (uj1) edge (uj);
+        \draw (uj) edge (y);
+        \draw (uj) edge (vp);
+    \end{pgfonlayer}
+\end{tikzpicture}
+$\quad$
 \begin{tikzpicture}[scale=1.6]
     \node (v1) [label=above:${u_1}$] at (-0.25cm, 1.0cm) {};
     \node (vp) [label=above:${p_1(v_j)}$] at (1.375cm, 1.25cm) {};
@@ -1009,6 +1044,8 @@ go to Step 2. Otherwise, $v_j=w$ and we are done.
     \node (ur) [label=above:${v_i}$] at (0.5cm, 0.5cm) {};
     \node (uj1) [label=above:${v_{j-1}}$] at (1.0cm, 0.5cm) {};
     \node (uj) [label=above right:${v_j}$] at (1.375cm, 0.5cm) {};
+
+	\node (D) [scale=1.25] [draw=none, fill=none] at (0.9375cm, 0.125cm) {$C_1$};
 
     \begin{pgfonlayer}{bg}
         \draw (v1) edge[dashed, bend left=15] (vp);
@@ -1025,37 +1062,6 @@ go to Step 2. Otherwise, $v_j=w$ and we are done.
         \draw (ur) edge[dashed] (uj1);
         \draw (uj1) edge (uj);
         \draw (uj) edge (vt);
-        \draw (uj) edge (vp);
-    \end{pgfonlayer}
-\end{tikzpicture}
-$\quad$
-\begin{tikzpicture}[scale=1.6]
-    \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
-    \node (vp) [label=above:${p_1(v_j)}$] at (1.625cm, 1.25cm) {};
-    \node (vi) [label=above:${w_1}$] at (2.5cm, 1.0cm) {};
-    \node (vi1) [label=below:${w_2}$] at (2.5cm, 0.0cm) {};
-    \node (vs) [label=below:${s}$] at (0.75cm, -0.25cm) {};
-    \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
-    \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
-    \node (ur) [label=above:${v_r}$] at (0.75cm, 0.5cm) {};
-    \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
-    \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
-    \node (y) [label=below:${v}$] at (2.0cm, 0.5cm) {};
-
-    \begin{pgfonlayer}{bg}
-        \draw (v1) edge[dashed, bend left=15] (vp);
-        \draw (vp) edge[dashed] (vi);
-        \draw (vi) edge (vi1);
-        \draw (vi1) edge[dashed, bend left=15] (vs);
-        \draw (vs) edge[dashed] (vk);
-        \draw (vk) edge (v1);
-        \draw (v1) edge (u1);
-        \draw (vs) edge (ur);
-        \draw (vk) edge (u1);
-        \draw (u1) edge[dashed] (ur);
-        \draw (ur) edge[dashed] (uj1);
-        \draw (uj1) edge (uj);
-        \draw (uj) edge (y);
         \draw (uj) edge (vp);
     \end{pgfonlayer}
 \end{tikzpicture}
@@ -1091,8 +1097,8 @@ $\quad$
         \draw (uj) edge (v);
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{Algorithm~\ref{A:poh_linear}, Case~3.2 (left), Case~3.3 (middle),
-and Case~3.4 (right).}\label{F:poh_linear_1}
+\caption{Algorithm~\ref{A:poh_linear}, Case~3.1 (left), Case~3.2 (middle),
+and Case~3.3 (right).}\label{F:poh_linear_1}
 \end{center}
 \end{figure}
 
@@ -1112,6 +1118,8 @@ and Case~3.4 (right).}\label{F:poh_linear_1}
     \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
     \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
     \node (y) [label=below:${y}$] at (2.0cm, 0.5cm) {};
+
+	\node (D) [scale=1.25] [draw=none, fill=none] at (1.585cm, 1.04cm) {$C_1$};
 
     \begin{pgfonlayer}{bg}
         \draw (v1) edge[dashed, bend left=15] (vt);
@@ -1146,6 +1154,8 @@ $\quad$
     \node (uj1) [label=below:${v}$] at (1.25cm, 0.5cm) {};
     \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
     \node (y) [label=below:${y}$] at (2.0cm, 0.5cm) {};
+
+	\node (D) [scale=1.25] [draw=none, fill=none] at (1.5cm, 0.915cm) {$C_1$};
 
     \begin{pgfonlayer}{bg}
         \draw (v1) edge[dashed, bend left=15] (vt);
@@ -2556,7 +2566,7 @@ Let $\text{max}(S)=\text{max}_{v\in G} S(v)$ and
 $m_C=m(\text{Int}(C))$.
 If $z\ne x$, then define $\ell=\text{max}(S)$.
 If $z=x$ and $C[y,x]\ne y,x$, define $\ell=\text{max}(S)+1$.
-Otherwise, define $\ell=\text{max}(S)+2$. Assume
+Otherwise, define $\ell=\text{max}(S)+2$. Assume that
 $\ell < 2(m-m_C) + 4$.
 
 Let $M$
@@ -2574,7 +2584,8 @@ $\text{deg}_c(z)\le1$. If $z=y$, or if $C[z,y]=z,y$ and $L(z)$ did
 not contain the color in $L(y)$, then $\text{deg}_c(z)=0$. Moreover,
 afterwards $\text{max}(S)\le\ell+2(m_C-1)$.
 
-\textbf{Procedure.} Assign $\adj{z}{u_1}\leftarrow B(z)$.
+\textbf{Procedure.} Assign $\adj{z}{u_1}\leftarrow B(z)$. Our strategy
+will follow the proof of Lemma~\ref{L:hartman3}.
 
 \textbf{Base case.} If $B(z)=F(z)$, then $C=z,u_1$
 is a length $2$ path. If $u_1\ne x$ and $u_1\ne y$, remove the
@@ -2584,10 +2595,10 @@ $m_C=1$ and $\text{max}(S)\le\ell+ 2(m_C-1)=\ell$ by definition.
 
 \textbf{Recursive case.} Suppose that $B(z)\ne F(z)$.
 Note that $n(C)>2$ and therefore $C$ is a cycle. Assign
-$\adj{z}{u_2}\leftarrow\nxt(\adj{z}{u_1})$. That
-$\text{max}(S)\le\ell+2(m_C-1)$ is immediate for Cases~1, 2,
-and 3.1, so we only argue Case~3.2.
-It will be useful to refer to
+$\adj{z}{u_2}\leftarrow\nxt(\adj{z}{u_1})$. It will be immediately apparent
+that $\text{max}(S)\le\ell+2(m_C-1)$ after Cases~1, 2,
+and 3.1, so we will only argue that this bound is satisfied after Case~3.2.
+It may be useful to refer to
 Figures~\ref{F:hartman_1}, \ref{F:hartman_3_2}, and
 \ref{F:hartman_3_2_3}.
 

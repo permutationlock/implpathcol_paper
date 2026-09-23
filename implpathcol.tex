@@ -345,8 +345,8 @@ the neighbor counter-clockwise from $u$ around $v$,
 and $\prv_v(u)\in N(V)$ the neighbor clockwise from $u$.
 In algorithms
 $\adj{v}{u}$ will be a reference to $u$'s entry in $N(v)$, i.e.
-$\adj{v}{u}$ represents both $u$ and the position of $u$ in the
-adjacency list $N(v)$;
+$\adj{v}{u}$ represents both $u$ and the position of $u$ in $v$'s
+adjacency list;
 define $\nxt(\adj{v}{u})=\adj{v}{(\nxt_v(u))}$ and
 $\prv(\adj{v}{u})=\adj{v}{(\prv_v(u))}$.
 
@@ -407,11 +407,11 @@ $\text{Wrk}(v)$, the array $\text{Wrk}(u)$ will contain only entries for
 vertices $w$ where $w\le v$. So the last element of
 $\text{Wrk}(u)$ must be $(v,\adj{v}{u})$.
 
-The $N^*$ notation above was just to distinguish between the two
-representations: if an algorithm has an input graph represented
-by augmented adjacency lists, we'll simply refer to $v$'s list via $N(v)$,
-but we may make use of the fact that $\adj{u}{v}$ is accessible from
-from $\adj{v}{u}$.
+The explicit $(u,\adj{u}{v})\in N^*(v)$ notation above was to distinguish
+between the two
+representations: going forward, if an algorithm takes as input a graph represented
+by augmented adjacency lists, we'll simply use $u\in N(v)$ to refer
+to a neighbor $u$ in $v$'s list.
 
 \section{Path Coloring}\label{S:path_color}
 
@@ -542,7 +542,7 @@ $u,w$-path and/or locate a chord edge, see Algorithm~\ref{A:poh_bfs}.
 \begin{algorithm}\label{A:poh_bfs}
 \textbf{Input.} 
 Let $C$ be a cycle or length $2$ path
-in a weakly triangulated plane graph $G$.
+in a weakly triangulated plane graph $G$ represented via adjacency lists.
 Let  $c$ be a length $n$ array representing a $2$-coloring of $C$ such
 that each color class induces a nonempty path, respectively
 $P_1=C[u_1,w_1]$ and $P_2=C[w_2,u_2]$ for $u_1,u_2,w_1,w_2\in C$.
@@ -558,7 +558,7 @@ $\text{Int}(C)$ extending the original $2$-coloring of $C$. Moreover, if
 $v\in \text{Int}(C)-C$ has a neighbor $u\in C$, then $c(v)\ne c(u)$.
 
 \textbf{Base case.} If $u_1=w_1$ and $u_2=w_2$, then $C$ is a length
-$2$-path and $\text{Int}(C)=C$ is path $2$-colored.
+$2$-path and $\text{Int}(C)=C$.
 
 \textbf{Recursive case.}
 Let $\adj{{u_1}}{u}\leftarrow\nxt(\adj{{u_1}}{u_2})$.
@@ -572,7 +572,7 @@ $\text{Int}(C_1)$ where $C_1=C[u_1,u]\cup u_1u$. Otherwise, $c(u)=c(v_1)$ and
 $u\in P_1$. Iterate through $N(u)$ to find $\adj{u}{u_2}$.
 Make a recursive call with the input
 $(u, w_1, \adj{u}{u_2}, w_2)$
-to color $\text{Int}(C_1)$, where $C_1=[u,u_2]\cup uu_2$. 
+to color $\text{Int}(C_1)$, where $C_1=C[u,u_2]\cup uu_2$. 
 
 \textbf{Case 2.} Suppose that $c(u)=0$, i.e. $u\in \text{Int}(C)-C$.
 Perform a breadth-first search in $\text{Int}(C)-C$ starting from $u$;
@@ -878,12 +878,13 @@ i.e. $V(C[p_1(v),w_1])\cap N(v)=\{p_1(v)\}$.
 \begin{algorithm}\label{A:poh_linear}
 \textbf{Input.} Let $C$ be an induced cycle
 in a weakly triangulated plane
-graph $G$.
+graph $G$ represented via adjacency lists.
 Let $c$ be a length $n$ array
 representing a $2$-coloring of $C$ such
-that each color class induces a path, respectively $P_1=C[u_1,w_1]$ and
-$P_2=C[w_2,u_2]$ for $u_1,u_2,w_1,w_2\in C$. Assume $c(v)=0$ for each
-$v\in\text{Int}(C)-C$.
+that each color class induces a nonempty path,
+respectively $P_1=C[u_1,w_1]$ and
+$P_2=C[w_2,u_2]$, where $u_1,u_2,w_1,w_2\in C$. Assume that $c(v)=0$
+for each $v\in\text{Int}(C)-C$.
 Let $S$ be a length $n$ integer array and let $\ell_1$ be an integer
 such that for each $v\in\text{Int}(C)-C$ we have $S(v)=\ell_1$ if and only if
 $v\in N(P_1)$.
@@ -891,12 +892,12 @@ $v\in N(P_1)$.
 The concrete input will be $G$, $c$ and $S$,
 along with the ordered pair $(u_1, \adj{{u_1}}{u_2}, \ell_1)$.
 
-\textbf{Output.} For each vertex $v\in\text{Int}(C)-C$, a color in
+\textbf{Output.} For each vertex $v\in\text{Int}(C)-C$ a color in
 $\{1,2,3\}$ will be
 assigned to $c(v)$ such that $c$ represents a path $3$-coloring of
-$\text{Int}(C)$ extending the original $2$-coloring of $C$. Moreover, if
-$v\in N(P_1)$, then $c(v)\ne c(u_1)$, and if $v\in N(P_2)$, then
-$c(v)\ne c(u_2)$.
+$\text{Int}(C)$ extending the original $2$-coloring of $C$.
+Moreover, if $v\in \text{Int}(C)-C$ has a neighbor $u\in C$,
+then $c(v)\ne c(u)$.
 
 \textbf{Procedure.} Assign $\adj{u_1}{u}\leftarrow\nxt(\adj{u_1}{u_2})$.
 
@@ -914,7 +915,8 @@ and color each $v\in P_3$ with $c(v)\leftarrow d$.
 We'll also mark each $v\in N(P_3)\setminus V(C)$
 with $S(v)\leftarrow\ell_3$, decompose
 $\text{Int}(P_3\cup P_k\cup uu_k\cup ww_k)$
-into subgraphs bounded by maximal induced cycles (for each $k=1,2$),
+for $k=1,2$
+into maximal subgraphs that are bounded by induced cycles,
 and make a recursive call for each such cycle.
 It may be useful
 to refer to Figures~\ref{F:poh_linear_1} and \ref{F:poh_linear_2}.
@@ -955,7 +957,7 @@ Go back to Step 3.
 Make a recursive call with input $(v_i, \adj{v_i}{s}, \ell_3)$
 to color $\text{Int}(C_1)$, where
 $C_1=P_3[v_i,v_j]\cup C[v,s]\cup v_is\cup v_jv$;
-see Figure~\ref{F:poh_linear_1}.
+see Figure~\ref{F:poh_linear_1} (middle).
 Assign $i\leftarrow j$, $\adj{v_i}{s}\leftarrow \adj{v_j}{v}$, and
 $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Go back to Step 3.
 
@@ -990,10 +992,10 @@ Assign $\adj{v_j}{t}\leftarrow\adj{v_j}{v}$ and
 $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Go back to Step 4.
 
 Otherwise,
-$v=v_{j-1}$ (either $j>1$ and $v\in P_3$, or $j=1$ and
-$v=u_2\in P_2$).
-Then $C_1=C[p_1(v),t]\cup P_3[v,v_j]\cup vp_1(v)\cup v_jt$
-(we don't compute $p_1(v)$). Proceed to Step 5. 
+$v=v_{j-1}$ (either $j>1$ and $v\in P_3$, or $j=1$ so
+$v=u_2\in P_2$ and $t=u_1$).
+Then $C_1=C[p_1(v),t]\cup P_3[v,v_j]\cup vp_1(v)\cup v_jt$.
+Proceed to Step 5. 
 
 \textbf{Step 5.} If $y\ne\text{NULL}$,
 assign $j\leftarrow j+1$, $v_j\leftarrow y$, and
@@ -1011,7 +1013,7 @@ go back to Step 2. Otherwise, $v_j=w$ and we are done.
     \node (vs) [label=below:${s}$] at (0.75cm, -0.25cm) {};
     \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
     \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
-    \node (ur) [label=above:${v_r}$] at (0.75cm, 0.5cm) {};
+    \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
     \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
     \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
     \node (y) [label=below:${v}$] at (2.0cm, 0.4cm) {};
@@ -2051,7 +2053,7 @@ in $N(P_1)$ counter-clockwise from $v_{k-1}$ around $v_k$, a contradiction.
 % \end{center}
 % \end{figure}
 
-Given a triangulated plane graph $G$ with adjacency list representation
+Given a triangulated plane graph $G$ represented via adjacency lists,
 we can apply
 Algorithm~\ref{A:poh_linear} as follows. First, create length $n$ integer
 arrays for $c$ and $S$, initializing each entry to zero.
@@ -2097,7 +2099,10 @@ one edge at a time, and simultaneously remove
 $P$ from the subgraph in consideration. If $x\ne z$, then $z$ is
 the furthest clockwise end of the path $P$ being colored; the
 the rest of $P$
-(including the original ``$x$'') has been removed.
+(including the original ``$x$'') has been removed. The only manner in
+which our algorithm differs from Hartman's proof is that if $x$ ever
+immediately follows $y$ clockwise around $C$, then we swap $x$ and $y$
+(see Case~1 below).
 
 Given a graph $G$ and a coloring $c$ of $G$, for each $v\in G$ we
 define $\text{deg}_c(v)$ to be the number of neighbors of $v$ that share a color
@@ -2544,8 +2549,9 @@ see augmented adjacency lists in Section~\ref{S:representation}.
 
 \begin{algorithm}\label{A:hartman_impl}
 \textbf{Input.} Let $C$ be a cycle or length $2$ path in a
-weakly triangulated plane graph $G$.
-Let $x,y,z\in C$ be vertices such that $z\in C[x,y]$.
+weakly triangulated plane graph $G$ represented via augmented
+adjacency lists.
+Let $x,y,z\in C$ be such that $z\in C[x,y]$.
 
 Let $L$ be a length $n$ array of lists of colors
 such that for $v\in\{x,y,z\}$ the list $L(v)$ has length one,
@@ -2562,12 +2568,12 @@ and $f$ is the vertex
 immediately clockwise from $v$ around $C$.
 
 Let $S$ be a length $n$ integer array such
-that $S(v)\ne 0$ if and only if $v\in C$, and
-$S(v)=S(x)$ if and only if $v\in C[x,z]-z$.
+that, for $v\in\text{Int}(C)$, $S(v)\ne 0$ if and only if $v\in C$, and
+$S(v)=S(x)$ if and only if $v\in C[x,z]-z$ (or $v=x=z$).
 Let $\text{max}(S)=\text{max}_{v\in G} S(v)$ and
 $m_C=m(\text{Int}(C))$.
 If $z\ne x$, then define $\ell=\text{max}(S)$.
-If $z=x$ and $C[y,x]\ne y,x$, define $\ell=\text{max}(S)+1$.
+If $z=x$ and $C[y,x]\ne y,x$, then define $\ell=\text{max}(S)+1$.
 Otherwise, define $\ell=\text{max}(S)+2$. Assume that
 $\ell < 2(m-m_C) + 4$.
 

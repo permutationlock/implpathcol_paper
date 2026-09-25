@@ -3,8 +3,6 @@
 \usepackage{amsthm,amssymb,amsmath}
 \usepackage[pdftex]{hyperref}
 \usepackage{tikz}
-% \usepackage{subcaption}
-% \usepackage{adjustbox}
 %QQQ To print single-spaced, comment out the line below (precede it with a "%").
 %QQQ To print double-spaced, remove the "%" at the beginning of the line.
 %\renewcommand{\baselinestretch}{2}
@@ -398,12 +396,6 @@ $\text{Wrk}(v)$, the array $\text{Wrk}(u)$ will contain only entries for
 vertices $w$ where $w\le v$. So the last element of
 $\text{Wrk}(u)$ must be $(v,\adj{v}{u})$.
 
-The explicit $(u,\adj{u}{v})\in N^*(v)$ notation above was to distinguish
-between the two
-representations: going forward, if an algorithm takes as input a graph represented
-by augmented adjacency lists, we'll simply use $u\in N(v)$ to refer
-to a neighbor $u$ in $v$'s list.
-
 \section{Path Coloring}\label{S:path_color}
 
 In this section we describe a linear time algorithm to path $3$-color
@@ -441,7 +433,7 @@ Suppose $C$ is an induced subgraph of $G$. Let
 $u,w\in G-C$ be the vertices such that the cycles
 $u,u_2,u_1$ and $w,w_1,w_2$ are faces of $G$; note that
 $u$ and $w$ are uniquely determined, but it may be that $u=w$. Since
-$C$ is an induced cycle in $G$ and $G\ne C$, $G-C$ is connected.
+$C$ is an induced cycle in $G$, and $G\ne C$, $G-C$ is connected.
 Let $P_3$ be a $u,w$-path in $G-C$ of minimal length, and
 note that $P_3$ is an induced subgraph of $G-C$.
 Color each vertex of $P_3$ with the color in $\{1,2,3\}\setminus S$ not used

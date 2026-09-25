@@ -3,8 +3,8 @@
 \usepackage{amsthm,amssymb,amsmath}
 \usepackage[pdftex]{hyperref}
 \usepackage{tikz}
-\usepackage{subcaption}
-\usepackage{adjustbox}
+% \usepackage{subcaption}
+% \usepackage{adjustbox}
 %QQQ To print single-spaced, comment out the line below (precede it with a "%").
 %QQQ To print double-spaced, remove the "%" at the beginning of the line.
 %\renewcommand{\baselinestretch}{2}
@@ -52,16 +52,6 @@
 % Number sections, but not subsections
 
 % BREAK THEOREM STYLE
-\makeatletter
-\patchcmd{\newtheoremstyle}
-  {\def\@tempb{\newline}}
-  {\def\@tempb{\newline}\edef\@tempa{\unexpanded\expandafter{\@car#8\@nil}}}
-  {}{}
-\patchcmd{\newtheoremstyle}
-  {\def\thmheadnl{\newline}}
-  {\def\thmheadnl{#8}}
-  {}{}
-\makeatother
 
 \newtheoremstyle{break}% name
   {}%         Space above, empty = `usual value'
@@ -69,8 +59,8 @@
   {}% Body font
   {}%         Indent amount (empty = no indent, \parindent = para indent)
   {\bfseries}% Thm head font
-  {.}%        Punctuation after thm head
-  {\newline\hspace*{\parindent}}% Space after thm head: \newline = linebreak
+  {:}%        Punctuation after thm head
+  { }% Space after thm head: \newline = linebreak
   {}%         Thm head spec
 
 % DEFINE THEOREM-LIKE STRUCTURES
@@ -364,26 +354,27 @@ rather than just the vertex $u$. Given an
 adjacency list representation, an augmented
 representation may be constructed in $\mathcal{O}(m)$ time. 
 
-\begin{algorithm}\label{A:augment}
+\begin{algorithm}\label{A:augment} Augment Adjacency Lists
+
 \textbf{Input.} An adjacency list representation $N$ of a graph $G$.
 
 \textbf{Output.} An augmented adjacency list representation $N^*$ of
 $G$ with the same rotation scheme as $N$.
 
-\textbf{Step 1.} For each $v\in G$ construct an
+\textbf{Step~1.} For each $v\in G$ construct an
 augmented adjacency list $N^*(v)$
 with the rotation scheme of $N(v)$, leaving the
 $\adj{u}{v}$ portion of each entry $(u,\adj{u}{v})$ in $N^*(v)$
 uninitialized.
 
-\textbf{Step 2.} For each vertex $v$ construct an array $\text{Wrk}(v)$
+\textbf{Step~2.} For each vertex $v$ construct an array $\text{Wrk}(v)$
 of vertex-reference pairs with length $\text{deg}(v)$. For each $v$ from
 $0$ to $n-1$ iterate through
 $N^*(v)$. For each neighbor $u$ in $N^*(v)$ append the pair
 $(v,\adj{v}{u})$ to $\text{Wrk}(u)$,
 where $\adj{v}{u}$ is a reference to $u$'s entry $N^*(v)$.
 
-\textbf{Step 3.} For each $v$ from $n-1$ to $0$ iterate through
+\textbf{Step~3.} For each $v$ from $n-1$ to $0$ iterate through
 $\text{Wrk}(v)$. Upon reaching a pair $(u,\adj{u}{v})$ in
 $\text{Wrk}(v)$ the
 last element of $\text{Wrk}(u)$ will be $(v,\adj{v}{u})$;
@@ -392,13 +383,13 @@ initialize the back reference $\adj{u}{v}$, and vice versa.
 Remove $(v,\adj{v}{u})$ from the back of $\text{Wrk}(u)$.
 \end{algorithm}
 
-After completing Step $2$ in Algorithm~\ref{A:augment} the array $\text{Wrk}(v)$
+After completing Step~2 in Algorithm~\ref{A:augment} the array $\text{Wrk}(v)$
 will contain
 $(u,\adj{u}{v})$ for each neighbor $u$ of $v$, sorted in increasing
 order by the neighbor $u$.
-Suppose that $v$ is the current vertex at a given iteration of Step $3$ in
+Suppose that $v$ is the current vertex at a given iteration of Step~3 in
 Algorithm~\ref{A:augment}. For each edge $uw\in E(G)$ such that
-$u<w$ and $v<w$, prior iterations of Step 3 will have initialized the
+$u<w$ and $v<w$, prior iterations of Step~3 will have initialized the
 back references for $\adj{w}{u}$ in $N^*(u)$ and $\adj{u}{w}$ in $N^*(w)$,
 and removed the pair
 $(w,\adj{w}{u})$ from $\text{Wrk}(u)$. Therefore for each
@@ -475,7 +466,7 @@ the subgraphs only share vertices on their outer faces, and thus the
 colorings agree and together form a path $3$-coloring of $G$.\ggcnopf
 \end{proof}
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \SolidGraph
 \begin{tikzpicture}[scale=1.2]
@@ -539,7 +530,8 @@ A natural way to implement Poh's algorithm is to locate $u$,
 and then use a breadth-first search to construct a minimal
 $u,w$-path and/or locate a chord edge, see Algorithm~\ref{A:poh_bfs}.
 
-\begin{algorithm}\label{A:poh_bfs}
+\begin{algorithm}\label{A:poh_bfs} Path $3$-Color (BFS)
+
 \textbf{Input.} 
 Let $C$ be a cycle or length $2$ path
 in a weakly triangulated plane graph $G$ represented via adjacency lists.
@@ -564,7 +556,7 @@ $2$-path and $\text{Int}(C)=C$.
 Let $\adj{{u_1}}{u}\leftarrow\nxt(\adj{{u_1}}{u_2})$.
 Note that $u,u_2,u_1$ is a face of $G$, see Figure~\ref{F:poh_bfs}.
 
-\textbf{Case 1.} Suppose that $c(u)\ne 0$.
+\textbf{Case~1.} Suppose that $c(u)\ne 0$.
 If $c(u)=c(u_2)$, then $u\in P_2$.
 Make a recursive call with the input $(u_1, w_1, \adj{u_1}{u}, w_2)$
 to color
@@ -574,7 +566,7 @@ Make a recursive call with the input
 $(u, w_1, \adj{u}{u_2}, w_2)$
 to color $\text{Int}(C_1)$, where $C_1=C[u,u_2]\cup uu_2$. 
 
-\textbf{Case 2.} Suppose that $c(u)=0$, i.e. $u\in \text{Int}(C)-C$.
+\textbf{Case~2.} Suppose that $c(u)=0$, i.e. $u\in \text{Int}(C)-C$.
 Perform a breadth-first search in $\text{Int}(C)-C$ starting from $u$;
 such a search may be implemented by visiting $v\in G$ only
 if $c(v)=0$. Terminate the search upon finding a vertex
@@ -603,7 +595,7 @@ All remaining vertices in $\text{Int}(C)-C-P_3$ are now colored and we
 are done.
 \end{algorithm}
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \SolidGraph
 \begin{tikzpicture}[scale=0.75]
@@ -742,7 +734,7 @@ Therefore the total number of operations performed will be
     =\Omega(n^{3/2}).
 \]
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \SolidGraph
 \begin{tikzpicture}[scale=0.9]
@@ -875,7 +867,8 @@ For $P_1=C[u_1,w_1]$ let $p_1:N(P_1)\to V(P_1)$ be the function that
 maps each vertex to its furthest clockwise neighbor along $P_1$,
 i.e. $V(C[p_1(v),w_1])\cap N(v)=\{p_1(v)\}$.
 
-\begin{algorithm}\label{A:poh_linear}
+\begin{algorithm}\label{A:poh_linear} Path $3$-Color (Neighbor Trace)
+
 \textbf{Input.} Let $C$ be an induced cycle
 in a weakly triangulated plane
 graph $G$ represented via adjacency lists.
@@ -913,25 +906,22 @@ construct an induced $u,w$-path $P_3=v_1,v_2,\ldots, v_j$
 such that $v_1,v_2,\ldots,v_j\in N(P_1)$,
 and color each $v\in P_3$ with $c(v)\leftarrow d$.
 We'll also mark each $v\in N(P_3)\setminus V(C)$
-with $S(v)\leftarrow\ell_3$, decompose
-$\text{Int}(P_3\cup P_k\cup uu_k\cup ww_k)$
-for $k=1,2$
-into maximal subgraphs that are bounded by induced cycles,
-and make a recursive call for each such cycle.
+with $S(v)\leftarrow\ell_3$,
+and make recursive calls to color $\text{Int}(C)-C-P_3$.
 It may be useful
 to refer to Figures~\ref{F:poh_linear_1} and \ref{F:poh_linear_2}.
 
-\textbf{Step 1.}
-Assign $j\leftarrow 1$ and $v_j\leftarrow u$;
-set $v_0\leftarrow u_2$ so that $v_{j-1}$ is defined.
+\textbf{Step~1.}
+Assign $j\leftarrow 1$ and $v_j\leftarrow u$; here $j,v_j$ store
+the end of the path $P_3$ that we've constructed so far.
+Set $v_0\leftarrow u_2$ so that $v_{j-1}$ is defined for $j=1$.
 Assign $i\leftarrow 1$ and $\adj{v_i}{s}\leftarrow \adj{v_i}{u_2}$;
-here $\adj{v_i}{s}$ stores the last edge $v_is$ encountered where
-$v_i\in P_3$ and
-$s\in P_2$.
+here $i,\adj{v_i}{s}$ store the last edge $v_is$ that was visited
+where $v_i\in P_3$ and $s\in P_2$.
 
-\textbf{Step 2.} Assign $c(v_j)\leftarrow d$.
-We will iterate through $N(v_j)$, starting after
-$v_{j-1}$.
+\textbf{Loop~2.} We'll build the path $P_3$, adding one vertex per
+iteration.
+Assign $c(v_j)\leftarrow d$.
 Find $\adj{v_j}{v_{j-1}}$ in $N(v_j)$ and set
 $\adj{v_j}{v}\leftarrow \nxt(\adj{v_j}{v_{j-1}})$.
 Set $y\leftarrow\text{NULL}$; here
@@ -942,28 +932,31 @@ Set $\adj{v_j}{t}\leftarrow\text{NULL}$; here
 $\adj{v_j}{t}$ will store the last edge $v_jt$ encountered
 such that $t\in P_1$ (if any).
 
-\textbf{Step 3.} We first consider the neighbors of $v_j$ between
-$v_{j-1}$ and $p_1(v_j)$ counter-clockwise. Each execution of Step~3
-will handle one neighbor: $\adj{v_j}{v}$.
+\textbf{Loop~2.1.} We'll first consider the neighbors of
+$v_j$ between
+$v_{j-1}$ and $p_1(v_j)$ counter-clockwise. Each iteration
+will handle the current neighbor $\adj{v_j}{v}$.
+We'll make a recursive call for each
+induced cycle $C_1$ we discover with $V(C_1)\subseteq V(P_2)\cup V(P_3)$.
 Refer to Figure~\ref{F:poh_linear_1}.
 
-\textbf{Case 3.1.} Suppose that $c(v)=0$, i.e. $v\in\text{Int}(C)-C$.
+\textbf{Case~2.1.1.} Suppose that $c(v)=0$, i.e. $v\in\text{Int}(C)-C$.
 If $S(v)=\ell_1$, i.e. $v\in N(P_1)$, and $y=\text{NULL}$, then set
 $y\leftarrow v$. Set $S(v)\leftarrow \ell_3$ and
 $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$.
-Go back to Step 3.
+Go back to Loop~2.1.
 
-\textbf{Case 3.2.} Suppose that $c(v)=c(u_2)$, i.e. $v\in P_2$.
+\textbf{Case~2.1.2.} Suppose that $c(v)=c(u_2)$, i.e. $v\in P_2$.
 Make a recursive call with input $(v_i, \adj{v_i}{s}, \ell_3)$
 to color $\text{Int}(C_1)$, where
 $C_1=P_3[v_i,v_j]\cup C[v,s]\cup v_is\cup v_jv$;
 see Figure~\ref{F:poh_linear_1} (middle).
 Assign $i\leftarrow j$, $\adj{v_i}{s}\leftarrow \adj{v_j}{v}$, and
-$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Go back to Step 3.
+$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Go back to Loop~2.1.
 
-\textbf{Case 3.3.} Suppose that $c(v)=c(u_1)$, i.e. $v=p_1(v_j)\in P_1$.
+\textbf{Case~2.1.3.} Suppose that $c(v)=c(u_1)$, i.e. $v=p_1(v_j)\in P_1$.
 Assign $\adj{v_j}{t}\leftarrow \adj{v_j}{v}$ and
-$\adj{v_j}{v}=\nxt(\adj{v_j}{v})$. Proceed to Step 4.
+$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Proceed to Loop~2.2.
 
 Note that if $y=\text{NULL}$, then $v_j=w$. To see this, observe that
 since $v\in P_1$,
@@ -971,16 +964,18 @@ $\prv_{v_j}(v)\in N(P_1)$,
 and $\prv_{v_j}(v)\not\in P_1$, we must have
 $\prv_{v_j}(v)\in C-P_1=P_2$.
 
-\textbf{Step 4.} We now consider
+\textbf{Loop~2.2.} We'll now consider the
 neighbors of $v_j$ between $p_1(v_j)$ and $v_{j-1}$ counter-clockwise.
-Each execution of Step~4 will handle one neighbor: $\adj{v_j}{v}$.
-Note that $\adj{v_j}{t}\ne\text{NULL}$.
+Each iteration will handle the current neighbor $\adj{v_j}{v}$.
+We'll make a recursive call for each
+induced cycle $C_1$ we discover with $V(C_1)\subseteq V(P_1)\cup V(P_3)$.
+Observe $\adj{v_j}{t}\ne\text{NULL}$.
 
-\textbf{Case 4.1.} Suppose that $c(v)=0$, i.e. $v\in\text{Int}(C)-C-P_3$.
+\textbf{Case~2.2.1.} Suppose that $c(v)=0$, i.e. $v\in\text{Int}(C)-C-P_3$.
 Assign $S(v)\leftarrow \ell_3$ and $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$.
-Go back to Step 4.
+Go back to Loop~2.2.
 
-\textbf{Case 4.2.} Suppose that $c(v)\ne 0$, i.e. $v\in C$ or
+\textbf{Case~2.2.2.} Suppose that $c(v)\ne 0$, i.e. $v\in C$ or
 $v\in P_3$. Make a recursive
 call with input $(v_j, \adj{v_j}{t}, \ell_3)$ to color $\text{Int}(C_1)$,
 where both the definition of $C_1$ and the next steps to take depend
@@ -989,20 +984,20 @@ on $c(v)$. Refer to Figure~\ref{F:poh_linear_2}.
 If $c(v)=c(u_1)$, i.e. $v\in P_1$, then
 $C_1=C[v,t]\cup v_j\cup v_jt\cup v_jv$.
 Assign $\adj{v_j}{t}\leftarrow\adj{v_j}{v}$ and
-$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Go back to Step 4.
+$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Go back to Loop~2.2.
 
 Otherwise,
 $v=v_{j-1}$ (either $j>1$ and $v\in P_3$, or $j=1$ so
 $v=u_2\in P_2$ and $t=u_1$).
 Then $C_1=C[p_1(v),t]\cup P_3[v,v_j]\cup vp_1(v)\cup v_jt$.
-Proceed to Step 5. 
+Proceed to Step~2.3. 
 
-\textbf{Step 5.} If $y\ne\text{NULL}$,
+\textbf{Step~2.3.} If $y\ne\text{NULL}$, then
 assign $j\leftarrow j+1$, $v_j\leftarrow y$, and
-go back to Step 2. Otherwise, $v_j=w$ and we are done.
+go back to Loop~2. Otherwise, $v_j=w$ and we are done.
 \end{algorithm}
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \SolidGraph
 \begin{tikzpicture}[scale=1.6]
@@ -1101,12 +1096,12 @@ $\quad$
         \draw (uj) edge (v);
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{Algorithm~\ref{A:poh_linear}, Case~3.1 (left), Case~3.2 (middle),
-and Case~3.3 (right).}\label{F:poh_linear_1}
+\caption{Algorithm~\ref{A:poh_linear}, Case~2.1.1 (left), Case~2.1.2 (middle),
+and Case~2.1.3 (right).}\label{F:poh_linear_1}
 \end{center}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \SolidGraph
 \begin{tikzpicture}[scale=1.6]
@@ -1213,7 +1208,7 @@ $\quad$
         \draw (y) edge[color=red] (uj1);
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{Algorithm~\ref{A:poh_linear}, Case~4.2 when $v\in P_1$ (left)
+\caption{Algorithm~\ref{A:poh_linear}, Case~2.2.2 when $v\in P_1$ (left)
 and when $v=v_{j-1}$ (middle). Also, a sketch of why $P_3$ is an
 induced path (right).}
 \label{F:poh_linear_2}
@@ -2067,12 +2062,12 @@ Then $G$, $c$, $S$,
 $(v_1, \adj{v_1}{v_3}, 1)$ form a valid input for
 Algorithm~\ref{A:poh_linear}.
 
-While executing Algorithm~\ref{A:poh_linear} we iterate through
-the adjacency list of each vertex $v\in G$ exactly twice: once when
-$v$ is colored and added to a path $P_3$ in Step 2 to
-locate $\adj{{v_j}}{v_{j-1}}$,
-and once to examine each neighbor in $N(v_j)$ during Steps~3-4.
-Therefore the time complexity of the algorithm is
+During Algorithm~\ref{A:poh_linear} we iterate through
+$N(v)$ for each $v\in G$ exactly twice: once
+to locate $\adj{{v_j}}{v_{j-1}}$ when
+$v_j=v$ is colored and added to a path $P_3$ in Loop~2,
+and once to iterate through $N(v_j)$ in Loops~2.1 and 2.2.
+Therefore the time complexity is
 $\mathcal{O}(m)=\mathcal{O}(n)$.
 % See Figure~\ref{F:poh_example} 
 % and Figure~\ref{F:poh_example_cont} for a concrete example.
@@ -2145,7 +2140,7 @@ In each of the subsequent cases we will apply the lemma separately
 to one or two subgraphs $G_1,G_2$ of $G$ with corresponding labeled
 outer face vertices $x_i,y_i,z_i\in G_i$ for $i=1,2$.
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \SolidGraph
 \begin{tikzpicture}[scale=1.1]
@@ -2243,20 +2238,20 @@ $\quad$
 \end{center}
 \end{figure}
 
-\textbf{Case 1.}
+\textbf{Case~1.}
 Suppose that $u_1=y$. Note that $z=x$ since $z\in C[x,y]$. Therefore
 $V(C[z,y])=V(C)$, so $|V(C[z,y])|\ge 3$ and $C[z,y]\ne z,y$.
 Apply the lemma to find a path $L$-coloring $c$ of $G_1=G$ with
 $x_1=y$, $y_1=x$, and $z_1=y$.
 
-\textbf{Case 2.}
+\textbf{Case~2.}
 Suppose that $u_1\ne y$ and $z=x$. Then $u_1\in C-C[x,z]$
 and $|L(u_1)|\ge 2$. Pick $d\in L(u_1)\setminus L(z)$. Define
 $L'(u_1)=\{d\}$ and $L'(v)=L(v)$ for each $v\in G-u_1$. Apply the
 lemma to find a path $L'$-coloring of $G_1=G$ with $x_1=u_1$,
 $y_1=y$, and $z_1=z$.
 
-\textbf{Case 3.}
+\textbf{Case~3.}
 Suppose that $u_1\ne y$ and $z\ne x$. 
 Our strategy will be to apply the inductive hypothesis to
 the \defterm{blocks} (maximal biconnected subgraphs) of $G-zu_1$.
@@ -2264,7 +2259,7 @@ Because $u_1\in C[x,z]$, it is guaranteed that $L(u_1)\cap L(z)=\emptyset$.
 Thus any path $L$-coloring of $G-zu_1$ is also a path $L$-coloring
 of $G$.
 
-\textbf{Case 3.1.}
+\textbf{Case~3.1.}
 Suppose that $u_2\in G-C$. Define $L'(u_2)=L(u_2)\setminus L(z)$ and
 $L'(v)=L(v)$ for each $v\in G-u_2$. Note that $|L'(u_2)|\ge |L(u_2)|-1\ge 2$.
 Let $C_1$ be the outer face of $G_1=G-zu_1$,
@@ -2273,7 +2268,7 @@ and the path $u_1,u_2,z$ added. Since $|L'(u_2)|\ge 2$ and $L'(u_2)\cap
 L'(z)=\emptyset$, we may apply the inductive hypothesis
 to find a path $L'$-coloring of $G_1$ with $x_1=x$, $y_1=y$, $z_1=z$.
 
-\textbf{Case 3.2.}
+\textbf{Case~3.2.}
 Suppose that $u_2\in C$. Observe that $u_2$ is a \defterm{cut-vertex} of
 $G-zu_1$, i.e. $G-zu_1-u_2$ is disconnected.
 Define $C_1=C[u_2,u_1]\cup u_1u_2$ and
@@ -2293,7 +2288,7 @@ $\text{deg}_c(u_2)=\text{deg}_{c_1}(u_2)+\text{deg}_{c_2}(u_2)$.
 To show that $c$ is a path $L$-coloring of $G$ it suffices to show that
 $\text{deg}_{c}(u_2)\le 2$.
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \SolidGraph
 \begin{tikzpicture}[scale=1.4]
@@ -2389,7 +2384,7 @@ Case~3.2.2 (right).}\label{F:hartman_3_2}
 \end{center}
 \end{figure}
 
-\textbf{Case 3.2.1.}
+\textbf{Case~3.2.1.}
 Suppose that $u_2\in C[x,z]$. Observe that $x,y,z\in C_2$.
 Apply the inductive hypothesis to find a path $L$-coloring
 $c_2$ of $G_2$ with $x_2=x$, $y_2=y$, and $z_2=z$.
@@ -2399,7 +2394,7 @@ $c_1$ of $G_1$ with $x_1=y_1=z_1=u_2$. Since
 $\text{deg}_{c_1}(u_2)=0$, it follows that $c$ is a path $L$-coloring of $G$
 satisfying the constraints of the lemma.
 
-\textbf{Case 3.2.2.}
+\textbf{Case~3.2.2.}
 Suppose that $u_2\in C[y,x]-x-y$. Pick $d\in L(u_2)\setminus L(z)$. Define
 $L'(u_2)=\{d\}$ and $L'(v)=L(v)$ for each $v\in G-u_2$. 
 Observe that
@@ -2412,7 +2407,7 @@ $z_2=z$. Note that $\text{deg}_{c_1}(u_2)\le 1$ and
 $\text{deg}_{c_2}(u_2)\le 1$, thus $c$ is a path $L$-coloring of $G$
 satisfying the constraints of the lemma.
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \SolidGraph
 \begin{tikzpicture}[scale=1.4]
@@ -2499,10 +2494,10 @@ satisfying the constraints of the lemma.
 \end{center}
 \end{figure}
 
-\textbf{Case 3.2.3.}
+\textbf{Case~3.2.3.}
 Suppose that $u_2\in C[z,y]$. Note that $z\ne y$. There are two cases to consider.
 
-\textbf{Case 3.2.3.1.} Suppose that $L(z)\cap L(u_2)\ne\emptyset$. Then 
+\textbf{Case~3.2.3.1.} Suppose that $L(z)\cap L(u_2)\ne\emptyset$. Then 
 either $u_2=y$ and $L(z)=L(y)$, or $C[z,y]\ne z,y$.
 Define $L'(u_2)=L(z)$
 and $L'(v)=L(v)$ for each $v\in G-u_2$. Find a path $L'$-coloring $c_1$ of $G_1$
@@ -2514,7 +2509,7 @@ then $z_1=y_1=y$ and $\text{deg}_{c_1}(y)=0$.
 So $\text{deg}_c(y)\le 1$ and
 $c$ satisfies the constraints of the lemma.
 
-\textbf{Case 3.2.3.2.} Suppose that $L(z)\cap L(u_2)=\emptyset$. Find
+\textbf{Case~3.2.3.2.} Suppose that $L(z)\cap L(u_2)=\emptyset$. Find
 a path $L$-coloring $c_1$ of $G_1$ with
 $x_1=x$, $y_1=y$, and $z_1=x$. Define $L'(u_2)=\{c_1(u_2)\}$ and $L'(v)=L(v)$
 for each $v\in G_2-u_2$. Then find a path $L'$-coloring $c_2$ of $G_2$
@@ -2547,7 +2542,8 @@ $\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and $\adj{u}{v}$ can be
 computed in constant time from the entry $\adj{v}{u}$;
 see augmented adjacency lists in Section~\ref{S:representation}.
 
-\begin{algorithm}\label{A:hartman_impl}
+\begin{algorithm}\label{A:hartman_impl} Path $3$-Choose
+
 \textbf{Input.} Let $C$ be a cycle or length $2$ path in a
 weakly triangulated plane graph $G$ represented via augmented
 adjacency lists.
@@ -2610,27 +2606,27 @@ It may be useful to refer to
 Figures~\ref{F:hartman_1}, \ref{F:hartman_3_2}, and
 \ref{F:hartman_3_2_3}.
 
-\textbf{Case 1.} Suppose that $u_1=y$. Then $z=x$, since $z\in C[x,y]$.
+\textbf{Case~1.} Suppose that $u_1=y$. Then $z=x$, since $z\in C[x,y]$.
 Set $S(x)\leftarrow \text{max}(S)+1$ and
 $S(y)\leftarrow S(x)$.
 Assign $M(S(x))\leftarrow S(x)$.
 Make a recursive call with the input $(y, x, y)$.
 
-\textbf{Case 2.} Suppose that $z=x$ and $u_1\ne y$. 
+\textbf{Case~2.} Suppose that $z=x$ and $u_1\ne y$. 
 Remove the color in $L(z)$ from $L(u_1)$, if it exists, then remove
 further colors until one color remains.
 Assign $S(u_1)\leftarrow \text{max}(S)+1$
 and $M(S(u_1))\leftarrow S(u_1)$,
 and make a recursive call with input $(u_1, y, z)$.
 
-\textbf{Case 3.} Suppose that $z\ne x$ and $u_1\ne y$.
+\textbf{Case~3.} Suppose that $z\ne x$ and $u_1\ne y$.
 Remove $zu_1$ by assigning $F(u_1)\leftarrow\prv(\adj{u_1}{z})$
 and $B(z)\leftarrow\nxt(\adj{z}{u_1})$;
 refer
 to Figure~\ref{F:hartman_1} (right),
 Figure~\ref{F:hartman_3_2}, and Figure~\ref{F:hartman_3_2_3}.
 
-\textbf{Case 3.1.} Suppose that $S(u_2)=0$, that is, $u_2\in
+\textbf{Case~3.1.} Suppose that $S(u_2)=0$, that is, $u_2\in
 \text{Int}(C)-C$. Assign $S(u_2)\leftarrow S(x)$ and initialize
 $B(u_2)\leftarrow\adj{u_2}{u_1}=\nxt(\adj{u_2}{z})$ and
 $F(u_2)\leftarrow\adj{u_2}{z}$;
@@ -2639,7 +2635,7 @@ Remove the color in $L(z)$ from
 $L(u_2)$.
 Make a recursive call with the same input $(x, y, z)$.
 
-\textbf{Case 3.2.} Suppose that $S(u_2)\ne 0$, that is, $u_2\in C$. Just as in
+\textbf{Case~3.2.} Suppose that $S(u_2)\ne 0$, that is, $u_2\in C$. Just as in
 Case~3.2 of the proof of Lemma~\ref{L:hartman3}, we will separately consider
 the two blocks $G_1$ and $G_2$ of $\text{Int}(C)-zu_1$.
 Note that $m_C-1=m(G_1)+m(G_2)$.
@@ -2663,7 +2659,7 @@ To represent $G_2$,
 assign $B(u_2)\leftarrow\adj{u_2}{b}$
 and $F(u_2)\leftarrow\adj{u_2}{z}$.
 
-\textbf{Case 3.2.1.} Suppose that $S(u_2)=S(x)$, i.e. $u_2\in C[x,z]$. Make a
+\textbf{Case~3.2.1.} Suppose that $S(u_2)=S(x)$, i.e. $u_2\in C[x,z]$. Make a
 recursive call on $G_2$ with input $(x, y, z)$;
 afterwards $\text{max}(S)\le\ell + 2m(G_1)-2$.
 Assign $S(u_2)\leftarrow\text{max}(S)+1$ and
@@ -2672,7 +2668,7 @@ on $G_1$ with input $(u_2, u_2, u_2)$.
 Finally, observe that
 $\text{max}(S)\le\ell + 2m(G_1)-2 + 1 + 2m(G_2)-1<\ell+2(m_C-1)$.
 
-\textbf{Case 3.2.2.} Suppose that $z\ne x$ and $S(u_2)\ne 0$, but
+\textbf{Case~3.2.2.} Suppose that $z\ne x$ and $S(u_2)\ne 0$, but
 $S(u_2)\ne S(x)$ and $M(S(u_2))\ne S(y)$. In other words, suppose that
 $u_2\in C[y,x]-x-y$.
 First remove the color in $L(z)$ from $L(u_2)$, if it exists, then remove
@@ -2685,11 +2681,11 @@ make a recursive call on $G_2$ with input $(u_2, y, z)$.
 Finally, observe that
 $\text{max}(S)\le\ell + 2m(G_1) + 1 + 2m(G_2)-2<\ell+2(m_C-1)$.
 
-\textbf{Case 3.2.3.} Suppose that $z\ne x$ and $M(S(u_2))=S(y)$, i.e.
+\textbf{Case~3.2.3.} Suppose that $z\ne x$ and $M(S(u_2))=S(y)$, i.e.
 $u_2\in C[z,y]$. There are
 two cases to consider.
 
-\textbf{Case 3.2.3.1.} Suppose that the color in $L(z)$ is in $L(u_2)$. Remove
+\textbf{Case~3.2.3.1.} Suppose that the color in $L(z)$ is in $L(u_2)$. Remove
 all colors from $L(u_2)$ except for the color in $L(z)$.
 Make a recursive call on $G_1$ with input $(x, y, u_2)$;
 afterwards $\text{max}(S)\le\ell + 2m(G_1)-2$.
@@ -2699,7 +2695,7 @@ and $M(S(z))\leftarrow S(z)$. Make a
 recursive call on $G_2$ with input $(u_2, z, u_2)$. Finally, observe that
 $\text{max}(S)\le\ell + 2m(G_1)-2 + 1 + 2m(G_2) - 1<\ell+2(m_C-1)$.
 
-\textbf{Case 3.2.3.2.} Suppose that the color in $L(z)$ is not in $L(u_2)$.
+\textbf{Case~3.2.3.2.} Suppose that the color in $L(z)$ is not in $L(u_2)$.
 Assign $M(S(x))\leftarrow S(y)$. Make a recursive call on $G_1$
 with input $(x, y, x)$; afterwards $\text{max}(S)\le\ell + 2m(G_1)$.
 Assign $S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$, and
@@ -3474,9 +3470,9 @@ except for Case~1 and Case~2. In Case~1 a single recursive call is made
 with an input that will satisfy Case~2. In Case~2 a recursive
 call is made with an input that will not itself satisfy Case~1 or Case~2.
 Therefore the number of operations performed
-is $\mathcal{O}(m)=\mathcal{O}(n)$. See Figure~\ref{F:hartman_impl} and
-Figure~\ref{F:hartman_impl_cont} for a concrete example of
-Algorithm~\ref{A:hartman_impl}.
+is $\mathcal{O}(m)=\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl},
+\ref{F:hartman_impl_cont}, and \ref{F:hartman_impl_comp} for a concrete
+example of Algorithm~\ref{A:hartman_impl}.
 
 \section{Experimental Performance and Parallelism}\label{S:performance}
 
@@ -3519,7 +3515,7 @@ is not immediately available, the time required by
 Algorithm~\ref{A:hartman_impl} would also include
 the time required by Algorithm~\ref{A:augment}.
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \begin{tabular}{r||l|l|l|l|l}
     & $n=10^{3}$ & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$
@@ -3569,7 +3565,7 @@ shuffled.
 For each $n=10^i$ we selected the closest integer $k$ to
 $\sqrt{2n-6}$ so that $n(A_k)\approx n$.
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \begin{tabular}{r||l|l|l|l|l}
     & $n\approx10^{3}$ & $n\approx10^{4}$ & $n\approx10^{5}$ & $n\approx10^{6}$
@@ -3591,7 +3587,7 @@ $\sqrt{2n-6}$ so that $n(A_k)\approx n$.
 \end{center}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \begin{tikzpicture}
   \draw[very thin,color=gray,xstep=1.25,ystep=1.0] (-0.1,-0.1) grid (5.1, 6.1);
@@ -3688,7 +3684,7 @@ $8$ frames were pushed to the
 shared stack. If a local stack emptied, $8$ frames were popped from the
 shared stack.
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \begin{tabular}{r||l|l|l|l|l}
     Threads & $n=10^{3}$ & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$
@@ -3779,7 +3775,7 @@ page would change from $4$ to $7$ in the $G_2$ block.
 This would then ripple forward, with the next new mark being
 an $8$, and so on.
 
-\begin{figure}[ht]
+\begin{figure}
 \begin{center}
 \begin{tabular}{r||l|l|l|l|l}
     Threads & $n=10^{3}$  & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$

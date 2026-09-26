@@ -183,16 +183,16 @@ The degree of $v$ is $\text{deg}(v)=|N(v)|$.
 We write $v\in G$ or $uv\in G$ if it is clear
 $v$ is a vertex or $uv$ is an edge.
 
-We say $H$ is a subgraph of $G$ if
+We say $H$ is a \defterm{subgraph} of $G$ if
 $V(H)\subseteq V(G)$ and $E(H)\subseteq E(G)$. If $S\subseteq V(G)$,
-the \defterm{induced subgraph} of $S$ in $G$ consists
+the subgraph of $G$ \defterm{induced} by $S$ consists
 of $S$ and all edges in $E(G)$ with both incident vertices in $S$.
-A subgraph is induced in $G$ if it is the induced subgraph of
-its vertex set.
-
-If $H,K$ are subgraphs of $G$, the union $H\cup K$ is the union
-of their edge and vertex sets, and the difference $H-K$ is
-the induced subgraph of $V(H)\setminus V(K)$ in $H$.
+Let $H,K$ be subgraphs of $G$.
+We say $H$ and $K$ are \defterm{disjoint} if $V(H)\cap V(K)=\emptyset$
+(the vertex sets are disjoint).
+The union $H\cup K$ is the union
+of their edge and vertex sets. The difference $H-K$ is
+the subgraph of $H$ induced by $V(H)- V(K)$.
 If $u,v\in V(H)$, $uv\in E(G)$, we
 define $H\cup uv$ and $H-uv$ by adding/removing the edge $uv$
 to/from $E(H)$.
@@ -216,8 +216,9 @@ A \defterm{path} $P=v_1,v_2,\ldots,v_k$ is the graph with
 $V(P)=\{v_1,v_2,\ldots,v_k\}$ and
 $E(P)=\{v_1v_2,v_2v_3,\ldots,v_{k-1}v_k\}$; we say $P$ is a
 $v_1,v_k$-path. A \defterm{cycle}
-$C=v_1,v_2,\ldots,v_k$ is the union of the $v_1,v_k$-path
-and the edge $v_1v_k$.
+$C=v_1,v_2,\ldots,v_k$ is the union of a $v_1,v_k$-path
+and the edge $v_1v_k$. The \defterm{length} of a path or cycle is
+the number of edges.
 
 A \defterm{(vertex) coloring} of a graph $G$ is a map
 $c:V(G)\to\mathbb{N}$; a $k$-coloring, $k\in\mathbb{N}$,
@@ -226,7 +227,7 @@ $d\in\mathbb{N}$
 is the set $c^{-1}(d)\subseteq V(G)$. A \defterm{path coloring}
 is a coloring where each color class induces a union of disjoint
 paths (more commonly a \emph{disjoint union} of paths,
-but union and disjoint union coincide for disjoint subgraphs).
+but the union of disjoint subgraphs is their disjoint union).
 A graph $G$ is \defterm{path $k$-colorable} if $G$
 admits a path $k$-coloring.
 A \defterm{list assignment} of a graph $G$ is
@@ -304,7 +305,7 @@ and \defterm{biconnected} if $G-v$ is connected
 for every $v\in G$.
 A plane graph $G$ is \defterm{triangulated} if it is connected
 and $n(G)\le 2$, or if every face is a
-\defterm{triangle} (a cycle with $3$ vertices). If every face but
+\defterm{triangle} (a length $3$ cycle). If every face but
 (maybe) the
 outer face is a triangle, then $G$ is
 \defterm{weakly triangulated}; a triangulated graph is weakly-triangulated.
@@ -436,7 +437,7 @@ $u$ and $w$ are uniquely determined, but it may be that $u=w$. Since
 $C$ is an induced cycle in $G$, and $G\ne C$, $G-C$ is connected.
 Let $P_3$ be a $u,w$-path in $G-C$ of minimal length, and
 note that $P_3$ is an induced subgraph of $G-C$.
-Color each vertex of $P_3$ with the color in $\{1,2,3\}\setminus S$ not used
+Color each vertex of $P_3$ with the color in $\{1,2,3\}- S$ not used
 in the $2$-coloring of
 $C$. Let $C_1=P_1\cup P_3\cup uu_1\cup ww_1$ and
 $C_2=P_2\cup P_3\cup uu_2\cup ww_2$. The subgraphs
@@ -449,7 +450,7 @@ on their respective outer faces, the colorings agree and form a path
 $3$-coloring of $G$.
 
 Suppose $C$ is not an induced subgraph. Then there
-exists an edge $v_1v_2\in E(G)\setminus E(C)$ with $v_1\in P_1$ and
+exists an edge $v_1v_2\in E(G)- E(C)$ with $v_1\in P_1$ and
 $v_2\in P_2$. Let $C_1=C[v_2,v_1]\cup v_1v_2$
 and $C_2=C[v_1,v_2]\cup v_1v_2$.
 By the inductive hypothesis, there exists an extension of $c$ to a path
@@ -525,7 +526,7 @@ $u,w$-path and/or locate a chord edge, see Algorithm~\ref{A:poh_bfs}.
 \begin{algorithm}\label{A:poh_bfs} Path $3$-Color (BFS)
 
 \textbf{Input.} 
-Let $C$ be a cycle or length $2$ path
+Let $C$ be a cycle or length $1$ path
 in a weakly triangulated plane graph $G$ represented via adjacency lists.
 Let  $c$ be a length $n$ array representing a $2$-coloring of $C$ such
 that each color class induces a nonempty path, respectively
@@ -542,7 +543,7 @@ $\text{Int}(C)$ extending the original $2$-coloring of $C$. Moreover, if
 $v\in \text{Int}(C)-C$ has a neighbor $u\in C$, then $c(v)\ne c(u)$.
 
 \textbf{Base case.} If $u_1=w_1$ and $u_2=w_2$, then $C$ is a length
-$2$-path and $\text{Int}(C)=C$.
+$1$ path and $\text{Int}(C)=C$.
 
 \textbf{Recursive case.}
 Let $\adj{{u_1}}{u}\leftarrow\nxt(\adj{{u_1}}{u_2})$.
@@ -568,23 +569,23 @@ $c(v_1)=c(u_1)$,
 i.e. $v_2\in P_2$ and $v_1\in P_1$. Backtrack along the
 search tree from $w$ to find a minimal $u,w$-path $P_3$.
 For each vertex $v\in P_3$, assign $c(v)\leftarrow d$, where $d\in
-\{1,2,3\}\setminus\{c(u_1),c(u_2)\}$.
+\{1,2,3\}-\{c(u_1),c(u_2)\}$.
 
 Iterate through
 $N(u)$ and $N(v_1)$ to find $\adj{u}{u_2}$ and
 $\adj{v_1}{v_2}$.
-To color the remaining vertices we make three recursive calls:
+Finally, to color the remaining vertices in $\text{Int}(C)-C-P_3$,
+we make a recursive call
+\vspace{-0.75pc}
 \begin{enumerate}
-\itemsep0em
-\item{with $(u_1, v_1, \adj{{u_1}}{u}, w)$ to color
-$\text{Int}(C_1)$, where $C_1=C[u_1,v_1]\cup P_3\cup v_1u\cup v_1w$;}
-\item{with $(u,  w, \adj{u}{u_2}, v_2)$ to color
-$\text{Int}(C_2)$, where $C_2=C[v_2,u_2]\cup P_3\cup uu_2\cup wv_2$;}
-\item{with $(v_1,  w_1, \adj{{v_1}}{v_2}, w_2)$
+\itemsep-0.25em
+\item{with input $(u_1, v_1, \adj{{u_1}}{u}, w)$ to color
+$\text{Int}(C_1)$, where $C_1=C[u_1,v_1]\cup P_3\cup v_1u\cup v_1w$,}
+\item{with input $(u,  w, \adj{u}{u_2}, v_2)$ to color
+$\text{Int}(C_2)$, where $C_2=C[v_2,u_2]\cup P_3\cup uu_2\cup wv_2$,}
+\item{and with input $(v_1,  w_1, \adj{{v_1}}{v_2}, w_2)$
 to color $\text{Int}(C_3)$, where $C_3=C[v_1,v_2]\cup v_1v_2$.}
 \end{enumerate}
-All remaining vertices in $\text{Int}(C)-C-P_3$ are now colored and we
-are done.
 \end{algorithm}
 
 \begin{figure}
@@ -874,7 +875,7 @@ Let $S$ be a length $n$ integer array and let $\ell_1$ be an integer
 such that for each $v\in\text{Int}(C)-C$ we have $S(v)=\ell_1$ if and only if
 $v\in N(P_1)$.
 
-The concrete input will be $G$, $c$ and $S$,
+The concrete input will be $G$, $c$, and $S$,
 along with the ordered pair $(u_1, \adj{{u_1}}{u_2}, \ell_1)$.
 
 \textbf{Output.} For each vertex $v\in\text{Int}(C)-C$ a color in
@@ -892,12 +893,12 @@ $u=w_2$ or $u=w_1$. Thus $C$ is a face and we are done.
 
 \textbf{Recursive case.}
 Suppose that $c(u)=0$, i.e. $u\in\text{Int}(C)-C$.
-Let $d\in \{1,2,3\}\setminus\{c(u_1),c(u_2)\}$.
+Let $d\in \{1,2,3\}-\{c(u_1),c(u_2)\}$.
 Let $\ell_3=\max_{v\in G}S(v)+1$. We will
 construct an induced $u,w$-path $P_3=v_1,v_2,\ldots, v_j$
 such that $v_1,v_2,\ldots,v_j\in N(P_1)$,
 and color each $v\in P_3$ with $c(v)\leftarrow d$.
-We'll also mark each $v\in N(P_3)\setminus V(C)$
+We'll also mark each $v\in N(P_3)- V(C)$
 with $S(v)\leftarrow\ell_3$,
 and make recursive calls to color $\text{Int}(C)-C-P_3$.
 It may be useful
@@ -919,7 +920,7 @@ $\adj{v_j}{v}\leftarrow \nxt(\adj{v_j}{v_{j-1}})$.
 Set $y\leftarrow\text{NULL}$; here
 $y$ will store the first neighbor of $v_j$
 counter-clockwise from $v_{j-1}$ that is in
-$N(P_1)\setminus V(C)$ (if any).
+$N(P_1)- V(C)$ (if any).
 Set $\adj{v_j}{t}\leftarrow\text{NULL}$; here
 $\adj{v_j}{t}$ will store the last edge $v_jt$ encountered
 such that $t\in P_1$ (if any).
@@ -936,7 +937,7 @@ Refer to Figure~\ref{F:poh_linear_1}.
 If $S(v)=\ell_1$, i.e. $v\in N(P_1)$, and $y=\text{NULL}$, then set
 $y\leftarrow v$. Set $S(v)\leftarrow \ell_3$ and
 $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$.
-Go back to Loop~2.1.
+Repeat Loop~2.1.
 
 \textbf{Case~2.1.2.} Suppose that $c(v)=c(u_2)$, i.e. $v\in P_2$.
 Make a recursive call with input $(v_i, \adj{v_i}{s}, \ell_3)$
@@ -944,11 +945,12 @@ to color $\text{Int}(C_1)$, where
 $C_1=P_3[v_i,v_j]\cup C[v,s]\cup v_is\cup v_jv$;
 see Figure~\ref{F:poh_linear_1} (middle).
 Assign $i\leftarrow j$, $\adj{v_i}{s}\leftarrow \adj{v_j}{v}$, and
-$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Go back to Loop~2.1.
+$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Repeat Loop~2.1.
 
 \textbf{Case~2.1.3.} Suppose that $c(v)=c(u_1)$, i.e. $v=p_1(v_j)\in P_1$.
 Assign $\adj{v_j}{t}\leftarrow \adj{v_j}{v}$ and
-$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Proceed to Loop~2.2.
+$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Break Loop~2.1 and proceed to
+Loop~2.2.
 
 Note that if $y=\text{NULL}$, then $v_j=w$. To see this, observe that
 since $v\in P_1$,
@@ -965,7 +967,7 @@ Observe $\adj{v_j}{t}\ne\text{NULL}$.
 
 \textbf{Case~2.2.1.} Suppose that $c(v)=0$, i.e. $v\in\text{Int}(C)-C-P_3$.
 Assign $S(v)\leftarrow \ell_3$ and $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$.
-Go back to Loop~2.2.
+Repeat Loop~2.2.
 
 \textbf{Case~2.2.2.} Suppose that $c(v)\ne 0$, i.e. $v\in C$ or
 $v\in P_3$. Make a recursive
@@ -976,17 +978,17 @@ on $c(v)$. Refer to Figure~\ref{F:poh_linear_2}.
 If $c(v)=c(u_1)$, i.e. $v\in P_1$, then
 $C_1=C[v,t]\cup v_j\cup v_jt\cup v_jv$.
 Assign $\adj{v_j}{t}\leftarrow\adj{v_j}{v}$ and
-$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Go back to Loop~2.2.
+$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Repeat Loop~2.2.
 
 Otherwise,
 $v=v_{j-1}$ (either $j>1$ and $v\in P_3$, or $j=1$ so
 $v=u_2\in P_2$ and $t=u_1$).
 Then $C_1=C[p_1(v),t]\cup P_3[v,v_j]\cup vp_1(v)\cup v_jt$.
-Proceed to Step~2.3. 
+Break Loop~2.2 and proceed to Step~2.3. 
 
 \textbf{Step~2.3.} If $y\ne\text{NULL}$, then
 assign $j\leftarrow j+1$, $v_j\leftarrow y$, and
-go back to Loop~2. Otherwise, $v_j=w$ and we are done.
+repeat Loop~2. Otherwise, $v_j=w$ and we are done.
 \end{algorithm}
 
 \begin{figure}
@@ -1208,7 +1210,7 @@ induced path (right).}
 \end{figure}
 
 We claim that the path $P_3=v_1,v_2,\ldots,v_j$ in 
-Algorithm~\ref{A:poh_linear} is always an induced path in $G$.
+Algorithm~\ref{A:poh_linear} is always an induced subgraph of $G$.
 Suppose that $v_kv_j\in E(G)$ with $0<k<j-1$. Observe that
 \[
     D = C[u_2,p_1(v_{j-1})]\cup P_3[v_1,v_{j-1}]\cup u_2v_1\cup 
@@ -2074,20 +2076,18 @@ time \v{S}krekovski proved a
 weaker result using the same coloring
 strategy~\cite[Thm.~2.2b]{Skr1999}.
 
-The path list-coloring procedure discussed in this section is
-based on the constructive proofs found in Hartman and
-\v{S}krekovski's papers. For those familiar
+For those familiar
 with Hartman's proof: if $x=z$, then our $G,x,y$ match
 those in \cite[Lemma.~4.2]{Har1997}, but our
 $G$ is always biconnected;
-we follow Hartman's iterative procedure to color a path
+we follow the same iterative procedure to color a path
 $P$ clockwise from $x$ along $C$, but we proceed inductively,
 one edge at a time, and simultaneously remove
-$P$ from the subgraph in consideration. If $x\ne z$, then $z$ is
+$P$ as it is colored. If $x\ne z$, then $z$ is
 the furthest clockwise end of the path $P$ being colored; the
 the rest of $P$
-(including the original ``$x$'') has been removed. The only manner in
-which our algorithm differs from Hartman's proof is that if $x$ ever
+(including the original ``$x$'') has been removed. The only way in
+which our algorithm differs from Hartman's is that if $x$
 immediately follows $y$ clockwise around $C$, then we swap $x$ and $y$
 (see Case~1 below).
 
@@ -2121,15 +2121,15 @@ If $m=0$, then $n(G)=1$ and $c$ is trivially a path $L$-coloring.
 Otherwise $m=1$ and $n(G)= 2$. If $x\ne y$, then $c$ is a
 path $L$-coloring of $G$ with the constraints of the lemma.
 Otherwise the remaining
-$v\in G-y$ satisfies $|L(v)|\ge 2$ and we define
-$c(v)\in L(v)\setminus\{c(y)\}$.
+$v\in G-y$ satisfies $|L(v)|\ge 2$, and we define
+$c(v)\in L(v)-\{c(y)\}$.
 
 We proceed by induction on $m$, the number of edges. Let
 $u_1,u_2,\ldots,u_k$ label the neighbors of $z$ in counter-clockwise
 order such that $u_1$ is the vertex immediately counter-clockwise
-from $z$ around $C$ and $u_k$ is the vertex clockwise from $z$ around $C$.
+from $z$ around $C$, and $u_k$ is the vertex clockwise from $z$ around $C$.
 In each of the subsequent cases we will apply the lemma separately
-to one or two subgraphs $G_1,G_2$ of $G$ with corresponding labeled
+to one or two subgraphs $G_1,G_2$ of $G$, with corresponding labeled
 outer face vertices $x_i,y_i,z_i\in G_i$ for $i=1,2$.
 
 \begin{figure}
@@ -2232,13 +2232,13 @@ $\quad$
 
 \textbf{Case~1.}
 Suppose that $u_1=y$. Note that $z=x$ since $z\in C[x,y]$. Therefore
-$V(C[z,y])=V(C)$, so $|V(C[z,y])|\ge 3$ and $C[z,y]\ne z,y$.
+$V(C[z,y])=V(C)$ and, in particular, $|V(C[z,y])|\ge 3$, so $C[z,y]\ne z,y$.
 Apply the lemma to find a path $L$-coloring $c$ of $G_1=G$ with
 $x_1=y$, $y_1=x$, and $z_1=y$.
 
 \textbf{Case~2.}
 Suppose that $u_1\ne y$ and $z=x$. Then $u_1\in C-C[x,z]$
-and $|L(u_1)|\ge 2$. Pick $d\in L(u_1)\setminus L(z)$. Define
+and $|L(u_1)|\ge 2$. Pick $d\in L(u_1)- L(z)$. Define
 $L'(u_1)=\{d\}$ and $L'(v)=L(v)$ for each $v\in G-u_1$. Apply the
 lemma to find a path $L'$-coloring of $G_1=G$ with $x_1=u_1$,
 $y_1=y$, and $z_1=z$.
@@ -2252,7 +2252,7 @@ Thus any path $L$-coloring of $G-zu_1$ is also a path $L$-coloring
 of $G$.
 
 \textbf{Case~3.1.}
-Suppose that $u_2\in G-C$. Define $L'(u_2)=L(u_2)\setminus L(z)$ and
+Suppose that $u_2\in G-C$. Define $L'(u_2)=L(u_2)- L(z)$ and
 $L'(v)=L(v)$ for each $v\in G-u_2$. Note that $|L'(u_2)|\ge |L(u_2)|-1\ge 2$.
 Let $C_1$ be the outer face of $G_1=G-zu_1$,
 and observe that $C_1[x,z]$ is equal to $C[x,z]$ with the edge $u_1z$ removed
@@ -2278,7 +2278,9 @@ for each $v\in G_1-u_2$, $\text{deg}_c(v)=\text{deg}_{c_2}(v)$ for each
 $v\in G_2-u_2$, and
 $\text{deg}_c(u_2)=\text{deg}_{c_1}(u_2)+\text{deg}_{c_2}(u_2)$.
 To show that $c$ is a path $L$-coloring of $G$ it suffices to show that
-$\text{deg}_{c}(u_2)\le 2$.
+$\text{deg}_{c}(u_2)\le 2$. We'll also need to show the
+$\text{deg}_c$ constraints for $x,y,z$, but often these will follow
+immediately from the inductive hypothesis.
 
 \begin{figure}
 \begin{center}
@@ -2383,11 +2385,13 @@ $c_2$ of $G_2$ with $x_2=x$, $y_2=y$, and $z_2=z$.
 Define $L'(u_2)=\{c_2(u_2)\}$ and $L'(v)=L(v)$ for each
 $v\in G_1-u_2$. Find a path $L'$-coloring
 $c_1$ of $G_1$ with $x_1=y_1=z_1=u_2$. Since 
-$\text{deg}_{c_1}(u_2)=0$, it follows that $c$ is a path $L$-coloring of $G$
-satisfying the constraints of the lemma.
+$\text{deg}_{c_1}(u_2)=0$,
+$c$ is a path $L$-coloring of $G$. Moreover,
+$\text{deg}_{c_2}(x)=\text{deg}_{c_2}(y)=\text{deg}_{c_2}(x)=1$,
+so $c$ satisfies the constraints of the lemma.
 
 \textbf{Case~3.2.2.}
-Suppose that $u_2\in C[y,x]-x-y$. Pick $d\in L(u_2)\setminus L(z)$. Define
+Suppose that $u_2\in C[y,x]-x-y$. Pick $d\in L(u_2)- L(z)$. Define
 $L'(u_2)=\{d\}$ and $L'(v)=L(v)$ for each $v\in G-u_2$. 
 Observe that
 $x\in C_1$ and $z,y\in C_2$. Apply the inductive hypothesis to find a path
@@ -2396,8 +2400,8 @@ $G_1$ with $x_1=z_1=x$ and $y_1=u_2$.
 Then find a path
 $L'$-coloring $c_2$ of $G_2$ with $x_2=u_2$, $y_2=y$, and
 $z_2=z$. Note that $\text{deg}_{c_1}(u_2)\le 1$ and
-$\text{deg}_{c_2}(u_2)\le 1$, thus $c$ is a path $L$-coloring of $G$
-satisfying the constraints of the lemma.
+$\text{deg}_{c_2}(u_2)\le 1$, thus $c$ is a path $L$-coloring of $G$,
+and $c$ satisfies the constraints of the lemma.
 
 \begin{figure}
 \begin{center}
@@ -2536,7 +2540,7 @@ see augmented adjacency lists in Section~\ref{S:representation}.
 
 \begin{algorithm}\label{A:hartman_impl} Path $3$-Choose
 
-\textbf{Input.} Let $C$ be a cycle or length $2$ path in a
+\textbf{Input.} Let $C$ be a cycle or length $1$ path in a
 weakly triangulated plane graph $G$ represented via augmented
 adjacency lists.
 Let $x,y,z\in C$ be such that $z\in C[x,y]$.
@@ -2584,7 +2588,7 @@ afterwards $\text{max}(S)\le\ell+2(m_C-1)$.
 will follow the proof of Lemma~\ref{L:hartman3}.
 
 \textbf{Base case.} If $B(z)=F(z)$, then $C=z,u_1$
-is a length $2$ path. If $u_1\ne x$ and $u_1\ne y$, remove the
+is a length $1$ path. If $u_1\ne x$ and $u_1\ne y$, remove the
 color in $L(z)$ from $L(u_1)$, if it exists, then remove further colors
 until one color remains. Note that
 $m_C=1$ and $\text{max}(S)\le\ell+ 2(m_C-1)=\ell$ by definition.
@@ -3545,7 +3549,7 @@ the time required by Algorithm~\ref{A:augment}.
 \end{center}
 \end{figure}
 
-A benchmark was also run to test the asymptotic performance of
+A benchmark was also run to test the performance of
 Algorithm~\ref{A:poh_bfs} and
 Algorithm~\ref{A:poh_linear} on the collection of pyramid graphs
 $\{A_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:pyramid}.
@@ -3553,7 +3557,7 @@ Algorithm~\ref{A:poh_bfs} scaled very
 poorly on pyramids, as expected; see the timings
 in Figure~\ref{F:pyramid_benchmark} and plot in Figure~\ref{F:plot}. Once again,
 vertex labels were uniformly
-shuffled.
+shuffled, and adjacency lists re-ordered in memory.
 For each $n=10^i$ we selected the closest integer $k$ to
 $\sqrt{2n-6}$ so that $n(A_k)\approx n$.
 
@@ -3643,7 +3647,7 @@ $\quad$
 
 Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl} perform
 recursive calls that operate on
-subgraphs that are disjoint except for select vertices on their
+subgraphs that are disjoint apart from select vertices on their
 respective outer faces. Therefore it is possible to maintain a
 stack of
 independent recursive frames and have a pool of threads operate on the frames

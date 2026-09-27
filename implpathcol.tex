@@ -204,11 +204,11 @@ for graph theoretic terms.
 
 A graph is
 \defterm{planar} if it may be drawn in the plane by mapping
-each vertex to a point, and each edge to a curve connecting
-its incident vertices, such that curves intersect only at their
-endpoints. A \defterm{face} is a maximal region
+each vertex to a point, and each edge to a simple arc between
+its incident vertices, such that the arcs intersect only at their
+endpoints. A \defterm{face} is a region
 of the plane not containing any point of the drawing; we'll
-refer to a face by the vertices and edges mapped on
+refer to each face by the subgraph drawn on
 its border. 
 A \defterm{(combinatorial) embedding} is an equivalence
 class of drawings determined by the circular ordering of edges
@@ -422,7 +422,7 @@ $C_2=P_2\cup P_3\cup uu_2\cup ww_2$, see Figure~\ref{F:poh_proof}.
 By the inductive hypothesis, $c$ extends to path
 $3$-colorings $c_1$ of $\graphintc(C_1)$ and $c_2$ of $\graphintc(C_2)$.
 Together $c_1$ and $c_2$ form an extension of $c$ to a $3$-coloring of $G$.
-Since $C,P_3,\graphinto(C_1),\graphinto(C_1)$ partition $V(C)$, and no
+Since $C,P_3,\graphinto(C_1),\graphinto(C_1)$ partition $V(G)$, and no
 vertex in one partition shares a color with a neighbor in another,
 this extension is a path coloring.
 
@@ -552,7 +552,7 @@ $N(u)$ and $N(v_1)$ to find $\adj{u}{u_2}$ and
 $\adj{v_1}{v_2}$.
 Finally, to color the remaining vertices in $\graphinto(C)-P_3$,
 we make a recursive call
-\vspace{-0.5pc}
+\vspace{-0.75em}
 \begin{enumerate}
 \itemsep-0.25em
 \item{with input $(u_1, v_1, \adj{{u_1}}{u}, w)$ to color
@@ -2038,7 +2038,7 @@ to locate $\adj{{v_j}}{v_{j-1}}$ when
 $v_j=v$ is colored and added to a path $P_3$ in Loop~2,
 and once to iterate through $N(v_j)$ in Loops~2.1 and 2.2.
 Therefore the time complexity is
-$\mathcal{O}(m)=\mathcal{O}(n)$.
+$\mathcal{O}(n)$.
 % See Figure~\ref{F:poh_example} 
 % and Figure~\ref{F:poh_example_cont} for a concrete example.
 
@@ -2067,10 +2067,10 @@ which our algorithm differs from Hartman's is that if $x$
 immediately follows $y$ clockwise around $C$, then we swap $x$ and $y$
 (see Case~1 below).
 
-Given a graph $G$ and a coloring $c$ of $G$, for each $v\in G$ we
-define $\text{deg}_c(v)$ to be the number of neighbors of $v$ that share a color
-with $v$. Equivalently, $\text{deg}_c(v)$ is the degree of $v$ in the subgraph
-of $G$ induced by the color class of $c(v)$.
+Given a coloring $c$ of a graph $G$, and $v\in G$, we define
+$\text{deg}_c(v)$
+to be the degree of $v$ in the subgraph induced by the color class $c(v)$,
+i.e. the number of neighbors of $v$ that are also colored with $c(v)$.
 
 \begin{lemma}\label{L:hartman3}
 Let $G$ be a biconnected, weakly triangulated plane graph with outer face
@@ -3439,13 +3439,14 @@ Finally, apply Algorithm~\ref{A:hartman_impl} with the input $G$, $L$,
 $B$, $F$, $S$, $M$, and $(u, u, u)$. The remaining color in each
 list in $L$ will represent a path $L$-coloring of $G$.
 
-Every recursive case in Algorithm~\ref{A:hartman_impl} reduces the
-number of edges in the subgraph(s) in consideration,
-except for Cases~1 and 2. In Case~1 a recursive call is made
+Case~3 in Algorithm~\ref{A:hartman_impl} reduces the
+number of edges in the subgraph(s) under consideration.
+In Case~1 a recursive call is made
 with an input that will satisfy Case~2. In Case~2 a recursive
-call is made with an input that will not itself satisfy Case~1 or Case~2.
-Thus the number of operations performed
-is $\mathcal{O}(m)=\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl},
+call is made with an input that will satisfy Case~3.
+Therefore the total number of recursive calls made, and thus the
+overall time complexity, is
+is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl},
 \ref{F:hartman_impl_cont}, and \ref{F:hartman_impl_comp} for a concrete
 example of Algorithm~\ref{A:hartman_impl}.
 
@@ -3806,8 +3807,7 @@ Masters Project,
 University of Alaska,
 2017,
 available from\hfil\break
-\texttt{http://github.com/permutationlock/path\_coloring\_bgl} and\hfil\break
-\texttt{http://github.com/permutationlock/libavengraph}.
+\texttt{http://github.com/permutationlock/path\_coloring\_bgl}.
 
 \bibitem{ChHa2017prep}
 G.~G.~Chappell and C.~Hartman,

@@ -3461,13 +3461,7 @@ in Figure~\ref{F:plot}.
 Plane triangulations were sampled using the method of
 Poulalhon and Schaeffer~\cite{Pou2006}.
 The vertices were randomly re-labeled in each sampled graph, and the
-corresponding adjacency list arrays were re-ordered in memory such that
-the list for newly-labeled vertex $0$ came first in memory, followed
-by the list for vertex $1$, and so on. The
-benchmark results therefore represent each algorithm's
-performance on a set of uniformly sampled plane triangulations,
-each with a
-uniformly sampled representation layout in memory.
+corresponding adjacency list arrays were re-ordered in memory.
 The list assignments for Algorithm~\ref{A:hartman_impl} were uniformly
 drawn from a set of six colors.
 
@@ -3482,13 +3476,13 @@ Both source code and binaries are available~\cite{Bro2017}.
 
 The performance of
 Algorithm~\ref{A:hartman_impl} was similar to
-Algorithm~\ref{A:poh_linear} on the sampled graphs, but
-Algorithm~\ref{A:hartman_impl} required an
-augmented adjacency list representation. For
-situations where such a representation
-is not immediately available, the time required by
+Algorithm~\ref{A:poh_linear} on the sample, but
+Algorithm~\ref{A:hartman_impl} requires an
+augmented adjacency list representation.
+If one
+is not immediately available, then time required to execute
 Algorithm~\ref{A:hartman_impl} would also include
-the time required by Algorithm~\ref{A:augment}.
+Algorithm~\ref{A:augment}.
 
 \begin{figure}[p]
 \begin{center}
@@ -3634,8 +3628,7 @@ concurrently. The amount of parallelism possible with this method is highly
 dependent on the structure of the graph. E.g. when
 Algorithm~\ref{A:poh_linear} is run on a pyramid
 graph from Figure~\ref{F:pyramid} there will never be more
-than one recursive frame on the stack, and thus
-no opportunity for parallel execution.
+than one frame on the stack.
 
 Our parallel implementation of Algorithm~\ref{A:poh_linear} maintains a
 shared lock-guarded stack from which all threads push and pop recursive
@@ -3686,12 +3679,6 @@ per graph (sample size $100$).}
     \label{F:benchmark_poh_thread}
 \end{center}
 \end{figure}
-
-Benchmarks in Figure~\ref{F:benchmark_poh_thread} showed benefit
-to the
-parallel Algorithm~\ref{A:poh_linear} when $n\ge 10^4$.
-The same sample of plane
-triangulations was used as in Figure~\ref{F:benchmark}.
 
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
 parallel execution.
@@ -3790,10 +3777,10 @@ is pushed to the stack.
 % vertex that another frame is waiting on, then the lock must be
 % acquired.
 
-Benchmarks in Figure~\ref{F:benchmark_hartman_thread}
+Benchmarks in Figures~\ref{F:benchmark_poh_thread} and \ref{F:benchmark_hartman_thread}
 showed some benefit to the parallel
-version of Algorithm~\ref{A:hartman_impl} when $n\ge 10^4$, with
-significant performance improvements appearing for very large graphs.
+versions of Algorithms~\ref{A:poh_linear} and\ref{A:hartman_impl} when $n\ge 10^4$, with
+significant improvements for very large graphs.
 
 \begin{thebibliography}{99}
 

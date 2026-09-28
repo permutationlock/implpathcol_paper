@@ -331,7 +331,7 @@ doubly linked list solves computing both $\nxt(\adj{v}{u})$ and
 $\prv(\adj{v}{u})$, but
 back references require more information.
 We define an \defterm{augmented adjacency list} to be an adjacency
-list that stores a pair $(u,\adj{u}{v})$ for each neighbor $u$ of $v$.
+list that stores the pair $(u,\adj{u}{v})$ for each neighbor $u$ of $v$.
 Given an adjacency list representation, an augmented
 representation may be constructed in $\mathcal{O}(m)$ time. 
 
@@ -415,14 +415,14 @@ $u,u_2,u_1$ and $w,w_1,w_2$ are faces of $G$; note that
 $u$ and $w$ are uniquely determined, but it may be that $u=w$. Since
 $C$ is induced, $G-C$ is connected.
 Let $P_3$ be a $u,w$-path in $G-C$ of minimal length, and
-note that $P_3$ is an induced subgraph of $G-C$.
+note that $P_3$ is an induced subgraph of $G$.
 Color each vertex of $P_3$ with the color $d\in\{1,2,3\}- S$.
 Let $C_1=P_1\cup P_3\cup uu_1\cup ww_1$ and
 $C_2=P_2\cup P_3\cup uu_2\cup ww_2$, see Figure~\ref{F:poh_proof}.
 By the inductive hypothesis, $c$ extends to path
 $3$-colorings $c_1$ of $\graphintc(C_1)$ and $c_2$ of $\graphintc(C_2)$.
 Together $c_1$ and $c_2$ form an extension of $c$ to a $3$-coloring of $G$.
-Since $C,P_3,\graphinto(C_1),\graphinto(C_1)$ partition $V(G)$, and no
+Since $C,P_3,\graphinto(C_1),\graphinto(C_2)$ partition $V(G)$, and no
 vertex in one partition shares a color with a neighbor in another,
 this extension is a path coloring.
 

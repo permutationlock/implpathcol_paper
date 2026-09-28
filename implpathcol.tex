@@ -2075,10 +2075,11 @@ $y$.
 Specifically,
 if $z$ is the current end of $P$ clockwise along $C$,
 $v$ is $z$'s closest neighbor to $y$ in $C[z,y]$, and
-$c(z)\not\in L(v)$, then the
+$d\not\in L(v)$ where $d=c(v)$
+is the color assigned to $P$, then the
 path $P$ might terminate at $z$
 even if there exists a neighbor $v'$ of $z$ in $C[z,v]$ such
-that $c(z)\in L(v)$ (see Case~3.2.3.2 below).
+that $d\in L(v)$ (see Case~3.2.3.2 below).
 
 Given a coloring $c$ of a graph $G$, and $v\in G$, we define
 $\text{deg}_c(v)$

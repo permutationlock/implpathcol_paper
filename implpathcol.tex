@@ -832,7 +832,7 @@ of Poh's algorithm.
 For a subraph $H$ of $G$, let $N(H)$ be the set of
 vertices in $G-H$ with a neighbor in $H$.
 Let $C$ and $P_1=C[u_1,w_1]$ be as in Lemma~\ref{L:planar3c}. Let
-$p_1:N(P_1)\to V(P_1)$ map each $v\in N(v)$ to its neighbor furthest
+$p_1:N(P_1)\to V(P_1)$ map each $v\in N(v)$ to its neighbor farthest
 clockwise along $P_1$,
 i.e. $V(C[p_1(v),w_1])\cap N(v)=\{p_1(v)\}$.
 
@@ -2052,25 +2052,38 @@ time \v{S}krekovski proved a
 weaker result using the same coloring
 strategy~\cite[Thm.~2.2b]{Skr1999}.
 
+In Lemma~\ref{L:hartman3} below we provide a different proof of Hartman's
+result, following a similar coloring strategy, but organized such
+that it may be immediately
+implemented in linear time for graphs
+represented as in Section~\ref{S:representation}.
 For those familiar
-with Hartman's proof: if $x=z$, then our $G,x,y$ will match
-those in \cite[Lemma.~4.2]{Har1997}, but we'll assume
-$G$ is biconnected;
-we follow the same iterative procedure to color a path
-$P$ clockwise from $x$ along $C$, but we proceed inductively,
+with Hartman's proof: if $x=z$, then our $G,x,y$ match
+those in \cite[Lemma.~4.2]{Har1997}, but we assume
+that $G$ is biconnected;
+we follow a similar iterative procedure to color a path
+$P$ clockwise from $x$ along $C$, but we consider
 one edge at a time, and simultaneously remove
 $P$ as it is colored. If $x\ne z$, then $z$ is
-the furthest clockwise end of the path $P$ being colored; the
-the rest of $P$
-(including the original ``$x$'') has been removed. The only way in
-which our algorithm differs from Hartman's is that if $x$
-immediately follows $y$ clockwise around $C$, then we swap $x$ and $y$
-(see Case~1 below).
+the farthest clockwise end of the path $P$ being colored;
+the rest of $P$ has already been removed
+(including the original ``$x$'', our $x$ is Hartman's $x'$).
+
+The only difference between our coloring algorithm and Hartman's is that
+we do not always continue coloring $P$ as far as possible towards
+$y$.
+Specifically,
+if $z$ is the current end of $P$ clockwise along $C$,
+$v$ is $z$'s closest neighbor to $y$ in $C[z,y]$, and
+$c(z)\not\in L(v)$, then the
+path $P$ might terminate at $z$
+even if there exists a neighbor $v'$ of $z$ in $C[z,v]$ such
+that $c(z)\in L(v)$ (see Case~3.2.3.2 below).
 
 Given a coloring $c$ of a graph $G$, and $v\in G$, we define
 $\text{deg}_c(v)$
 to be the degree of $v$ in the subgraph induced by the color class $c(v)$,
-i.e. the number of neighbors of $v$ that are also colored with $c(v)$.
+i.e. the number of same-color neighbors.
 
 \begin{lemma}\label{L:hartman3}
 Let $G$ be a biconnected, weakly triangulated plane graph with outer face
@@ -2659,7 +2672,7 @@ $\text{max}(S)\le\ell + 2m(G_1) + 1 + 2m(G_2)-2<\ell+2(m_C-1)$.
 
 \textbf{Case~3.2.3.} Suppose that $z\ne x$ and $M(S(u_2))=S(y)$, i.e.
 $u_2\in C[z,y]$. There are
-two cases to consider.
+two cases to consider, see Figure~\ref{F:hartman_3_2_3}.
 
 \textbf{Case~3.2.3.1.} Suppose that the color in $L(z)$ is in $L(u_2)$. Remove
 all colors from $L(u_2)$ except for the color in $L(z)$.

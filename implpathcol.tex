@@ -2140,7 +2140,7 @@ for an example.
     \end{pgfonlayer}
 \end{tikzpicture}
 \caption{Coloring and removing a path $P$ in Hartman's proof
-of \cite[Lemma.~4.2]{Har1997}.}\label{F:hartman_overview}
+\cite[Lemma.~4.2]{Har1997}.}\label{F:hartman_overview}
 \end{center}
 \end{figure}
 
@@ -2246,24 +2246,22 @@ Lemma~\ref{L:hartman3} (or Algorithm~\ref{A:hartman_impl}).}
 For those familiar with Hartman's proof: the one major difference between
 our algorithm and Hartman's
 occurs in our Case~3.2.3. If we encounter a chord edge $zv\in G-C$
-($z$ is our current end of $P$) with
+($z$ is the current end of $P$) with
 $v\in C[z,y]$ and $L(z)\cap L(v)=\emptyset$ (i.e. $d\not\in L(v)$,
 where $d$ is the color of the path $P$),
 instead of continuing to
 search counter-clockwise for neighbors of $z$ in $C[z,v]$ that we might add
 to $P$ (as in the proof of \cite[Lemma.~4.2]{Har1997}), we
 apply the inductive hypothesis such that $z$ now serves as
-``$y$'' (see Figure~\ref{F:hartman_3_2_3}).
+``$y$'' (see Figure~\ref{F:hartman_3_2_3} for an illustration
+of this case in general).
 The chord from the vertex labeled $*$ to $y$ in
 Figure~\ref{F:hartman_overview}
-is such an edge: our algorithm produces the same coloring as
-Hartman's in this example, but it initally halts
+is an example of such an edge: our algorithm eventually produces the same
+coloring as Hartman's on this input $G,L,x,y$, but it initally halts
 $P$ at $*$, and separately considers
 the left and right halves of the graph, with $*$ as the new ``$y$''
 on the right, see Figure~\ref{F:hartman_difference}.
-Our algorithm considers
-one edge at a time, and requires no
-context besides $C$, $x$, $y$, and $z$.
 
 Given a coloring $c$ of a graph $G$, and $v\in G$, we define
 $\text{deg}_c(v)$
@@ -3141,7 +3139,7 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v2) edge [->, very thick] (v4);
+                \draw (v4) edge [->, very thick] (v2);
                 \draw (v4) edge [very thick] (v6);
                 \draw (v4) edge [very thick] (v5);
                 \draw (v5) edge [very thick] (v7);
@@ -3467,7 +3465,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v3) edge [->, very thick] (v4);
+                \draw (v4) edge [->, very thick] (v3);
                 \draw (v4) edge [very thick] (v8);
                 \draw (v3) edge [very thick] (v8);
                 \draw (v0) edge [dotted] (v3);
@@ -3596,14 +3594,14 @@ $\qquad$
                 \draw (v0) edge [dotted](v1);
                 \draw (v1) edge [dotted](v5);
                 \draw (v1) edge [dotted](v7);
-                \draw (v1) edge [very thick] (v2);
+                \draw (v1) edge [double,very thick] (v2);
                 \draw (v2) edge [dotted](v7);
                 \draw (v2) edge [dotted](v5);
                 \draw (v2) edge [dotted](v4);
                 \draw (v2) edge [dotted](v6);
                 \draw (v2) edge [dotted](v3);
                 \draw (v3) edge [dotted](v6);
-                \draw (v3) edge [very thick] (v4);
+                \draw (v3) edge [double,very thick] (v4);
                 \draw (v3) edge [dotted](v8);
                 \draw (v4) edge [dotted](v5);
                 \draw (v4) edge [dotted](v8);
@@ -3693,7 +3691,7 @@ Algorithm~\ref{A:augment}.
 \hline
 \hline
     (\textcolor{black}{Black}) BFS & %$1.66\cdot 10^{2}$ & $2.26\cdot 10^3$ &
-    $9.72\cdot 10^{4}$ & $2.82\cdot 10^{5}$ &
+    $9.72\cdot 10^{3}$ & $2.82\cdot 10^{5}$ &
     $3.94\cdot 10^{6}$ & $1.04\cdot 10^{8}$ &
     $1.31\cdot 10^{9}$ \\
 \hline

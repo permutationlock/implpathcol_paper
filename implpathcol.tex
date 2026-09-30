@@ -2064,9 +2064,9 @@ $v\in C-\{x,y\}$, and $|L(v)|\ge 3$ for each $v\in G-C$. A
 color $d\in L(x)$ is selected, and an induced path $P$ is colored with $d$,
 starting from $x$, and proceeding clockwise towards $y$ along $C[x,y]$,
 such that for each $v\in P$, $d\in L(v)$.
-The algorithm is then applied to each connected subgraph
+The algorithm is then applied to each connected component
 of $G-P$, using a new list assignment $L'$ defined by
-$L'(v)=L(v)-d$ if $v\in N(P)$, $L'(v)=L(v)$ if
+$L'(v)=L(v)-\{d\}$ if $v\in N(P)$, $L'(v)=L(v)$ if
 $v\not\in N(P)$. This produces
 a path $L$-coloring of $G$. See Figure~\ref{F:hartman_overview}
 for an example.
@@ -2139,8 +2139,8 @@ for an example.
         \draw (up) edge (vp8);
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{Coloring and removing a path $P$ in the Hartman-\v{S}krekovski
-algorithm.}\label{F:hartman_overview}
+\caption{Coloring and removing a path $P$ in Hartman's proof
+of \cite[Lemma.~4.2]{Har1997}.}\label{F:hartman_overview}
 \end{center}
 \end{figure}
 
@@ -2159,6 +2159,90 @@ the farthest clockwise end of the path $P$ being colored;
 the rest of $P$ has already been removed
 (our $x$ is now Hartman's $x'$).
 
+\begin{figure}
+\begin{center}
+\SolidGraph
+\begin{tikzpicture}[scale=1.7]
+    \node (v1) [label=left:${\{2\}}$] at (0.0cm, 1.15cm) {};
+    \node (v2) [label=above left:${\{1\}}$] at (0.5cm, 1.5cm) {};
+    \node (v3) [label=above:${z\, \{1\}}$] at (1.0cm, 1.6cm) {};
+    \node (v4) [label=above right:${\{1,2\}}$] at (1.5cm, 1.5cm) {};
+    \node (v5) [label=right:${\{2,3\}}$] at (2.0cm, 1.15cm) {};
+    \node (v6) [label=right:${\{1,4\}}$] at (2.0cm, 0.35cm) {};
+    \node (v7) [label=below right:${\{3,5\}}$] at (1.5cm, 0.0cm) {};
+    \node (v8) [label=below:${y\, \{2\}}$] at (1.0cm, 0.05cm) {};
+    \node (v9) [label=below left:$x\, {\{3\}}$] at (0.5cm, 0cm) {};
+    \node (v10) [label=left:${\{1\}}$] at (0.0cm, 0.35cm) {};
+	\node (u) [label=right:${\{2,3\}}$] at (0.5cm, 1.0cm) {};
+
+    \begin{pgfonlayer}{bg}
+        \draw (v1) edge[dotted] (v2);
+        \draw (v3) edge[very thick,double] (v2);
+        \draw (v3) edge (v4);
+        \draw (v5) edge (v4);
+        \draw (v5) edge (v6);
+        \draw (v7) edge (v6);
+        \draw (v7) edge (v8);
+        \draw (v9) edge (v8);
+        \draw (v9) edge[dotted] (v10);
+        \draw (v1) edge[dotted] (v10);
+        \draw (v2) edge[very thick,double] (v10);
+        \draw (v3) edge (v8);
+        \draw (v3) edge (v6);
+        \draw (v4) edge (v6);
+        \draw (v3) edge (v7);
+        \draw (u) edge[dotted] (v2);
+        \draw (u) edge[dotted] (v10);
+        \draw (u) edge (v9);
+        \draw (u) edge (v8);
+        \draw (u) edge (v3);
+    \end{pgfonlayer}
+
+	\node (bs) [empty] at (2.4cm, 0.75cm) {};
+	\node (bm) [empty] at (2.9cm, 0.75cm) {};
+	\node (be1) [empty] at (3.5cm, 0.4cm) {};
+	\node (be2) [empty] at (5.25cm, 1.15cm) {};	
+
+    \begin{pgfonlayer}{bg}
+		\draw (bs) edge[very thick] (bm);
+		\draw (bm) edge[->,very thick,bend right] (be1);
+		\draw (bm) edge[->,very thick,bend left=60] (be2);
+    \end{pgfonlayer}
+
+    \node (vp2) [empty] at (5.5cm, 1.5cm) {};
+    \node (vp3) [label=above:${y_2\, \{1\}}$] at (6.0cm, 1.6cm) {};
+    \node (vp4) [label=above right:${\{1,2\}}$] at (6.5cm, 1.5cm) {};
+    \node (vp5) [label=right:${\{2,3\}}$] at (7.0cm, 1.15cm) {};
+    \node (vp6) [label=right:${\{1,4\}}$] at (7.0cm, 0.35cm) {};
+    \node (vp7) [label=below right:${\{3,5\}}$] at (6.5cm, 0.0cm) {};
+    \node (vp8) [label=below left:${x_2,z_2\, \{2\}}$] at (6.0cm, 0.05cm) {};
+
+    \node (vq8) [label=below:${y_1\, \{2\}}$] at (4.4cm, 0.05cm) {};
+    \node (vq9) [label=below left:${x_1,z_1\, {\{3\}}}$] at (3.9cm, 0cm) {};
+	\node (uq) [label=above:${\{2,3\}}$] at (3.9cm, 1.0cm) {};
+
+    \begin{pgfonlayer}{bg}
+        \draw (vp3) edge[very thick,double] (vp2);
+        \draw (vp3) edge (vp4);
+        \draw (vp5) edge (vp4);
+        \draw (vp5) edge (vp6);
+        \draw (vp7) edge (vp6);
+        \draw (vp7) edge (vp8);
+        \draw (vq9) edge (vq8);
+        \draw (vp3) edge (vp8);
+        \draw (vp3) edge (vp6);
+        \draw (vp4) edge (vp6);
+        \draw (vp3) edge (vp7);
+        \draw (uq) edge (vq9);
+        \draw (uq) edge (vq8);
+    \end{pgfonlayer}
+\end{tikzpicture}
+\caption{Coloring and removing a path $P$ in the proof of
+Lemma~\ref{L:hartman3} (or Algorithm~\ref{A:hartman_impl}).}
+\label{F:hartman_difference}
+\end{center}
+\end{figure}
+
 For those familiar with Hartman's proof: the one major difference between
 our algorithm and Hartman's
 occurs in our Case~3.2.3. If we encounter a chord edge $zv\in G-C$
@@ -2172,11 +2256,12 @@ apply the inductive hypothesis such that $z$ now serves as
 ``$y$'' (see Figure~\ref{F:hartman_3_2_3}).
 The chord from the vertex labeled $*$ to $y$ in
 Figure~\ref{F:hartman_overview}
-is such an edge: our algorithm would produce the same coloring as
-Hartman's in this example, but it would initally halt
-$P$ at $*$, and separately consider
-the right half of the graph with $*$ as the new ``$y$''.
-Our algorithm is able to consider
+is such an edge: our algorithm produces the same coloring as
+Hartman's in this example, but it initally halts
+$P$ at $*$, and separately considers
+the left and right halves of the graph, with $*$ as the new ``$y$''
+on the right, see Figure~\ref{F:hartman_difference}.
+Our algorithm considers
 one edge at a time, and requires no
 context besides $C$, $x$, $y$, and $z$.
 
@@ -2716,7 +2801,7 @@ refer
 to Figure~\ref{F:hartman_1} (right),
 Figure~\ref{F:hartman_3_2}, and Figure~\ref{F:hartman_3_2_3}.
 
-\textbf{Case~3.1.} Suppose that $S(u_2)=0$, that is, $u_2\in
+\textbf{Case~3.1.} Suppose that $S(u_2)=0$, that is $u_2\in
 \graphinto(C)$. Assign $S(u_2)\leftarrow S(x)$ and initialize
 $B(u_2)\leftarrow\adj{u_2}{u_1}=\nxt(\adj{u_2}{z})$ and
 $F(u_2)\leftarrow\adj{u_2}{z}$;
@@ -2820,7 +2905,7 @@ $z$};
         \node (v8) [label=left:{0,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v0) edge [double, very thick] (v8);
+                \draw (v0) edge [->, very thick] (v8);
                 \draw (v0) edge [very thick] (v3);
                 \draw (v0) edge [very thick] (v4);
                 \draw (v0) edge [very thick] (v5);
@@ -2859,7 +2944,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v0) edge [double, very thick] (v4);
+                \draw (v0) edge [->, very thick] (v4);
                 \draw (v0) edge [very thick] (v8);
                 \draw (v0) edge [very thick] (v5);
                 \draw (v0) edge [very thick] (v1);
@@ -2899,7 +2984,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v0) edge [double, very thick] (v5);
+                \draw (v0) edge [->, very thick] (v5);
                 \draw (v0) edge [very thick] (v4);
                 \draw (v0) edge [very thick] (v1);
                 \draw (v1) edge [very thick] (v5);
@@ -2937,7 +3022,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v0) edge [double, very thick] (v1);
+                \draw (v0) edge [->, very thick] (v1);
                 \draw (v0) edge [very thick] (v5);
                 \draw (v1) edge [very thick] (v5);
                 \draw (v1) edge [very thick] (v7);
@@ -2977,7 +3062,7 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v3) edge [double, very thick] (v6);
+                \draw (v3) edge [->, very thick] (v6);
                 \draw (v3) edge [very thick] (v4);
                 \draw (v3) edge [very thick] (v8);
                 \draw (v4) edge [very thick] (v8);
@@ -3016,7 +3101,7 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v3) edge [double, very thick] (v4);
+                \draw (v3) edge [->, very thick] (v4);
                 \draw (v3) edge [very thick] (v6);
                 \draw (v3) edge [very thick] (v8);
                 \draw (v4) edge [very thick] (v8);
@@ -3056,7 +3141,7 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v2) edge [double, very thick] (v4);
+                \draw (v2) edge [->, very thick] (v4);
                 \draw (v4) edge [very thick] (v6);
                 \draw (v4) edge [very thick] (v5);
                 \draw (v5) edge [very thick] (v7);
@@ -3095,7 +3180,7 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v4) edge [double, very thick] (v5);
+                \draw (v4) edge [->, very thick] (v5);
                 \draw (v5) edge [very thick](v7);
                 \draw (v1) edge [very thick](v5);
                 \draw (v1) edge [very thick](v7);
@@ -3144,7 +3229,7 @@ $y$};
         \node (M) [shape=rectangle, draw=none, fill=white] at (0.0cm, -2.4cm) {$M(4)\leftarrow 3$};
 
         \begin{pgfonlayer}{bg}
-                \draw (v2) edge [double, very thick] (v7);
+                \draw (v2) edge [->, very thick] (v7);
                 \draw (v2) edge [very thick] (v5);
                 \draw (v5) edge [very thick] (v7);
                 \draw (v1) edge [very thick] (v5);
@@ -3183,7 +3268,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v1) edge [double, very thick] (v7);
+                \draw (v1) edge [->, very thick] (v7);
                 \draw (v1) edge [very thick] (v5);
                 \draw (v1) edge [very thick] (v2);
                 \draw (v2) edge [very thick] (v7);
@@ -3223,7 +3308,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v1) edge [double, very thick] (v2);
+                \draw (v1) edge [->, very thick] (v2);
                 \draw (v1) edge [very thick] (v7);
                 \draw (v2) edge [very thick] (v7);
                 \draw (v2) edge [very thick] (v5);
@@ -3262,7 +3347,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v2) edge [double, very thick] (v5);
+                \draw (v2) edge [->, very thick] (v5);
                 \draw (v2) edge [very thick] (v7);
                 \draw (v5) edge [very thick] (v7);
                 \draw (v4) edge [thin] (v8);
@@ -3303,7 +3388,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v5) edge [double, very thick] (v7);
+                \draw (v5) edge [->, very thick] (v7);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -3342,7 +3427,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v2) edge [double, very thick] (v6);
+                \draw (v2) edge [->, very thick] (v6);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -3382,7 +3467,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v3) edge [double, very thick] (v4);
+                \draw (v3) edge [->, very thick] (v4);
                 \draw (v4) edge [very thick] (v8);
                 \draw (v3) edge [very thick] (v8);
                 \draw (v0) edge [dotted] (v3);
@@ -3420,7 +3505,7 @@ $z$};
         \node (v8) [label=left:{10,\{3\}}] at (-1.705649cm, -0.111242cm) {$x$}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v3) edge [double, very thick] (v8);
+                \draw (v3) edge [->, very thick] (v8);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v0) edge [dotted] (v8);
                 \draw (v0) edge [dotted] (v4);
@@ -3553,16 +3638,17 @@ Finally, apply Algorithm~\ref{A:hartman_impl} with the input $G$, $L$,
 $B$, $F$, $S$, $M$, and $(u, u, u)$. The remaining color in each
 list in $L$ will represent a path $L$-coloring of $G$.
 
-Case~3 in Algorithm~\ref{A:hartman_impl} reduces the
-number of edges in the subgraph(s) under consideration.
-In Case~1 a recursive call is made
-with an input that will satisfy Case~2. In Case~2 a recursive
-call is made with an input that will satisfy Case~3.
+Each case in Algorithm~\ref{A:hartman_impl} performs a fixed number
+of constant time operations. Case~3 removes an edge
+from the in the subgraph(s) under consideration.
+Case~1 makes a recursive call
+with an input that satisfies Case~2. Case~2 makes a recursive
+call with an input that satisfies Case~3.
 Therefore the total number of recursive calls made, and thus the
 overall time complexity, is
 is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl},
 \ref{F:hartman_impl_cont}, and \ref{F:hartman_impl_comp} for a concrete
-example of Algorithm~\ref{A:hartman_impl}.
+example.
 
 \section{Experimental Performance and Parallelism}\label{S:performance}
 
@@ -3738,7 +3824,7 @@ recursive calls that operate on
 subgraphs that are disjoint apart from select vertices on their
 respective outer faces. Therefore it is possible to maintain a
 stack of
-independent recursive frames and have a pool of threads operate on the frames
+independent recursive frames and have a pool of threads execute frames
 concurrently. The amount of parallelism possible with this method is highly
 dependent on the structure of the graph. E.g. when
 Algorithm~\ref{A:poh_linear} is run on a pyramid
@@ -3755,12 +3841,12 @@ To reduce lock contention, each thread may also
 maintain a
 small local stack of frames, and only access the shared
 stack when this local stack is full or empty.
-% For the implementation and hardware
-% used for benchmarks, the most optimal setup proved to be a
-% local stack of $16$ frames for each thread. If a local stack filled up,
-% $8$ frames were pushed to the
-% shared stack. If a local stack emptied, $8$ frames were popped from the
-% shared stack.
+For the implementation and hardware
+used for benchmarks, the most optimal setup proved to be a
+local stack of $16$ frames for each thread: if a local stack filled up,
+$8$ frames were pushed to the
+shared stack; if a local stack emptied, $8$ frames were popped from the
+shared stack.
 
 \begin{figure}
 \begin{center}

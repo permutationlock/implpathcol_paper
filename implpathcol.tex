@@ -315,7 +315,7 @@ $N(v)$ will refer to the adacency list.
 
 Let $v\in G$ and $u\in N(v)$. Define $\nxt_v(u)\in N(v)$ to be
 the neighbor counter-clockwise from $u$ around $v$,
-and $\prv_v(u)\in N(V)$ the neighbor clockwise from $u$.
+and $\prv_v(u)\in N(V)$ to be the neighbor clockwise from $u$.
 In algorithms
 $\adj{v}{u}$ will be a reference to $u$'s entry in $N(v)$, i.e.
 $\adj{v}{u}$ represents both $u$ and the position of $u$ in $v$'s
@@ -2140,7 +2140,7 @@ for an example.
     \end{pgfonlayer}
 \end{tikzpicture}
 \caption{Coloring and removing a path $P$ in Hartman's proof
-\cite[Lemma.~4.2]{Har1997}.}\label{F:hartman_overview}
+\cite[Lemma~4.2]{Har1997}.}\label{F:hartman_overview}
 \end{center}
 \end{figure}
 
@@ -2149,7 +2149,7 @@ result, organized in such a way that it immediately
 describes a linear time algorithm for graphs
 represented as in Section~\ref{S:representation}.
 If $x=z$, then our $G,x,y$ match
-those in Hartman's \cite[Lemma.~4.2]{Har1997}, but we assume
+those in Hartman's \cite[Lemma~4.2]{Har1997}, but we assume
 that $G$ is biconnected;
 we follow a similar iterative procedure to color a path
 $P$ clockwise from $x$ along $C$, but we consider
@@ -2251,7 +2251,7 @@ $v\in C[z,y]$ and $L(z)\cap L(v)=\emptyset$ (i.e. $d\not\in L(v)$,
 where $d$ is the color of the path $P$),
 instead of continuing to
 search counter-clockwise for neighbors of $z$ in $C[z,v]$ that we might add
-to $P$ (as in the proof of \cite[Lemma.~4.2]{Har1997}), we
+to $P$ (as in the proof of \cite[Lemma~4.2]{Har1997}), we
 apply the inductive hypothesis such that $z$ now serves as
 ``$y$'' (see Figure~\ref{F:hartman_3_2_3} for an illustration
 of this case in general).

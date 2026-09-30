@@ -222,11 +222,12 @@ paths.
 A graph $G$ is \defterm{path $k$-colorable} if $G$
 admits a path $k$-coloring.
 A \defterm{list assignment}
-of a graph $G$ maps each vertex to a finite set of colors.
+$L$ of a graph $G$ maps each $v\in G$ to a finite set of colors $L(v)$.
 An \defterm{$L$-coloring} (or \defterm{$L$-list-coloring}) is a
 coloring $c$ such that $c(v)\in L(v)$ for each $v\in V(G)$.
 A graph is \defterm{path $k$-choosable} if it admits a path $L$-coloring
-for any list assignment $L$ with at least $k$ colors in each list.
+for every list assignment $L$ with at least $k$ colors in each list,
+i.e. $|L(v)|\ge k$ for each $v\in G$.
 
 
 Broere \& Mynhardt conjectured~\cite[Conj.~16]{BrMy1985}
@@ -247,7 +248,7 @@ into two subsets, each inducing a forest.
 Hartman~\cite[Thm.~4.1]{Har1997}
 proved a list-coloring generalization of Theorem~\ref{T:planar3c}
 (see also Chappell \& Hartman~\cite[Thm.~2.1]{ChHa2017prep}).
-Essentially the same technique was used by
+Essentially the same coloring technique was used by
 \v{S}krekovski~\cite[Thm.~2.2b]{Skr1999}
 to prove a result slightly weaker than Theorem~\ref{T:planar3}.
 
@@ -286,13 +287,15 @@ discusses how each algorithm may be modified to benefit from parallelism.
 % $u,v$-path in $G$,
 % and \defterm{biconnected} if $G-v$ is connected
 % for every $v\in G$.
-A plane graph $G$ is \defterm{triangulated} if it is connected
-and $n(G)\le 2$, or if every face is a
-\defterm{triangle} (a length $3$ cycle). If every face but
-(maybe) the
-outer face is a triangle, then $G$ is
-\defterm{weakly triangulated}.
-If $G$ is biconnected and $n(G)\ge 3$, then its outer face is a cycle.
+A plane graph $G$ is \defterm{triangulated} (or \defterm{maximal})
+if it is connected
+and $n(G)\le 2$, or if every face of $G$ is a
+\defterm{triangle} (a length $3$ cycle). We say $G$ is
+\defterm{weakly triangulated}
+if all of its interior (bounded) faces are triangles
+(a triangulated graph is also weakly triangulated).
+Note that if $G$ is biconnected and $n(G)\ge 3$,
+then every face of $G$ is a cycle.
 
 The input for each algorithm will be a biconnected, weakly triangulated
 plane graph $G$ with $n$ vertices and $m$ edges.
@@ -2052,14 +2055,101 @@ time \v{S}krekovski proved a
 weaker result using the same coloring
 strategy~\cite[Thm.~2.2b]{Skr1999}.
 
-In Lemma~\ref{L:hartman3} below we provide a different proof of Hartman's
-result, following a similar coloring strategy, but organized such
-that it may be immediately
-implemented in linear time for graphs
+In brief, the Hartman-\v{S}krekovski algorithm takes as input a
+weakly triangulated plane
+graph $G$ with outer face $C$, a list assignment $L$, and two
+vertices $x,y\in C$. It
+assumes that $|L(x)|\ge 1$, $|L(y)|\ge 1$, $|L(v)|\ge 2$ for each
+$v\in C-\{x,y\}$, and $|L(v)|\ge 3$ for each $v\in G-C$. A
+color $d\in L(x)$ is selected, and an induced path $P$ is colored with $d$,
+starting from $x$, and proceeding clockwise towards $y$ along $C[x,y]$,
+such that for each $v\in P$, $d\in L(v)$.
+The algorithm is then applied to each connected subgraph
+of $G-P$, using a new list assignment $L'$ defined by
+$L'(v)=L(v)-d$ if $v\in N(P)$, $L'(v)=L(v)$ if
+$v\not\in N(P)$. This produces
+a path $L$-coloring of $G$. See Figure~\ref{F:hartman_overview}
+for an example.
+
+\begin{figure}
+\begin{center}
+\SolidGraph
+\begin{tikzpicture}[scale=1.7]
+    \node (v1) [label=left:${\{1,2\}}$] at (0.0cm, 1.15cm) {};
+    \node (v2) [label=above left:${\{1,3\}}$] at (0.5cm, 1.5cm) {};
+    \node (v3) [label=above:${*\, \{1,4\}}$] at (1.0cm, 1.6cm) {};
+    \node (v4) [label=above right:${\{1,2\}}$] at (1.5cm, 1.5cm) {};
+    \node (v5) [label=right:${\{2,3\}}$] at (2.0cm, 1.15cm) {};
+    \node (v6) [label=right:${\{1,4\}}$] at (2.0cm, 0.35cm) {};
+    \node (v7) [label=below right:${\{3,5\}}$] at (1.5cm, 0.0cm) {};
+    \node (v8) [label=below:${y\, \{2\}}$] at (1.0cm, 0.05cm) {};
+    \node (v9) [label=below left:${\{1,3\}}$] at (0.5cm, 0cm) {};
+    \node (v10) [label=left:${x\, \{1\}}$] at (0.0cm, 0.35cm) {};
+	\node (u) [label=right:${\{1,2,3\}}$] at (0.5cm, 1.0cm) {};
+
+    \begin{pgfonlayer}{bg}
+        \draw (v1) edge (v2);
+        \draw (v3) edge[very thick,double] (v2);
+        \draw (v3) edge (v4);
+        \draw (v5) edge (v4);
+        \draw (v5) edge (v6);
+        \draw (v7) edge (v6);
+        \draw (v7) edge (v8);
+        \draw (v9) edge (v8);
+        \draw (v9) edge (v10);
+        \draw (v1) edge (v10);
+        \draw (v2) edge[very thick,double] (v10);
+        \draw (v3) edge (v8);
+        \draw (v3) edge[very thick,double] (v6);
+        \draw (v4) edge (v6);
+        \draw (v3) edge (v7);
+        \draw (u) edge (v2);
+        \draw (u) edge (v10);
+        \draw (u) edge (v9);
+        \draw (u) edge (v8);
+        \draw (u) edge (v3);
+    \end{pgfonlayer}
+
+	\node (bs) [empty] at (2.4cm, 0.75cm) {};
+	\node (bm) [empty] at (2.9cm, 0.75cm) {};
+	\node (be1) [empty] at (4.5cm, 0.4cm) {};
+	\node (be2) [empty] at (4.0cm, 1.0cm) {};
+	\node (be3) [empty] at (5.6cm, 1.7cm) {};
+
+    \begin{pgfonlayer}{bg}
+		\draw (bs) edge[very thick] (bm);
+		\draw (bm) edge[very thick, ->, bend right] (be1);
+		\draw (bm) edge[very thick, ->] (be2);
+		\draw (bm) edge[very thick, ->, bend left=51] (be3);
+    \end{pgfonlayer}
+
+	\node (vp1) [label=above left:${x',y'\, \{2\}}$] at (4.5cm, 1.15cm) {};
+    \node (vp4) [label=above right:${y'\, \{2\}}$] at (6.0cm, 1.5cm) {};
+    \node (vp5) [label=right:${x'\, \{2,3\}}$] at (6.5cm, 1.15cm) {};
+    \node (vp7) [label=below right:${\{3,5\}}$] at (6.0cm, 0.0cm) {};
+    \node (vp8) [label=below:${y'\, \{2\}}$] at (5.5cm, 0.05cm) {};
+    \node (vp9) [label=below left:${x'\,\{3\}}$] at (5.0cm, 0cm) {};
+	\node (up) [label=above right:${\{2,3\}}$] at (5.0cm, 1.0cm) {};
+
+    \begin{pgfonlayer}{bg}
+        \draw (vp5) edge (vp4);
+        \draw (vp7) edge (vp8);
+        \draw (vp9) edge (vp8);
+        \draw (up) edge (vp9);
+        \draw (up) edge (vp8);
+    \end{pgfonlayer}
+\end{tikzpicture}
+\caption{Coloring and removing a path $P$ in the Hartman-\v{S}krekovski
+algorithm.}\label{F:hartman_overview}
+\end{center}
+\end{figure}
+
+In Lemma~\ref{L:hartman3} below, we provide a different proof of Hartman's
+result, organized in such a way that it immediately
+describes a linear time algorithm for graphs
 represented as in Section~\ref{S:representation}.
-For those familiar
-with Hartman's proof: if $x=z$, then our $G,x,y$ match
-those in \cite[Lemma.~4.2]{Har1997}, but we assume
+If $x=z$, then our $G,x,y$ match
+those in Hartman's \cite[Lemma.~4.2]{Har1997}, but we assume
 that $G$ is biconnected;
 we follow a similar iterative procedure to color a path
 $P$ clockwise from $x$ along $C$, but we consider
@@ -2067,24 +2157,33 @@ one edge at a time, and simultaneously remove
 $P$ as it is colored. If $x\ne z$, then $z$ is
 the farthest clockwise end of the path $P$ being colored;
 the rest of $P$ has already been removed
-(including the original ``$x$'', our $x$ is Hartman's $x'$).
+(our $x$ is now Hartman's $x'$).
 
-The only difference between our coloring algorithm and Hartman's is that
-we do not always continue coloring $P$ as far as possible towards
-$y$.
-Specifically,
-if $z$ is the current end of $P$ clockwise along $C$,
-$v$ is $z$'s closest neighbor to $y$ in $C[z,y]$, and
-$d\not\in L(v)$ where $d=c(v)$
-is the color assigned to $P$, then the
-path $P$ might terminate at $z$
-even if there exists a neighbor $v'$ of $z$ in $C[z,v]$ such
-that $d\in L(v)$ (see Case~3.2.3.2 below).
+For those familiar with Hartman's proof: the one major difference between
+our algorithm and Hartman's
+occurs in our Case~3.2.3. If we encounter a chord edge $zv\in G-C$
+($z$ is our current end of $P$) with
+$v\in C[z,y]$ and $L(z)\cap L(v)=\emptyset$ (i.e. $d\not\in L(v)$,
+where $d$ is the color of the path $P$),
+instead of continuing to
+search counter-clockwise for neighbors of $z$ in $C[z,v]$ that we might add
+to $P$ (as in the proof of \cite[Lemma.~4.2]{Har1997}), we
+apply the inductive hypothesis such that $z$ now serves as
+``$y$'' (see Figure~\ref{F:hartman_3_2_3}).
+The chord from the vertex labeled $*$ to $y$ in
+Figure~\ref{F:hartman_overview}
+is such an edge: our algorithm would produce the same coloring as
+Hartman's in this example, but it would initally halt
+$P$ at $*$, and separately consider
+the right half of the graph with $*$ as the new ``$y$''.
+Our algorithm is able to consider
+one edge at a time, and requires no
+context besides $C$, $x$, $y$, and $z$.
 
 Given a coloring $c$ of a graph $G$, and $v\in G$, we define
 $\text{deg}_c(v)$
-to be the degree of $v$ in the subgraph induced by the color class $c(v)$,
-i.e. the number of same-color neighbors.
+to be $\text{deg}(v)$ in the subgraph induced by $c(v)$'s color class,
+i.e. the number of neighbors that share $v$'s color.
 
 \begin{lemma}\label{L:hartman3}
 Let $G$ be a biconnected, weakly triangulated plane graph with outer face
@@ -2525,11 +2624,12 @@ and thus a path $L$-coloring of $G$.
 So Theorem~\ref{T:planar3} follows immediately from 
 Lemma~\ref{L:hartman3}.
 
-The proof of Lemma~\ref{L:hartman3} may be
-implemented as a linear time algorithm for plane graphs.
+The proof of Lemma~\ref{L:hartman3} describes a linear time
+path list-coloring algorithm,
+see Algorithm~\ref{A:hartman_impl}.
 For $v\in G$ and $u\in N(v)$, we will assume that
 $\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and $\adj{u}{v}$ can be
-computed in constant time from the entry $\adj{v}{u}$;
+computed in constant time from $\adj{v}{u}$,
 see augmented adjacency lists in Section~\ref{S:representation}.
 
 \begin{algorithm}\label{A:hartman_impl} Path $3$-Choose
@@ -2662,7 +2762,7 @@ $\text{max}(S)\le\ell + 2m(G_1)-2 + 1 + 2m(G_2)-1<\ell+2(m_C-1)$.
 $S(u_2)\ne S(x)$ and $M(S(u_2))\ne S(y)$. In other words, suppose that
 $u_2\in C[y,x]-x-y$.
 First remove the color in $L(z)$ from $L(u_2)$, if it exists, then remove
-further colors until one remains. Set $S(u_2)\leftarrow S(x)$.
+colors until only one remains. Set $S(u_2)\leftarrow S(x)$.
 Make a recursive call on $G_1$ with input $(x, u_2, x)$;
 afterwards $\text{max}(S)\le\ell +2m(G_1)$.
 Set $S(u_2)\leftarrow\text{max}(S)+1$ and

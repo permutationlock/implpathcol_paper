@@ -2139,7 +2139,7 @@ for an example.
         \draw (up) edge (vp8);
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{Coloring and removing a path $P$ in Hartman's proof
+\caption{Coloring and removing a path $P$ as in Hartman's proof
 \cite[Lemma~4.2]{Har1997}.}\label{F:hartman_overview}
 \end{center}
 \end{figure}
@@ -2237,7 +2237,7 @@ the rest of $P$ has already been removed
         \draw (uq) edge (vq8);
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{Coloring and removing a path $P$ in the proof of
+\caption{Coloring and removing a path $P$ as in the proof of
 Lemma~\ref{L:hartman3} (Algorithm~\ref{A:hartman_impl}).}
 \label{F:hartman_difference}
 \end{center}
@@ -2253,12 +2253,13 @@ instead of continuing to
 search counter-clockwise for neighbors of $z$ in $C[z,v]$ that we might add
 to $P$ (as in the proof of \cite[Lemma~4.2]{Har1997}), we
 apply the inductive hypothesis such that $z$ now serves as
-``$y$'' (see Figure~\ref{F:hartman_3_2_3} for an illustration
-of this case in general).
+``$y$'' (see Figure~\ref{F:hartman_3_2_3} for a general illustration
+of this case).
 The chord from the vertex labeled $*$ to $y$ in
 Figure~\ref{F:hartman_overview}
 is an example of such an edge: our algorithm eventually produces the same
-coloring as Hartman's on this input $G,L,x,y$, but it initally halts
+coloring as Hartman's on this input (though that is not always
+the case!), but it initally halts
 $P$ at $*$, and separately considers
 the left and right halves of the graph, with $*$ as the new ``$y$''
 on the right, see Figure~\ref{F:hartman_difference}.

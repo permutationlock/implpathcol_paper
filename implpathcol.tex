@@ -295,7 +295,7 @@ and $n(G)\le 2$, or if every face of $G$ is a
 if all of its interior (bounded) faces are triangles
 (a triangulated graph is also weakly triangulated).
 
-The input for each algorithm will be a biconnected, weakly triangulated
+The input for each algorithm will be a weakly triangulated
 plane graph $G$ with $n$ vertices and $m$ edges.
 The input size will be $n$. By Euler's formula
 $m\le 3n-6$, so it is equivalent use input size $m$.
@@ -358,9 +358,9 @@ where $\adj{v}{u}$ is a reference to $u$'s entry $N^*(v)$.
 
 \textbf{Step~3.} For each $v$ from $n-1$ to $0$ iterate through
 $\text{Wrk}(v)$. Upon reaching a pair $(u,\adj{u}{v})$ in
-$\text{Wrk}(v)$ the
+$\text{Wrk}(v)$, the
 last element of $\text{Wrk}(u)$ will be $(v,\adj{v}{u})$;
-see the below. Lookup $\adj{v}{u}$ in $N^*(v)$ and
+see below. Lookup the entry $\adj{v}{u}$ in $N^*(v)$ and
 initialize the back reference $\adj{u}{v}$, and vice versa.
 Pop $(v,\adj{v}{u})$ from $\text{Wrk}(u)$.
 \end{algorithm}
@@ -383,7 +383,7 @@ $(w,\adj{w}{u})$ where $w\le v$.
 In this section we describe a linear time algorithm to path $3$-color
 plane graphs.
 
-Let $C$ be a cycle in a plane graph $G$. If $u,v\in C$, then we define
+Let $C$ be a cycle in a connected plane graph $G$. If $u,v\in C$, then we define
 $C[u,v]$ to be the clockwise $u,v$-path
 around $C$; if $u=v$, then $C[u,u]=u$.
 Define $\graphintc(C)$ to
@@ -406,20 +406,21 @@ E(G)$ with $u\in C$, then $c(v)\ne c(u)$.
 \begin{proof}
 If $n(G)\le 3$, then $G=C$. We proceed by induction on the order of $G$. 
 
-Let $P_1,P_2$ be the two paths induced by the $2$-coloring of the outer face
+Suppose that $G\ne C$. Let $P_1,P_2$ be the two paths induced by the $2$-coloring
+of the outer face
 $C$. We may write $P_1=C[u_1,w_1]$ and $P_2=C[w_2,u_2]$ for vertices
 $u_1,u_2,w_1,w_2\in C$.
 
 Suppose that $C$ is an induced subgraph of $G$. Let
-$u,w\in G-C$ be the vertices such that the cycles
-$u,u_2,u_1$ and $w,w_1,w_2$ are faces of $G$; note that
-$u$ and $w$ are uniquely determined, but it may be that $u=w$. Since
+$u_3,w_3\in G-C$ be the vertices such that the cycles
+$u_3,u_2,u_1$ and $w_3,w_1,w_2$ are faces of $G$; note that
+$u_3$ and $w_3$ are uniquely determined, but it may be that $u_3=w_3$. Since
 $C$ is induced, $G-C$ is connected.
-Let $P_3$ be a $u,w$-path in $G-C$ of minimal length, and
+Let $P_3$ be a $u_3,w_3$-path in $G-C$ of minimal length, and
 note that $P_3$ is an induced subgraph of $G$.
 Color each vertex of $P_3$ with the color $d\in\{1,2,3\}- S$.
-Let $C_1=P_1\cup P_3\cup uu_1\cup ww_1$ and
-$C_2=P_2\cup P_3\cup uu_2\cup ww_2$, see Figure~\ref{F:poh_proof}.
+Let $C_1=P_1\cup P_3\cup u_3u_1\cup w_3w_1$ and
+$C_2=P_2\cup P_3\cup u_3u_2\cup w_3w_2$, see Figure~\ref{F:poh_proof}.
 By the inductive hypothesis, $c$ extends to path
 $3$-colorings $c_1$ of $\graphintc(C_1)$ and $c_2$ of $\graphintc(C_2)$.
 Together $c_1$ and $c_2$ form an extension of $c$ to a $3$-coloring of $G$.
@@ -444,12 +445,12 @@ Together these colorings form a path $3$-coloring of $G$.\ggcnopf
     \node (pn) [label=above right:${w_1}$] at (20:1.0cm) {};
     \node (q0) [label=below left:${u_2}$] at (200:1.0cm) {};
     \node (qn) [label=below right:${w_2}$] at (340:1.0cm) {};
-  \node (t0) [label=above right:$u$] at (180:0.5cm) {};
-  \node (t1) [label=above left:$w$] at (0:0.5cm) {};
+  \node (t0) [label=above right:$u_3$] at (180:0.65cm) {};
+  \node (t1) [label=below left:$w_3$] at (0:0.65cm) {};
     \node (null) [draw=none, fill=none] at (270:1.25cm) {};
   
-  \node (C1) [scale=1.25] [draw=none, fill=none] at (90:0.55cm) {$C_1$};
-  \node (C2) [scale=1.25] [draw=none, fill=none] at (270:0.47cm) {$C_2$};
+  \node (C1) [scale=1.25] [draw=none, fill=none] at (75:0.47cm) {$C_1$};
+  \node (C2) [scale=1.25] [draw=none, fill=none] at (255:0.47cm) {$C_2$};
   
   \draw (p0) edge [bend left=70] (pn) [dashed];
   \draw (q0) edge [bend right=70] (qn) [dashed];
@@ -544,9 +545,9 @@ to produce a triangulated plane graph $G'$. Theorem~\ref{T:planar3c}
 follows immediately as any path coloring of
 $G'$ is also a path coloring of $G$.
 
-A natural way to implement Poh's algorithm is to locate $u$,
-and then use a breadth-first search to construct a minimal
-$u,w$-path and/or locate a chord edge, see Algorithm~\ref{A:poh_bfs}.
+A natural way to implement Poh's algorithm is to locate $u_3$,
+then use a breadth-first search to construct a minimal
+$u_3,w_3$-path and/or locate a chord edge, see Algorithm~\ref{A:poh_bfs}.
 
 \begin{algorithm}\label{A:poh_bfs} Path $3$-Color (BFS)
 
@@ -571,43 +572,43 @@ $v\in \graphinto(C)$ has a neighbor $u\in C$, then $c(v)\ne c(u)$.
 $1$ path and $\graphintc(C)=C$.
 
 \textbf{Recursive case.}
-Let $\adj{{u_1}}{u}\leftarrow\nxt(\adj{{u_1}}{u_2})$.
-Note that $u,u_2,u_1$ is a face of $G$, see Figure~\ref{F:poh_bfs}.
+Let $\adj{{u_1}}{u_3}:=\nxt(\adj{{u_1}}{u_2})$.
+Observe $u_3,u_2,u_1$ is a face of $G$, see Figure~\ref{F:poh_bfs}.
 
-\textbf{Case~1.} Suppose that $c(u)\ne 0$.
-If $c(u)=c(u_2)$, then $u\in P_2$.
-Make a recursive call with the input $(u_1, w_1, \adj{u_1}{u}, w_2)$
+\textbf{Case~1.} Suppose that $c(u_3)\ne 0$.
+If $c(u_3)=c(u_2)$, then $u_3\in P_2$.
+Make a recursive call with the input $(u_1, w_1, \adj{u_1}{u_3}, w_2)$
 to color
-$\graphintc(C_1)$ where $C_1=C[u_1,u]\cup u_1u$. Otherwise, $c(u)=c(v_1)$ and
-$u\in P_1$. Iterate through $N(u)$ to find $\adj{u}{u_2}$.
+$\graphintc(C_1)$ where $C_1=C[u_1,u_3]\cup u_1u_3$. Otherwise, $c(u_3)=c(v_1)$ and
+$u_3\in P_1$. Iterate through $N(u_3)$ to find $\adj{u_3}{u_2}$.
 Make a recursive call with the input
-$(u, w_1, \adj{u}{u_2}, w_2)$
-to color $\graphintc(C_1)$, where $C_1=C[u,u_2]\cup uu_2$. 
+$(u_3, w_1, \adj{u_3}{u_2}, w_2)$
+to color $\graphintc(C_1)$, where $C_1=C[u_3,u_2]\cup u_3u_2$. 
 
-\textbf{Case~2.} Suppose that $c(u)=0$, i.e. $u\in \graphinto(C)$.
-Perform a breadth-first search in $\graphinto(C)$ starting from $u$;
+\textbf{Case~2.} Suppose that $c(u_3)=0$, i.e. $u_3\in \graphinto(C)$.
+Perform a breadth-first search in $\graphinto(C)$ starting from $u_3$;
 such a search may be implemented by visiting $v\in G$ only
 if $c(v)=0$. Terminate the search upon finding a vertex
-$w$ with a pair of subsequent neighbors $\adj{w}{v_2}$
-and $\adj{w}{v_1}=\nxt(\adj{w}{v_2})$ such that $c(v_2)=c(u_2)$ and
+$w_3$ with a pair of subsequent neighbors $\adj{w_3}{v_2}$
+and $\adj{w_3}{v_1}=\nxt(\adj{w_3}{v_2})$ such that $c(v_2)=c(u_2)$ and
 $c(v_1)=c(u_1)$,
 i.e. $v_2\in P_2$ and $v_1\in P_1$. Backtrack along the
-search tree from $w$ to find a minimal $u,w$-path $P_3$.
+search tree from $w_3$ to find a shortest $u_3,w_3$-path $P_3$.
 For each vertex $v\in P_3$, assign $c(v)\leftarrow d$, where $d\in
 \{1,2,3\}-\{c(u_1),c(u_2)\}$.
 
 Iterate through
-$N(u)$ and $N(v_1)$ to find $\adj{u}{u_2}$ and
+$N(u_3)$ and $N(v_1)$ to find $\adj{u_3}{u_2}$ and
 $\adj{v_1}{v_2}$.
 Finally, to color the remaining vertices in $\graphinto(C)-P_3$,
 we make a recursive call
 \vspace{-0.75em}
 \begin{enumerate}
 \itemsep-0.25em
-\item{with input $(u_1, v_1, \adj{{u_1}}{u}, w)$ to color
-$\graphintc(C_1)$, where $C_1=C[u_1,v_1]\cup P_3\cup v_1u\cup v_1w$,}
-\item{with input $(u,  w, \adj{u}{u_2}, v_2)$ to color
-$\graphintc(C_2)$, where $C_2=C[v_2,u_2]\cup P_3\cup uu_2\cup wv_2$,}
+\item{with input $(u_1, v_1, \adj{{u_1}}{u_3}, w_3)$ to color
+$\graphintc(C_1)$, where $C_1=C[u_1,v_1]\cup P_3\cup v_1u_3\cup v_1w_3$,}
+\item{with input $(u_3,  w_3, \adj{u_3}{u_2}, v_2)$ to color
+$\graphintc(C_2)$, where $C_2=C[v_2,u_2]\cup P_3\cup u_3u_2\cup w_3v_2$,}
 \item{and with input $(v_1,  w_1, \adj{{v_1}}{v_2}, w_2)$
 to color $\graphintc(C_3)$, where $C_3=C[v_1,v_2]\cup v_1v_2$.}
 \end{enumerate}
@@ -621,7 +622,7 @@ to color $\graphintc(C_3)$, where $C_3=C[v_1,v_2]\cup v_1v_2$.}
   \node (vi) [label=above right:$w_1$] at (0.5cm, 0.5cm) {};
   \node (vi1) [label=below right:$w_2$] at (0.5cm, -0.75cm) {};
   \node (vk) [label=below left:$u_2$] at (-2cm, -0.75cm) {};
-  \node (u) [label=above right:$u$] at (-1.25cm, -1.05cm) {};
+  \node (u) [label=above right:$u_3$] at (-1.25cm, -1.05cm) {};
   \node (C1) [scale=1.25] [draw=none, fill=none] at (-0.7cm, -0.05cm) {$C_1$};
   \draw (v1) edge (vk);
   \draw (v1) edge (u);
@@ -634,7 +635,7 @@ to color $\graphintc(C_3)$, where $C_3=C[v_1,v_2]\cup v_1v_2$.}
   \node (pvi) [label=above right:$w_1$] at (0.5cm, 3.25cm) {};
   \node (pvi1) [label=below right:$w_2$] at (0.5cm, 2.0cm) {};
   \node (pvk) [label=below left:$u_2$] at (-2cm, 2.0cm) {};
-  \node (pu) [label=below right:$u$] at (-1.25cm, 3.55cm) {};
+  \node (pu) [label=below right:$u_3$] at (-1.25cm, 3.55cm) {};
   \node (CP1) [scale=1.25] [draw=none, fill=none] at (-0.7cm, 2.55cm) {$C_1$};
   \draw (pv1) edge (pvk);
   \draw (pv1) edge (pu);
@@ -649,8 +650,8 @@ $\qquad$
   \node (v1) [label=above left:$u_1$] at (-2cm, 1cm) {};
   \node (vl1) [label=below right:$w_2$] at (2cm, -1cm) {};
   \node (vk) [label=below left:$u_2$] at (-2cm, -1cm) {};
-  \node (w) [label=above left:$w$] at (0.25cm, 0cm) {};
-  \node (u) [label=above right:$u$] at (-1.25cm, 0cm) {};
+  \node (w) [label=above left:$w_3$] at (0.5cm, 0cm) {};
+  \node (u) [label=above right:$u_3$] at (-1.5cm, 0cm) {};
   \node (vi) [label=above:$v_1$] at (1cm, 1.5cm) {};
   \node (vj) [label=below:$v_2$] at (1cm, -1.5cm) {};
   
@@ -692,8 +693,8 @@ $\qquad$
   
   \node (pi_1) [label=above:$v_1$] at (7cm, 2cm) {};
   \node (pn) [label=above left:$w_1$] at (4cm, 1.5cm) {};
-  \node (t0) [label=above left:$w$] at (6.25cm, 0.5cm) {};
-  \node (t1) [label=above right:$u$] at (4.75cm, 0.5cm) {};
+  \node (t0) [label=above left:$w_3$] at (6.5cm, 0.5cm) {};
+  \node (t1) [label=above right:$u_3$] at (4.5cm, 0.5cm) {};
   
   \node (CP) [scale=1.25] [draw=none, fill=none] at (5.5cm, 1.5cm) {$C_1$};
   \node (CQ) [scale=1.25] [draw=none, fill=none] at (5.5cm, -1.5cm) {$C_2$};
@@ -701,8 +702,8 @@ $\qquad$
   
   \node (qj_1) [label=below:$v_2$] at (7cm, -2cm) {};
   \node (qn) [label=below left:$u_2$] at (4cm, -1.5cm) {};
-  \node (t0_1) [label=below left:$w$] at (6.25cm, -0.5cm) {};
-  \node (t1_1) [label=below right:$u$] at (4.75cm, -0.5cm) {};
+  \node (t0_1) [label=below left:$w_3$] at (6.5cm, -0.5cm) {};
+  \node (t1_1) [label=below right:$u_3$] at (4.5cm, -0.5cm) {};
 
   \draw (p0) edge (pi) [dashed];
   \draw (pi_1) edge [bend right] (pn) [dashed];
@@ -873,7 +874,7 @@ on which Algorithm~\ref{A:poh_bfs} performs poorly.}\label{F:pyramid}
 \end{center}
 \end{figure}
 
-However, Poh's argument only relied on $P_3$ being an induced $u,w$-path,
+However, Poh's argument only relied on $P_3$ being an induced $u_3,w_3$-path,
 not a path of minimal length.
 Algorithm~\ref{A:poh_linear} describes a linear time implementation
 of Poh's algorithm.
@@ -910,17 +911,17 @@ $\graphintc(C)$ extending the original $2$-coloring of $C$.
 Moreover, if $v\in \graphinto(C)$ has a neighbor $u\in C$,
 then $c(v)\ne c(u)$.
 
-\textbf{Procedure.} Assign $\adj{u_1}{u}\leftarrow\nxt(\adj{u_1}{u_2})$.
+\textbf{Procedure.} Let $\adj{u_1}{u_3}:=\nxt(\adj{u_1}{u_2})$.
 
 \textbf{Base case.}
-If $c(u)\ne 0$, then
-$u=w_2$ or $u=w_1$. Thus $C$ is a face and we are done. 
+If $c(u_3)\ne 0$, then
+$u_3=w_2$ or $u_3=w_1$. Thus $C$ is a face and we are done. 
 
 \textbf{Recursive case.}
-Suppose that $c(u)=0$, i.e. $u\in\graphinto(C)$.
+Suppose that $c(u_3)=0$, i.e. $u_3\in\graphinto(C)$.
 Let $d\in \{1,2,3\}-\{c(u_1),c(u_2)\}$.
-Let $\ell_3=\max_{v\in G}S(v)+1$. We will
-construct an induced $u,w$-path $P_3=v_1,v_2,\ldots, v_j$
+Let $\ell_3:=\max_{v\in G}S(v)+1$. We will
+construct an induced $u_3,w_3$-path $P_3=v_1,v_2,\ldots, v_j$
 such that $v_1,v_2,\ldots,v_j\in N(P_1)$,
 and color each $v\in P_3$ with $c(v)\leftarrow d$.
 We'll also mark each $v\in N(P_3)- V(C)$
@@ -930,25 +931,25 @@ It may be useful
 to refer to Figures~\ref{F:poh_linear_1} and \ref{F:poh_linear_2}.
 
 \textbf{Step~1.}
-Assign $j\leftarrow 1$ and $v_j\leftarrow u$; here $j,v_j$ store
+Let $j:= 1$ and $v_j:= u_3$; here $j,v_j$ store
 the end of the path $P_3$ that we've constructed so far.
-Set $v_0\leftarrow u_2$ so that $v_{j-1}$ is defined for $j=1$.
-Assign $i\leftarrow 1$ and $\adj{v_i}{s}\leftarrow \adj{v_i}{u_2}$;
-here $i,\adj{v_i}{s}$ store the last edge $v_is$ that was visited
-where $v_i\in P_3$ and $s\in P_2$.
+Let $v_0:= u_2$ so that $v_{j-1}$ is defined for $j=1$.
+Let $i:= 1$ and $\adj{v_i}{x}:= \adj{v_i}{u_2}$;
+here $i,\adj{v_i}{x}$ store the last edge $v_ix$ that was visited
+where $v_i\in P_3$ and $x\in P_2$.
 
 \textbf{Loop~2.} We'll build the path $P_3$, adding one vertex per
 iteration.
 Assign $c(v_j)\leftarrow d$.
-Find $\adj{v_j}{v_{j-1}}$ in $N(v_j)$ and set
-$\adj{v_j}{v}\leftarrow \nxt(\adj{v_j}{v_{j-1}})$.
-Set $y\leftarrow\text{NULL}$; here
-$y$ will store the first neighbor of $v_j$
+Find $\adj{v_j}{v_{j-1}}$ in $N(v_j)$ and let
+$\adj{v_j}{v}:= \nxt(\adj{v_j}{v_{j-1}})$.
+Let $z:=\text{NULL}$; here
+$z$ will store the first neighbor of $v_j$
 counter-clockwise from $v_{j-1}$ that is in
 $N(P_1)- V(C)$ (if any).
-Set $\adj{v_j}{t}\leftarrow\text{NULL}$; here
-$\adj{v_j}{t}$ will store the last edge $v_jt$ encountered
-such that $t\in P_1$ (if any).
+Let $\adj{v_j}{y}:=\text{NULL}$; here
+$\adj{v_j}{y}$ will store the last edge $v_jy$ encountered
+such that $y\in P_1$ (if any).
 
 \textbf{Loop~2.1.} We'll first consider the neighbors of
 $v_j$ between
@@ -959,25 +960,25 @@ induced cycle $C_1$ we discover with $V(C_1)\subseteq V(P_2)\cup V(P_3)$.
 Refer to Figure~\ref{F:poh_linear_1}.
 
 \textbf{Case~2.1.1.} Suppose that $c(v)=0$, i.e. $v\in\graphinto(C)$.
-If $S(v)=\ell_1$, i.e. $v\in N(P_1)$, and $y=\text{NULL}$, then set
-$y\leftarrow v$. Set $S(v)\leftarrow \ell_3$ and
+If $S(v)=\ell_1$, i.e. $v\in N(P_1)$, and $z=\text{NULL}$, then set
+$z\leftarrow v$. Set $S(v)\leftarrow \ell_3$ and
 $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$.
 Repeat Loop~2.1.
 
 \textbf{Case~2.1.2.} Suppose that $c(v)=c(u_2)$, i.e. $v\in P_2$.
-Make a recursive call with input $(v_i, \adj{v_i}{s}, \ell_3)$
+Make a recursive call with input $(v_i, \adj{v_i}{x}, \ell_3)$
 to color $\graphintc(C_1)$, where
-$C_1=P_3[v_i,v_j]\cup C[v,s]\cup v_is\cup v_jv$;
+$C_1=P_3[v_i,v_j]\cup C[v,x]\cup v_ix\cup v_jv$;
 see Figure~\ref{F:poh_linear_1} (middle).
-Assign $i\leftarrow j$, $\adj{v_i}{s}\leftarrow \adj{v_j}{v}$, and
+Assign $i\leftarrow j$, $\adj{v_i}{x}\leftarrow \adj{v_j}{v}$, and
 $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Repeat Loop~2.1.
 
 \textbf{Case~2.1.3.} Suppose that $c(v)=c(u_1)$, i.e. $v=p_1(v_j)\in P_1$.
-Assign $\adj{v_j}{t}\leftarrow \adj{v_j}{v}$ and
+Assign $\adj{v_j}{y}\leftarrow \adj{v_j}{v}$ and
 $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Break Loop~2.1 and proceed to
 Loop~2.2.
 
-Note that if $y=\text{NULL}$, then $v_j=w$. To see this, observe that
+Note that if $z=\text{NULL}$, then $v_j=w_3$. To see this, observe that
 since $v\in P_1$,
 $\prv_{v_j}(v)\in N(P_1)$,
 and $\prv_{v_j}(v)\not\in P_1$, we must have
@@ -988,7 +989,7 @@ neighbors of $v_j$ between $p_1(v_j)$ and $v_{j-1}$ counter-clockwise.
 Each iteration will handle the current neighbor $\adj{v_j}{v}$.
 We'll make a recursive call for each
 induced cycle $C_1$ we discover with $V(C_1)\subseteq V(P_1)\cup V(P_3)$.
-Observe $\adj{v_j}{t}\ne\text{NULL}$.
+Observe $\adj{v_j}{y}\ne\text{NULL}$.
 
 \textbf{Case~2.2.1.} Suppose that $c(v)=0$, i.e. $v\in\graphinto(C)-P_3$.
 Assign $S(v)\leftarrow \ell_3$ and $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$.
@@ -996,24 +997,25 @@ Repeat Loop~2.2.
 
 \textbf{Case~2.2.2.} Suppose that $c(v)\ne 0$, i.e. $v\in C$ or
 $v\in P_3$. Make a recursive
-call with input $(v_j, \adj{v_j}{t}, \ell_3)$ to color $\graphintc(C_1)$,
+call with input $(v_j, \adj{v_j}{y}, \ell_3)$ to color $\graphintc(C_1)$,
 where both the definition of $C_1$ and the next steps to take depend
 on $c(v)$. Refer to Figure~\ref{F:poh_linear_2}.
 
 If $c(v)=c(u_1)$, i.e. $v\in P_1$, then
-$C_1=C[v,t]\cup v_j\cup v_jt\cup v_jv$.
-Assign $\adj{v_j}{t}\leftarrow\adj{v_j}{v}$ and
+$C_1=C[v,y]\cup v_j\cup v_jy\cup v_jv$.
+Assign $\adj{v_j}{y}\leftarrow\adj{v_j}{v}$ and
 $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Repeat Loop~2.2.
 
 Otherwise,
 $v=v_{j-1}$ (either $j>1$ and $v\in P_3$, or $j=1$ so
 $v=u_2\in P_2$ and $t=u_1$).
-Then $C_1=C[p_1(v),t]\cup P_3[v,v_j]\cup vp_1(v)\cup v_jt$.
+Then $C_1=C[p_1(v),y]\cup P_3[v,v_j]\cup vp_1(v)\cup v_jy$.
 Break Loop~2.2 and proceed to Step~2.3. 
 
-\textbf{Step~2.3.} If $y\ne\text{NULL}$, then
-assign $j\leftarrow j+1$, $v_j\leftarrow y$, and
-repeat Loop~2. Otherwise, $v_j=w$ and we are done.
+\textbf{Step~2.3.} If $z\ne\text{NULL}$, then
+assign $j\leftarrow j+1$, $v_j\leftarrow z$, and
+repeat Loop~2. Otherwise, $v_j=w_3$, $P_3$ is an induced
+$u_3,w_3$-path, and $c$ is a path $3$-coloring of $\graphintc(C)$.
 \end{algorithm}
 
 \begin{figure}
@@ -1024,7 +1026,7 @@ repeat Loop~2. Otherwise, $v_j=w$ and we are done.
     \node (vp) [label=above:${p_1(v_j)}$] at (1.625cm, 1.25cm) {};
     \node (vi) [label=above:${w_1}$] at (2.5cm, 1.0cm) {};
     \node (vi1) [label=below:${w_2}$] at (2.5cm, 0.0cm) {};
-    \node (vs) [label=below:${s}$] at (0.75cm, -0.25cm) {};
+    \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
     \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
     \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
     \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
@@ -1055,8 +1057,8 @@ $\quad$
     \node (vp) [label=above:${p_1(v_j)}$] at (1.375cm, 1.25cm) {};
     \node (vi) [label=above:${w_1}$] at (2.0cm, 1.0cm) {};
     \node (vi1) [label=below:${w_2}$] at (2.0cm, 0.0cm) {};
-    \node (vs) [label=below:${s}$] at (0.5cm, -0.25cm) {};
-    \node (vt) [label=below:${v}$] at (1.375cm, -0.25cm) {};
+    \node (vs) [label=below:${x}$] at (0.5cm, -0.15cm) {};
+    \node (vt) [label=below:${v}$] at (1.375cm, -0.15cm) {};
     \node (vk) [label=below:${u_2,v_0}$] at (-0.25cm, 0.0cm) {};
     \node (u1) [label=below right:${v_1}$] at (0.0cm, 0.5cm) {};
     \node (ur) [label=above:${v_i}$] at (0.5cm, 0.5cm) {};
@@ -1088,13 +1090,13 @@ $\quad$
     \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
     \node (vi) [label=above:${w_1}$] at (2.5cm, 1.0cm) {};
     \node (vi1) [label=below:${w_2}$] at (2.5cm, 0.0cm) {};
-    \node (vs) [label=below:${s}$] at (0.75cm, -0.25cm) {};
+    \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
     \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
     \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
     \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
     \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
     \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
-    \node (y) [label=below:${y}$] at (2.0cm, 0.5cm) {};
+    \node (y) [label=below:${z}$] at (2.0cm, 0.5cm) {};
     \node (v) [label=above:${v,p_1(v_j)}$] at (1.625cm, 1.25cm) {};
 
     \begin{pgfonlayer}{bg}
@@ -1127,15 +1129,15 @@ and Case~2.1.3 (right).}\label{F:poh_linear_1}
     \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
     \node (vi) [label=above:${w_1}$] at (2.4cm, 1.0cm) {};
     \node (vi1) [label=below:${w_2}$] at (2.4cm, 0.0cm) {};
-    \node (vs) [label=below:${s}$] at (0.75cm, -0.25cm) {};
+    \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
     \node (vt) [label=above:${v}$] at (1.25cm, 1.3cm) {};
-    \node (vl) [label=above:${t}$] at (1.85cm, 1.2cm) {};
+    \node (vl) [label=above:${y}$] at (1.85cm, 1.2cm) {};
     \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
     \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
     \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
     \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
     \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
-    \node (y) [label=below:${y}$] at (2.0cm, 0.5cm) {};
+    \node (y) [label=below:${z}$] at (2.0cm, 0.5cm) {};
 
 	\node (D) [scale=1.25] [draw=none, fill=none] at (1.585cm, 1.04cm) {$C_1$};
 
@@ -1163,15 +1165,15 @@ $\quad$
     \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
     \node (vi) [label=above:${w_1}$] at (2.4cm, 1.0cm) {};
     \node (vi1) [label=below:${w_2}$] at (2.4cm, 0.0cm) {};
-    \node (vs) [label=below:${s}$] at (0.75cm, -0.25cm) {};
+    \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
     \node (vt) [label=above:${p_1(v)}$] at (1.25cm, 1.25cm) {};
-    \node (vl) [label=above:${t}$] at (1.85cm, 1.2cm) {};
+    \node (vl) [label=above:${y}$] at (1.85cm, 1.2cm) {};
     \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
     \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
     \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
     \node (uj1) [label=below:${v}$] at (1.25cm, 0.5cm) {};
     \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
-    \node (y) [label=below:${y}$] at (2.0cm, 0.5cm) {};
+    \node (y) [label=below:${z}$] at (2.0cm, 0.5cm) {};
 
 	\node (D) [scale=1.25] [draw=none, fill=none] at (1.5cm, 0.915cm) {$C_1$};
 
@@ -1215,7 +1217,7 @@ $\quad$
         \draw (v1) edge[dashed, bend left=10] (vp);
         \draw (vp) edge[dashed] (vi);
         \draw (vi) edge (vi1);
-        \draw (vi1) edge[dashed, bend left=15] (vk);
+        \draw (vi1) edge[dashed, bend left=13] (vk);
         \draw (vk) edge (v1);
         \draw (vk) edge (u1);
         \draw (u1) edge[dashed] (ur);
@@ -1656,8 +1658,8 @@ and \ref{F:hartman_3_2_3}.
 Suppose that $u_2\in G-C$. Define $L'(u_2)=L(u_2)- L(z)$ and
 $L'(v)=L(v)$ for each $v\in G-u_2$. Note that $|L'(u_2)|\ge |L(u_2)|-1\ge 2$.
 Let $C_1$ be the outer face of $G_1=G-zu_1$,
-and observe that $C_1[x,z]$ is equal to $C[x,z]$ with the edge $u_1z$ removed
-and the path $u_1,u_2,z$ added. Since $|L'(u_2)|\ge 2$ and $L'(u_2)\cap
+and observe that $C_1[x,z]$ is the union of $C[x,z]$ with the edge $u_1z$ removed
+and the path $u_1,u_2,z$. Since $|L'(u_2)|\ge 2$ and $L'(u_2)\cap
 L'(z)=\emptyset$, we may apply the inductive hypothesis
 to find a path $L'$-coloring of $G_1$ with $x_1=x$, $y_1=y$, $z_1=z$.
 
@@ -1919,7 +1921,7 @@ $c$ is a path $L$-coloring of $G$.
 
 Suppose $C[z,y]=z,y$. Then it must be that $u_2=y$ and $k=2$.
 Therefore $G_2=z,y$ and $\text{deg}_c(z)=0$, since
-$c(z)\not\in L(u_2)$. Thus $c$ satisfies the constraints of the lemma.
+$c(z)\not\in L(y)$. Thus $c$ satisfies the constraints of the lemma.
 \ggcnopf
 \end{proof}
 
@@ -1988,7 +1990,7 @@ $\text{deg}_c(z)\le1$. If $z=y$, or if $C[z,y]=z,y$ and $L(z)$ did
 not contain the color in $L(y)$, then $\text{deg}_c(z)=0$. Moreover,
 afterwards $\text{max}(S)\le\ell+2(m_C-1)$.
 
-\textbf{Procedure.} Assign $\adj{z}{u_1}\leftarrow B(z)$. Our strategy
+\textbf{Procedure.} Let $\adj{z}{u_1}:= B(z)$. Our strategy
 will follow the proof of Lemma~\ref{L:hartman3}.
 
 \textbf{Base case.} If $B(z)=F(z)$, then $C=z,u_1$
@@ -1998,8 +2000,8 @@ until one color remains. Note that
 $m_C=1$ and $\text{max}(S)\le\ell+ 2(m_C-1)=\ell$ by definition.
 
 \textbf{Recursive case.} Suppose that $B(z)\ne F(z)$.
-Note that $n(C)>2$ and therefore $C$ is a cycle. Assign
-$\adj{z}{u_2}\leftarrow\nxt(\adj{z}{u_1})$. It follows immediately that
+Note that $n(C)>2$ and therefore $C$ is a cycle. Let
+$\adj{z}{u_2}:=\nxt(\adj{z}{u_1})$. It follows immediately
 that $\text{max}(S)\le\ell+2(m_C-1)$ after Cases~1, 2,
 and 3.1, so we will only argue that this bound is satisfied after Case~3.2.
 It may be useful to refer to
@@ -2051,8 +2053,8 @@ refer
 to Figure~\ref{F:hartman_3_2} and
 Figure~\ref{F:hartman_3_2_3}.
 
-Store $\adj{u_2}{b}\leftarrow B(u_2)$ and
-$\adj{u_2}{f}\leftarrow F(u_2)$.
+Let $\adj{u_2}{b}:= B(u_2)$ and
+$\adj{u_2}{f}:= F(u_2)$.
 To represent $G_1$, assign $B(u_2)\leftarrow\nxt(\adj{u_2}{z})$
 and $F(u_2)\leftarrow\adj{u_2}{f}$.
 To represent $G_2$,
@@ -2865,7 +2867,7 @@ list in $L$ will represent a path $L$-coloring of $G$.
 
 Each case in Algorithm~\ref{A:hartman_impl} performs a fixed number
 of constant time operations. Case~3 removes an edge
-from the in the subgraph(s) under consideration.
+from the subgraph(s) under consideration.
 Case~1 makes a recursive call
 with an input that satisfies Case~2. Case~2 makes a recursive
 call with an input that satisfies Case~3.
@@ -2885,10 +2887,11 @@ in Figure~\ref{F:plot}.
 
 Plane triangulations were sampled using the method of
 Poulalhon and Schaeffer~\cite{Pou2006}.
-The vertices were randomly re-labeled in each sampled graph, and the
-corresponding adjacency list arrays were re-ordered in memory.
-The list assignments for Algorithm~\ref{A:hartman_impl} were uniformly
-drawn from a set of six colors.
+Vertex labels were shuffled in each sampled graph, and the
+corresponding adjacency list arrays were re-ordered in memory,
+to avoid representation bias from the sampling algorithm.
+List assignments for Algorithm~\ref{A:hartman_impl} were
+uniformly drawn from a set of six colors.
 
 A breadth-first search (BFS) implemented with
 a circular array FIFO queue was run on the same set of graphs
@@ -3065,12 +3068,12 @@ To reduce lock contention, each thread may also
 maintain a
 small local stack of frames, and only access the shared
 stack when this local stack is full or empty.
-% For the implementation and hardware
-% used for benchmarks, the most optimal setup proved to be a
-% local stack of $16$ frames for each thread: if a local stack filled up,
-% $8$ frames were pushed to the
-% shared stack; if a local stack emptied, $8$ frames were popped from the
-% shared stack.
+For the implementation and hardware
+used for benchmarks, the most optimal setup proved to be a
+local stack of $16$ frames for each thread: if a local stack filled up,
+$8$ frames were pushed to the
+shared stack; if a local stack emptied, $8$ frames were popped from the
+shared stack.
 
 \begin{figure}
 \begin{center}

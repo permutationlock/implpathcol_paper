@@ -119,7 +119,7 @@
 
 % (NONE)
 
-\date{February 20, 2025}
+\date{October 1, 2026}
 
 \title{Path-Coloring Algorithms for Plane Graphs}
 
@@ -294,8 +294,6 @@ and $n(G)\le 2$, or if every face of $G$ is a
 \defterm{weakly triangulated}
 if all of its interior (bounded) faces are triangles
 (a triangulated graph is also weakly triangulated).
-Note that if $G$ is biconnected and $n(G)\ge 3$,
-then every face of $G$ is a cycle.
 
 The input for each algorithm will be a biconnected, weakly triangulated
 plane graph $G$ with $n$ vertices and $m$ edges.
@@ -383,7 +381,7 @@ $(w,\adj{w}{u})$ where $w\le v$.
 \section{Path Coloring}\label{S:path_color}
 
 In this section we describe a linear time algorithm to path $3$-color
-plane graphs. Let's first recount Poh's path $3$-coloring strategy.
+plane graphs.
 
 Let $C$ be a cycle in a plane graph $G$. If $u,v\in C$, then we define
 $C[u,v]$ to be the clockwise $u,v$-path
@@ -463,7 +461,7 @@ Together these colorings form a path $3$-coloring of $G$.\ggcnopf
   \draw (qn) edge (t1);
   \draw (t0) edge (t1) [dashed];
 \end{tikzpicture}
-$\qquad$
+$\quad$
 \begin{tikzpicture}[scale=1.2]
     \node (p0) [label=above left:${u_1}$] at (160:1.0cm) {};
     \node (p1) [label=above:${v_1}$] at (90:0.8cm) {};
@@ -484,8 +482,56 @@ $\qquad$
   \draw (pn) edge (qn);
   \draw (p1) edge (q1);
 \end{tikzpicture}
-\caption{The proof of Lemma~\ref{L:planar3c} when $C$ is induced (left) or has
-a chord (right).}
+$\qquad\qquad\quad$
+\begin{tikzpicture}[yscale=0.8,xscale=1.0]
+        \node (v0) [label=left:{1}] at (-1.875cm, 1.5cm) {};
+        \node (v1) [label=right:{1}] at (1.875cm, 1.5cm) {};
+        \node (v2) [label=right:{2}] at (1.875cm, -1.5cm) {};
+        \node (v3) [label=left:{2}] at (-1.875cm, -1.5cm) {};
+        \node (v4) [label=right:{3}] at (1.1cm, 0.75) {};
+        \node (v5) [label=right:{1}] at (1.0cm, -0.25cm) {};
+        \node (v6) [label=left:{3}] at (-1.25cm, -0.86cm) {};
+        \node (v7) [label=left:{2}] at (-0.82cm, 0.056cm) {};
+        \node (v8) [label=below right:{3}] at (0.17cm, 0.03cm) {};
+        \node (v9) [label=left:{2}] at (-0.65cm, 0.85cm) {};
+        \node (v10) [label=left:{1}] at (-0.1cm, -0.85cm) {};
+        \node (v11) [label=below left:{1}] at (0.75cm, 1.65cm) {};
+        \node (v12) [label=below:{2}] at (0.8cm, -1.25cm) {};
+        \begin{pgfonlayer}{bg}
+                \draw (v0) edge [double,very thick] (v11);
+                \draw (v6) edge [double,very thick] (v8);
+                \draw (v6) edge (v7);
+                \draw (v7) edge (v8);
+                \draw (v5) edge (v12);
+                \draw (v4) edge [double,very thick] (v8);
+                \draw (v4) edge (v5);
+                \draw (v5) edge (v8);
+                \draw (v0) edge (v3);
+                \draw (v0) edge (v6);
+                \draw (v0) edge (v7);
+                \draw (v0) edge (v9);
+                \draw (v8) edge (v9);
+                \draw (v4) edge (v9);
+                \draw (v7) edge [double,very thick] (v9);
+                \draw (v0) edge (v4);
+                \draw (v1) edge [double,very thick] (v11);
+                \draw (v1) edge (v4);
+                \draw (v1) edge (v2);
+                \draw (v2) edge (v4);
+                \draw (v2) edge (v5);
+                \draw (v2) edge [double,very thick] (v12);
+                \draw (v3) edge [double,very thick] (v12);
+                \draw (v3) edge (v6);
+				\draw (v10) edge (v12);
+				\draw (v3) edge (v10);
+				\draw (v8) edge (v10);
+				\draw (v6) edge (v10);
+				\draw (v4) edge (v11);
+				\draw (v8) edge (v12);
+        \end{pgfonlayer}
+\end{tikzpicture}
+\caption{The cases of Lemma~\ref{L:planar3c} (left),
+a graph colored by Poh's algorithm (right).}
 \label{F:poh_proof}
 \end{center}
 \end{figure}
@@ -1202,825 +1248,6 @@ $v_kv_j$ lies between $v_{k-1}$ and $v_{k+1}$ counter-clockwise
 in $N(v_k)$. But $v_{k+1}$ is the first neighbor
 in $N(P_1)$ counter-clockwise from $v_{k-1}$ around $v_k$, a contradiction.
 
-% \begin{figure}
-% \begin{center}
-% \OutlineGraph
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{-1}] at (0.829462cm, 0.915182cm) {};
-%         \node (v5) [label=below:{0}] at (0.702189cm, -0.881858cm) {};
-%         \node (v6) [label=left:{-1}] at (-1.251848cm, -0.867854cm) {$u$};
-%         \node (v7) [label=left:{-1}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{-1}] at (0.175438cm, 0.030180cm) {};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v6) edge [very thick] (v7);
-%                 \draw (v7) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v0) edge [very thick] (v3);
-%                 \draw (v0) edge [very thick] (v6);
-%                 \draw (v0) edge [very thick] (v7);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [double, very thick] (v6);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{-1}] at (0.829462cm, 0.915182cm) {};
-%         \node (v5) [label=below:{0}] at (0.702189cm, -0.881858cm) {$v$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{-1}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{-1}] at (0.175438cm, 0.030180cm) {};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v5) edge [double, very thick] (v6);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v6) edge [very thick] (v7);
-%                 \draw (v7) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [very thick] (v6);
-%                 \draw (v0) edge [very thick] (v7);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [very thick] (v6);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {
-% };
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{-1}] at (0.829462cm, 0.915182cm) {};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {$x$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{-1}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{-1}] at (0.175438cm, 0.030180cm) {$v$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v6) edge [double, very thick] (v8);
-%                 \draw (v6) edge [very thick] (v7);
-%                 \draw (v7) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [very thick] (v6);
-%                 \draw (v0) edge [very thick] (v7);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [very thick] (v6);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {
-% };
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{-1}] at (0.829462cm, 0.915182cm) {};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {$x$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{-1}] at (-0.819321cm, 0.056225cm) {$v$};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$y$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v0) edge [very thick] (v6);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v7) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v7);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [very thick] (v6);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v6) edge [double, very thick] (v7);
-%                 \draw (v0) edge [dashed] (v3);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {$v$};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{-1}] at (0.829462cm, 0.915182cm) {};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {$x$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{-2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$y$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v0) edge [double, very thick] (v6);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v7) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v7);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [very thick] (v6);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v6) edge [very thick] (v7);
-%                 \draw (v0) edge [dashed] (v3);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{-1}] at (0.829462cm, 0.915182cm) {};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {$v$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{-2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$u_2$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v5) edge [double, very thick] (v8);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v7) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v0) edge [very thick] (v6);
-%                 \draw (v0) edge [very thick] (v7);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [very thick] (v6);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v6) edge [very thick] (v7);
-%                 \draw (v0) edge [dashed] (v3);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{-1}] at (0.829462cm, 0.915182cm) {$v$};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {$x$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{-2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$u_2$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v4) edge [double, very thick] (v8);
-%                 \draw (v7) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v0) edge [very thick] (v6);
-%                 \draw (v0) edge [very thick] (v7);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [very thick] (v6);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v6) edge [very thick] (v7);
-%                 \draw (v0) edge [dashed] (v3);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {$v$};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {$y$};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {$x$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{-2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$u$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v7) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v0) edge [very thick] (v6);
-%                 \draw (v0) edge [very thick] (v7);
-%                 \draw (v0) edge [double, very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [very thick] (v6);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v6) edge [very thick] (v7);
-%                 \draw (v0) edge [dashed] (v3);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {
-% };
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {$y$};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {$x$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{-2}] at (-0.819321cm, 0.056225cm) {$v$};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$u_2$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [very thick] (v6);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [very thick](v6);
-%                 \draw (v0) edge [very thick](v7);
-%                 \draw (v6) edge [very thick](v7);
-%                 \draw (v7) edge [double, very thick] (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {$y$};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {$x$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$v$};
-%         \node (v7) [label=left:{-2}] at (-0.819321cm, 0.056225cm) {$z$};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$u_2$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v6) edge [double, very thick] (v8);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [very thick] (v6);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) [very thick] edge (v6);
-%                 \draw (v0) [very thick] edge (v7);
-%                 \draw (v6) [very thick] edge (v7);
-%                 \draw (v7) [very thick] edge (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$v$};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {$u_1$};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v0) edge [very thick] (v7);
-%                 \draw (v7) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v6);
-%                 \draw (v0) edge [thin] (v8);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v6) edge [double, very thick] (v7);
-%                 \draw (v5) edge [thin] (v8);
-%                 \draw (v5) edge [thin] (v6);
-%                 \draw (v4) edge [thin] (v8);
-%                 \draw (v4) edge [thin] (v5);
-%                 \draw (v0) edge [thin] (v4);
-%                 \draw (v0) edge [thin] (v1);
-%                 \draw (v1) edge [thin] (v4);
-%                 \draw (v1) edge [thin] (v2);
-%                 \draw (v2) edge [thin] (v4);
-%                 \draw (v2) edge [thin] (v5);
-%                 \draw (v2) edge [thin] (v3);
-%                 \draw (v3) edge [thin] (v5);
-%                 \draw (v3) edge [thin] (v6);
-%                 \draw (v0) edge [dashed] (v3);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {$u_1$};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$v$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v7) edge [double, very thick] (v8);
-%                 \draw (v5) edge [thin] (v8);
-%                 \draw (v5) edge [thin] (v6);
-%                 \draw (v4) edge [thin] (v8);
-%                 \draw (v4) edge [thin] (v5);
-%                 \draw (v0) edge [thin] (v8);
-%                 \draw (v0) edge [thin] (v4);
-%                 \draw (v0) edge [thin] (v1);
-%                 \draw (v1) edge [thin] (v4);
-%                 \draw (v1) edge [thin] (v2);
-%                 \draw (v2) edge [thin] (v4);
-%                 \draw (v2) edge [thin] (v5);
-%                 \draw (v2) edge [thin] (v3);
-%                 \draw (v3) edge [thin] (v5);
-%                 \draw (v3) edge [thin] (v6);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [dashed] (v6);
-%                 \draw (v0) edge [dashed] (v7);
-%                 \draw (v6) edge [very thick] (v7);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \caption{An example of Algorithm~\ref{A:poh_linear}. Each vertex $v\in G$ is
-% labeled with $c(v)$ if $c(v)>0$, and labeled with $-S(v)$ otherwise.}
-% \label{F:poh_example}
-% \end{center}
-% \end{figure}
-
-% \begin{figure}
-% \begin{center}
-% \OutlineGraph
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {$y$};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {$x$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$v$};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$u_2$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v6) edge [double, very thick] (v8);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [very thick] (v6);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [dashed] (v6);
-%                 \draw (v0) edge [dashed] (v7);
-%                 \draw (v6) edge [dashed] (v7);
-%                 \draw (v7) edge [dashed] (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {$u_3$};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {$v$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$u_2$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v4) edge [double, very thick] (v5);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [very thick] (v6);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [dashed] (v6);
-%                 \draw (v0) edge [dashed] (v7);
-%                 \draw (v6) edge [dashed] (v7);
-%                 \draw (v7) edge [dashed] (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {$v$};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {$u_3$};
-%         \node (v5) [label=below:{-2}] at (0.702189cm, -0.881858cm) {$x$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$u_2$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v2) edge [double, very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v3) edge [very thick] (v6);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [dashed] (v6);
-%                 \draw (v0) edge [dashed] (v7);
-%                 \draw (v6) edge [dashed] (v7);
-%                 \draw (v7) edge [dashed] (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {$v$};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {};
-%         \node (v5) [label=below:{1}] at (0.702189cm, -0.881858cm) {$u_1$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v3) edge [very thick] (v5);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [double, very thick] (v5);
-%                 \draw (v2) edge [very thick] (v3);
-%                 \draw (v3) edge [dashed] (v6);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v0) edge [thin] (v8);
-%                 \draw (v0) edge [thin] (v4);
-%                 \draw (v0) edge [thin] (v1);
-%                 \draw (v1) edge [thin] (v4);
-%                 \draw (v1) edge [thin] (v2);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [dashed] (v6);
-%                 \draw (v0) edge [dashed] (v7);
-%                 \draw (v6) edge [dashed] (v7);
-%                 \draw (v7) edge [dashed] (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {$v$};
-%         \node (v5) [label=below:{1}] at (0.702189cm, -0.881858cm) {$u_1$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v3) edge [dashed] (v5);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v2) edge [very thick] (v5);
-%                 \draw (v2) edge [dashed] (v3);
-%                 \draw (v3) edge [dashed] (v6);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [double, very thick] (v5);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v0) edge [thin] (v8);
-%                 \draw (v0) edge [thin] (v4);
-%                 \draw (v0) edge [thin] (v1);
-%                 \draw (v1) edge [thin] (v4);
-%                 \draw (v1) edge [thin] (v2);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [dashed] (v6);
-%                 \draw (v0) edge [dashed] (v7);
-%                 \draw (v6) edge [dashed] (v7);
-%                 \draw (v7) edge [dashed] (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {};
-%         \node (v5) [label=below:{1}] at (0.702189cm, -0.881858cm) {$u_1$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$v$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v3) edge [dashed] (v5);
-%                 \draw (v5) edge [double, very thick] (v8);
-%                 \draw (v5) edge [very thick] (v6);
-%                 \draw (v2) edge [thin] (v4);
-%                 \draw (v2) edge [dashed] (v5);
-%                 \draw (v2) edge [dashed] (v3);
-%                 \draw (v3) edge [dashed] (v6);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v4) edge [very thick] (v5);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v0) edge [thin] (v8);
-%                 \draw (v0) edge [thin] (v4);
-%                 \draw (v0) edge [thin] (v1);
-%                 \draw (v1) edge [thin] (v4);
-%                 \draw (v1) edge [thin] (v2);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [dashed] (v6);
-%                 \draw (v0) edge [dashed] (v7);
-%                 \draw (v6) edge [dashed] (v7);
-%                 \draw (v7) edge [dashed] (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {};
-%         \node (v5) [label=below:{1}] at (0.702189cm, -0.881858cm) {$u_1$};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$v$};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v5) edge [double, very thick] (v6);
-%                 \draw (v4) edge [thin] (v8);
-%                 \draw (v0) edge [thin] (v8);
-%                 \draw (v0) edge [thin] (v4);
-%                 \draw (v0) edge [thin] (v1);
-%                 \draw (v1) edge [thin] (v4);
-%                 \draw (v1) edge [thin] (v2);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [dashed] (v6);
-%                 \draw (v0) edge [dashed] (v7);
-%                 \draw (v2) [thin] edge (v4);
-%                 \draw (v2) edge [dashed] (v5);
-%                 \draw (v2) edge [dashed] (v3);
-%                 \draw (v3) edge [dashed] (v5);
-%                 \draw (v3) edge [dashed] (v6);
-%                 \draw (v4) edge [dashed] (v5);
-%                 \draw (v5) edge [very thick] (v8);
-%                 \draw (v6) edge [very thick] (v8);
-%                 \draw (v6) edge [dashed] (v7);
-%                 \draw (v7) edge [dashed] (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {$v$};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {$u_3$};
-%         \node (v5) [label=below:{1}] at (0.702189cm, -0.881858cm) {};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$u_2$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v2) edge [double, very thick] (v4);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [dashed] (v6);
-%                 \draw (v0) edge [dashed] (v7);
-%                 \draw (v2) edge [dashed] (v5);
-%                 \draw (v2) edge [dashed] (v3);
-%                 \draw (v3) edge [dashed] (v5);
-%                 \draw (v3) edge [dashed] (v6);
-%                 \draw (v4) edge [dashed] (v5);
-%                 \draw (v5) edge [dashed] (v8);
-%                 \draw (v5) edge [dashed] (v6);
-%                 \draw (v6) edge [dashed] (v8);
-%                 \draw (v6) edge [dashed] (v7);
-%                 \draw (v7) edge [dashed] (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {$v$};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {$u_3$};
-%         \node (v5) [label=below:{1}] at (0.702189cm, -0.881858cm) {};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$u_2$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v2) edge [very thick] (v4);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [double, very thick] (v4);
-%                 \draw (v1) edge [very thick] (v2);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [dashed] (v6);
-%                 \draw (v0) edge [dashed] (v7);
-%                 \draw (v2) edge [dashed] (v5);
-%                 \draw (v2) edge [dashed] (v3);
-%                 \draw (v3) edge [dashed] (v5);
-%                 \draw (v3) edge [dashed] (v6);
-%                 \draw (v4) edge [dashed] (v5);
-%                 \draw (v5) edge [dashed] (v8);
-%                 \draw (v5) edge [dashed] (v6);
-%                 \draw (v6) edge [dashed] (v8);
-%                 \draw (v6) edge [dashed] (v7);
-%                 \draw (v7) edge [dashed] (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {$v$};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {$u_3$};
-%         \node (v5) [label=below:{1}] at (0.702189cm, -0.881858cm) {};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$u_2$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v2) edge [dashed] (v4);
-%                 \draw (v4) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [double, very thick] (v4);
-%                 \draw (v0) edge [very thick] (v1);
-%                 \draw (v1) edge [very thick] (v4);
-%                 \draw (v1) edge [dashed] (v2);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [dashed] (v6);
-%                 \draw (v0) edge [dashed] (v7);
-%                 \draw (v2) edge [dashed] (v5);
-%                 \draw (v2) edge [dashed] (v3);
-%                 \draw (v3) edge [dashed] (v5);
-%                 \draw (v3) edge [dashed] (v6);
-%                 \draw (v4) edge [dashed] (v5);
-%                 \draw (v5) edge [dashed] (v8);
-%                 \draw (v5) edge [dashed] (v6);
-%                 \draw (v6) edge [dashed] (v8);
-%                 \draw (v6) edge [dashed] (v7);
-%                 \draw (v7) edge [dashed] (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {$u_3$};
-%         \node (v5) [label=below:{1}] at (0.702189cm, -0.881858cm) {};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {$u_1$};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {$v$};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v4) edge [double, very thick] (v8);
-%                 \draw (v0) edge [dashed] (v3);
-%                 \draw (v0) edge [dashed] (v6);
-%                 \draw (v0) edge [dashed] (v7);
-%                 \draw (v0) edge [very thick] (v8);
-%                 \draw (v0) edge [very thick] (v4);
-%                 \draw (v0) edge [dashed] (v1);
-%                 \draw (v1) edge [dashed] (v4);
-%                 \draw (v1) edge [dashed] (v2);
-%                 \draw (v2) edge [dashed] (v4);
-%                 \draw (v2) edge [dashed] (v5);
-%                 \draw (v2) edge [dashed] (v3);
-%                 \draw (v3) edge [dashed] (v5);
-%                 \draw (v3) edge [dashed] (v6);
-%                 \draw (v4) edge [dashed] (v5);
-%                 \draw (v5) edge [dashed] (v8);
-%                 \draw (v5) edge [dashed] (v6);
-%                 \draw (v6) edge [dashed] (v8);
-%                 \draw (v6) edge [dashed] (v7);
-%                 \draw (v7) edge [dashed] (v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \begin{tikzpicture}
-%         \node (v0) [label=above left:{1}] at (-1.875000cm, 2.000000cm) {};
-%         \node (v1) [label=above right:{2}] at (1.875000cm, 2.000000cm) {};
-%         \node (v2) [label=below right:{2}] at (1.875000cm, -2.000000cm) {};
-%         \node (v3) [label=below left:{2}] at (-1.875000cm, -2.000000cm) {};
-%         \node (v4) [label=above:{3}] at (0.829462cm, 0.915182cm) {};
-%         \node (v5) [label=below:{1}] at (0.702189cm, -0.881858cm) {};
-%         \node (v6) [label=left:{3}] at (-1.251848cm, -0.867854cm) {};
-%         \node (v7) [label=left:{2}] at (-0.819321cm, 0.056225cm) {};
-%         \node (v8) [label=right:{3}] at (0.175438cm, 0.030180cm) {};
-%         \begin{pgfonlayer}{bg}
-%                 \draw (v0) edge [dashed] (v1);
-%                 \draw (v0) edge [dashed](v3);
-%                 \draw (v0) edge [dashed](v6);
-%                 \draw (v0) edge [dashed](v7);
-%                 \draw (v0) edge [dashed](v8);
-%                 \draw (v0) edge [dashed](v4);
-%                 \draw (v1) edge [dashed](v4);
-%                 \draw (v1) edge [very thick](v2);
-%                 \draw (v2) edge [dashed](v4);
-%                 \draw (v2) edge [dashed](v5);
-%                 \draw (v2) edge [very thick](v3);
-%                 \draw (v3) edge [dashed](v5);
-%                 \draw (v3) edge [dashed](v6);
-%                 \draw (v4) edge [very thick](v8);
-%                 \draw (v4) edge [dashed](v5);
-%                 \draw (v5) edge [dashed](v8);
-%                 \draw (v5) edge [dashed](v6);
-%                 \draw (v6) edge [very thick](v8);
-%                 \draw (v6) edge [dashed](v7);
-%                 \draw (v7) edge [dashed](v8);
-%         \end{pgfonlayer}
-% \end{tikzpicture}
-% \caption{An Algorithm~\ref{A:poh_linear} example, continued from
-% Figure~\ref{F:poh_example}.}
-% \label{F:poh_example_cont}
-% \end{center}
-% \end{figure}
-
 Given a triangulated plane graph $G$ represented via adjacency lists,
 we can apply
 Algorithm~\ref{A:poh_linear} as follows. First, create length $n$ integer
@@ -2102,7 +1329,7 @@ for an example.
         \draw (v3) edge (v8);
         \draw (v3) edge[very thick,double] (v6);
         \draw (v4) edge (v6);
-        \draw (v3) edge (v7);
+        \draw (v6) edge (v8);
         \draw (u) edge (v2);
         \draw (u) edge (v10);
         \draw (u) edge (v9);
@@ -2113,13 +1340,13 @@ for an example.
 	\node (bs) [empty] at (2.4cm, 0.75cm) {};
 	\node (bm) [empty] at (2.9cm, 0.75cm) {};
 	\node (be1) [empty] at (4.5cm, 0.4cm) {};
-	\node (be2) [empty] at (4.0cm, 1.0cm) {};
+	\node (be2) [empty] at (4.1cm, 0.9cm) {};
 	\node (be3) [empty] at (5.6cm, 1.7cm) {};
 
     \begin{pgfonlayer}{bg}
 		\draw (bs) edge[very thick] (bm);
 		\draw (bm) edge[very thick, ->, bend right] (be1);
-		\draw (bm) edge[very thick, ->] (be2);
+		\draw (bm) edge[very thick, ->, bend right=15] (be2);
 		\draw (bm) edge[very thick, ->, bend left=51] (be3);
     \end{pgfonlayer}
 
@@ -2245,10 +1472,11 @@ Lemma~\ref{L:hartman3} (Algorithm~\ref{A:hartman_impl}).}
 
 For those familiar with Hartman's proof: the one major difference between
 our algorithm and Hartman's
-occurs in our Case~3.2.3. If we encounter a chord edge $zv\in G-C$
+occurs in Case~3.2.3.2 of the proof of Lemma~\ref{L:hartman3} below.
+If we encounter a chord edge $zv\in G-C$
 ($z$ is the current end of $P$) with
 $v\in C[z,y]$ and $L(z)\cap L(v)=\emptyset$ (i.e. $d\not\in L(v)$,
-where $d$ is the color of the path $P$),
+where $d$ is the color of $P$),
 instead of continuing to
 search counter-clockwise for neighbors of $z$ in $C[z,v]$ that we might add
 to $P$ (as in the proof of \cite[Lemma~4.2]{Har1997}), we
@@ -2257,12 +1485,10 @@ apply the inductive hypothesis such that $z$ now serves as
 of this case).
 The chord from the vertex labeled $*$ to $y$ in
 Figure~\ref{F:hartman_overview}
-is an example of such an edge: our algorithm eventually produces the same
-coloring as Hartman's on this input (though that is not always
-the case!), but it initally halts
-$P$ at $*$, and separately considers
-the left and right halves of the graph, with $*$ as the new ``$y$''
-on the right, see Figure~\ref{F:hartman_difference}.
+is an example of such an edge: our algorithm halts
+$P$ at $*$, divides the remaining subgraph along the chord,
+and considers separately the left and right halves, with $*$ as
+``$y$'' on the right, see Figure~\ref{F:hartman_difference}.
 
 Given a coloring $c$ of a graph $G$, and $v\in G$, we define
 $\text{deg}_c(v)$
@@ -3532,92 +2758,92 @@ Figure~\ref{F:hartman_impl}.}
 \end{center}
 \end{figure}
 
-\begin{figure}
-\begin{center}
-\SolidGraph
-\begin{tikzpicture}
-        \node (v0) [label=above left:{\{4\}}] at (-2.375000cm, 2.000000cm) {};
-        \node (v1) [label=above right:{\{4,5\}}] at (2.375000cm, 2.000000cm) {};
-        \node (v2) [label=below right:{\{5,2\}}] at (2.375000cm, -2.000000cm) {};
-        \node (v3) [label=below left:{\{2,4\}}] at (-2.375000cm, -2.000000cm) {};
-        \node (v4) [label=right:{\{1,3,2\}}] at (-0.532660cm, -0.259649cm) {
-};
-        \node (v5) [label=above:{\{4,1,5\}}] at (-0.297357cm, 0.720239cm) {}
-;
-        \node (v6) [label=below:{\{3,2,1\}}] at (-0.112185cm, -1.346142cm) {
-};
-        \node (v7) [label=right:{\{3,4,5\}}] at (1.340525cm, 0.632695cm) {};
-        \node (v8) [label=left:{\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
-;
-        \begin{pgfonlayer}{bg}
-                \draw (v0) edge (v8);
-                \draw (v0) edge (v3);
-                \draw (v0) edge (v4);
-                \draw (v0) edge (v5);
-                \draw (v0) edge (v1);
-                \draw (v1) edge (v5);
-                \draw (v1) edge (v7);
-                \draw (v1) edge (v2);
-                \draw (v2) edge (v7);
-                \draw (v2) edge (v5);
-                \draw (v2) edge (v4);
-                \draw (v2) edge (v6);
-                \draw (v2) edge (v3);
-                \draw (v3) edge (v6);
-                \draw (v3) edge (v4);
-                \draw (v3) edge (v8);
-                \draw (v4) edge (v5);
-                \draw (v4) edge (v8);
-                \draw (v4) edge (v6);
-                \draw (v5) edge (v7);
-        \end{pgfonlayer}
-\end{tikzpicture}
-$\qquad$
-\begin{tikzpicture}
-        \node (v0) [label=above left:{4}] at (-2.375000cm, 2.000000cm) {};
-        \node (v1) [label=above right:{5}] at (2.375000cm, 2.000000cm) {};
-        \node (v2) [label=below right:{5}] at (2.375000cm, -2.000000cm) {};
-        \node (v3) [label=below left:{2}] at (-2.375000cm, -2.000000cm) {};
-        \node (v4) [label=right:{2}] at (-0.532660cm, -0.259649cm) {
-};
-        \node (v5) [label=above:{1}] at (-0.297357cm, 0.720239cm) {}
-;
-        \node (v6) [label=below:{3}] at (-0.112185cm, -1.346142cm) {
-};
-        \node (v7) [label=right:{3}] at (1.340525cm, 0.632695cm) {};
-        \node (v8) [label=left:{3}] at (-1.705649cm, -0.111242cm) {}
-;
-        \begin{pgfonlayer}{bg}
-                \draw (v0) edge [dotted] (v8);
-                \draw (v0) edge [dotted] (v3);
-                \draw (v0) edge [dotted] (v4);
-                \draw (v0) edge [dotted](v5);
-                \draw (v0) edge [dotted](v1);
-                \draw (v1) edge [dotted](v5);
-                \draw (v1) edge [dotted](v7);
-                \draw (v1) edge [double,very thick] (v2);
-                \draw (v2) edge [dotted](v7);
-                \draw (v2) edge [dotted](v5);
-                \draw (v2) edge [dotted](v4);
-                \draw (v2) edge [dotted](v6);
-                \draw (v2) edge [dotted](v3);
-                \draw (v3) edge [dotted](v6);
-                \draw (v3) edge [double,very thick] (v4);
-                \draw (v3) edge [dotted](v8);
-                \draw (v4) edge [dotted](v5);
-                \draw (v4) edge [dotted](v8);
-                \draw (v4) edge [dotted](v6);
-                \draw (v5) edge [dotted](v7);
-        \end{pgfonlayer}
-\end{tikzpicture}
-\caption{The initial list assignment $L$ (left) and the induced paths of the
-resulting path
-$L$-coloring (right)
-from the Algorithm~\ref{A:hartman_impl} example shown in
-Figure~\ref{F:hartman_impl} and Figure~\ref{F:hartman_impl_cont}.}
-\label{F:hartman_impl_comp}
-\end{center}
-\end{figure}
+% \begin{figure}
+% \begin{center}
+% \SolidGraph
+% \begin{tikzpicture}
+%         \node (v0) [label=left:{\{4\}}] at (-2.375000cm, 2.000000cm) {};
+%         \node (v1) [label=right:{\{4,5\}}] at (2.375000cm, 2.000000cm) {};
+%         \node (v2) [label=right:{\{5,2\}}] at (2.375000cm, -2.000000cm) {};
+%         \node (v3) [label=left:{\{2,4\}}] at (-2.375000cm, -2.000000cm) {};
+%         \node (v4) [label=right:{\{1,3,2\}}] at (-0.532660cm, -0.259649cm) {
+% };
+%         \node (v5) [label=above:{\{4,1,5\}}] at (-0.297357cm, 0.720239cm) {}
+% ;
+%         \node (v6) [label=below:{\{3,2,1\}}] at (-0.112185cm, -1.346142cm) {
+% };
+%         \node (v7) [label=right:{\{3,4,5\}}] at (1.340525cm, 0.632695cm) {};
+%         \node (v8) [label=left:{\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
+% ;
+%         \begin{pgfonlayer}{bg}
+%                 \draw (v0) edge (v8);
+%                 \draw (v0) edge (v3);
+%                 \draw (v0) edge (v4);
+%                 \draw (v0) edge (v5);
+%                 \draw (v0) edge (v1);
+%                 \draw (v1) edge (v5);
+%                 \draw (v1) edge (v7);
+%                 \draw (v1) edge (v2);
+%                 \draw (v2) edge (v7);
+%                 \draw (v2) edge (v5);
+%                 \draw (v2) edge (v4);
+%                 \draw (v2) edge (v6);
+%                 \draw (v2) edge (v3);
+%                 \draw (v3) edge (v6);
+%                 \draw (v3) edge (v4);
+%                 \draw (v3) edge (v8);
+%                 \draw (v4) edge (v5);
+%                 \draw (v4) edge (v8);
+%                 \draw (v4) edge (v6);
+%                 \draw (v5) edge (v7);
+%         \end{pgfonlayer}
+% \end{tikzpicture}
+% $\qquad$
+% \begin{tikzpicture}
+%         \node (v0) [label=left:{4}] at (-2.375000cm, 2.000000cm) {};
+%         \node (v1) [label=right:{5}] at (2.375000cm, 2.000000cm) {};
+%         \node (v2) [label=right:{5}] at (2.375000cm, -2.000000cm) {};
+%         \node (v3) [label=left:{2}] at (-2.375000cm, -2.000000cm) {};
+%         \node (v4) [label=right:{2}] at (-0.532660cm, -0.259649cm) {
+% };
+%         \node (v5) [label=above:{1}] at (-0.297357cm, 0.720239cm) {}
+% ;
+%         \node (v6) [label=below:{3}] at (-0.112185cm, -1.346142cm) {
+% };
+%         \node (v7) [label=right:{3}] at (1.340525cm, 0.632695cm) {};
+%         \node (v8) [label=left:{3}] at (-1.705649cm, -0.111242cm) {}
+% ;
+%         \begin{pgfonlayer}{bg}
+%                 \draw (v0) edge (v8);
+%                 \draw (v0) edge (v3);
+%                 \draw (v0) edge (v4);
+%                 \draw (v0) edge (v5);
+%                 \draw (v0) edge (v1);
+%                 \draw (v1) edge (v5);
+%                 \draw (v1) edge (v7);
+%                 \draw (v1) edge [double,very thick] (v2);
+%                 \draw (v2) edge (v7);
+%                 \draw (v2) edge (v5);
+%                 \draw (v2) edge (v4);
+%                 \draw (v2) edge (v6);
+%                 \draw (v2) edge (v3);
+%                 \draw (v3) edge (v6);
+%                 \draw (v3) edge [double,very thick] (v4);
+%                 \draw (v3) edge (v8);
+%                 \draw (v4) edge (v5);
+%                 \draw (v4) edge (v8);
+%                 \draw (v4) edge (v6);
+%                 \draw (v5) edge (v7);
+%         \end{pgfonlayer}
+% \end{tikzpicture}
+% \caption{The initial list assignment $L$ (left) and the induced paths of the
+% resulting path
+% $L$-coloring (right)
+% from the Algorithm~\ref{A:hartman_impl} example shown in
+% Figure~\ref{F:hartman_impl} and Figure~\ref{F:hartman_impl_cont}.}
+% \label{F:hartman_impl_comp}
+% \end{center}
+% \end{figure}
 
 Let $G$ be a triangulated plane graph
 represented by augmented adjacency
@@ -3645,9 +2871,8 @@ with an input that satisfies Case~2. Case~2 makes a recursive
 call with an input that satisfies Case~3.
 Therefore the total number of recursive calls made, and thus the
 overall time complexity, is
-is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl},
-\ref{F:hartman_impl_cont}, and \ref{F:hartman_impl_comp} for a concrete
-example.
+is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl} and
+\ref{F:hartman_impl_cont} for a concrete example.
 
 \section{Experimental Performance and Parallelism}\label{S:performance}
 
@@ -3840,12 +3065,12 @@ To reduce lock contention, each thread may also
 maintain a
 small local stack of frames, and only access the shared
 stack when this local stack is full or empty.
-For the implementation and hardware
-used for benchmarks, the most optimal setup proved to be a
-local stack of $16$ frames for each thread: if a local stack filled up,
-$8$ frames were pushed to the
-shared stack; if a local stack emptied, $8$ frames were popped from the
-shared stack.
+% For the implementation and hardware
+% used for benchmarks, the most optimal setup proved to be a
+% local stack of $16$ frames for each thread: if a local stack filled up,
+% $8$ frames were pushed to the
+% shared stack; if a local stack emptied, $8$ frames were popped from the
+% shared stack.
 
 \begin{figure}
 \begin{center}

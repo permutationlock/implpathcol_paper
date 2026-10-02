@@ -412,21 +412,21 @@ $C$. We may write $P_1=C[u_1,w_1]$ and $P_2=C[w_2,u_2]$ for vertices
 $u_1,u_2,w_1,w_2\in C$.
 
 Suppose that $C$ is an induced subgraph of $G$. Let
-$u_3,w_3\in G-C$ be the vertices such that the cycles
+$u_3,w_3\in G-C$ be such that the cycles
 $u_3,u_2,u_1$ and $w_3,w_1,w_2$ are faces of $G$; note that
 $u_3$ and $w_3$ are uniquely determined, but it may be that $u_3=w_3$. Since
 $C$ is induced, $G-C$ is connected.
-Let $P_3$ be a $u_3,w_3$-path in $G-C$ of minimal length, and
+Let $P_3$ be a shortest $u_3,w_3$-path in $G-C$, and
 note that $P_3$ is an induced subgraph of $G$.
 Color each vertex of $P_3$ with the color $d\in\{1,2,3\}- S$.
 Let $C_1=P_1\cup P_3\cup u_3u_1\cup w_3w_1$ and
-$C_2=P_2\cup P_3\cup u_3u_2\cup w_3w_2$, see Figure~\ref{F:poh_proof}.
+$C_2=P_2\cup P_3\cup u_3u_2\cup w_3w_2$, see Figure~\ref{F:poh_proof} (left).
 By the inductive hypothesis, $c$ extends to path
 $3$-colorings $c_1$ of $\graphintc(C_1)$ and $c_2$ of $\graphintc(C_2)$.
-Together $c_1$ and $c_2$ form an extension of $c$ to a $3$-coloring of $G$.
+Together $c_1$ and $c_2$ form a $3$-coloring of $G$.
 Since $C,P_3,\graphinto(C_1),\graphinto(C_2)$ partition $V(G)$, and no
 vertex in one partition shares a color with a neighbor in another,
-this extension is a path coloring.
+this $3$-coloring is a path coloring satisfying the lemma.
 
 Suppose that $C$ is not an induced subgraph. Then there
 exists an edge $v_1v_2\in E(G)- E(C)$ with $v_1\in P_1$ and
@@ -531,7 +531,7 @@ $\qquad\qquad\quad$
 				\draw (v8) edge (v12);
         \end{pgfonlayer}
 \end{tikzpicture}
-\caption{The cases of Lemma~\ref{L:planar3c} (left),
+\caption{The proof of Lemma~\ref{L:planar3c} (left),
 a graph colored by Poh's algorithm (right).}
 \label{F:poh_proof}
 \end{center}
@@ -1284,20 +1284,24 @@ time \v{S}krekovski proved a
 weaker result using the same coloring
 strategy~\cite[Thm.~2.2b]{Skr1999}.
 
-In brief, the Hartman-\v{S}krekovski algorithm takes as input a
+In brief, the Hartman-\v{S}krekovski algorithm takes as its input a
 weakly triangulated plane
 graph $G$ with outer face $C$, a list assignment $L$, and two
 vertices $x,y\in C$. It
 assumes that $|L(x)|\ge 1$, $|L(y)|\ge 1$, $|L(v)|\ge 2$ for each
-$v\in C-\{x,y\}$, and $|L(v)|\ge 3$ for each $v\in G-C$. A
-color $d\in L(x)$ is selected, and an induced path $P$ is colored with $d$,
-starting from $x$, and proceeding clockwise towards $y$ along $C[x,y]$,
-such that for each $v\in P$, $d\in L(v)$.
-The algorithm is then applied to each connected component
-of $G-P$, using a new list assignment $L'$ defined by
+$v\in C-\{x,y\}$, and $|L(v)|\ge 3$ for each $v\in G-C$. An
+induced path $P$ is colored with $d\in L(x)$,
+proceeding from $x$ towards $y$ along $C[x,y]$,
+such that for each $v\in P$, $d\in L(v)$. Starting from
+$P=x$, the path is colored iteratively
+as follows: let $z$ be the end of $P$ opposite $x$, and
+define $T=\{v\in N(z)\cap C[z,y]:d\in L(v)\}$; if $T\ne\emptyset$,
+then the farthest clockwise $v\in T$
+is colored and added to $P$, and the process is repeated.
+After completing $P$, the algorithm is applied to each connected
+component of $G-P$, using the list assignment $L'$ defined by
 $L'(v)=L(v)-\{d\}$ if $v\in N(P)$, $L'(v)=L(v)$ if
-$v\not\in N(P)$. This produces
-a path $L$-coloring of $G$. See Figure~\ref{F:hartman_overview}
+$v\not\in N(P)$. See Figure~\ref{F:hartman_overview}
 for an example.
 
 \begin{figure}
@@ -1475,19 +1479,19 @@ Lemma~\ref{L:hartman3} (Algorithm~\ref{A:hartman_impl}).}
 For those familiar with Hartman's proof: the one major difference between
 our algorithm and Hartman's
 occurs in Case~3.2.3.2 of the proof of Lemma~\ref{L:hartman3} below.
-If we encounter a chord edge $zv\in G-C$
+If we encounter a chord edge $zv\in E(G)-E(C)$
 ($z$ is the current end of $P$) with
 $v\in C[z,y]$ and $L(z)\cap L(v)=\emptyset$ (i.e. $d\not\in L(v)$,
 where $d$ is the color of $P$),
-instead of continuing to
-search counter-clockwise for neighbors of $z$ in $C[z,v]$ that we might add
-to $P$ (as in the proof of \cite[Lemma~4.2]{Har1997}), we
+then instead of continuing to
+search for neighbors of $z$ in $C[z,v]$ that we might add
+to $P$, we
 apply the inductive hypothesis such that $z$ now serves as
 ``$y$'' (see Figure~\ref{F:hartman_3_2_3} for a general illustration
 of this case).
-The chord from the vertex labeled $*$ to $y$ in
+The edge from the vertex labeled $*$ to $y$ in
 Figure~\ref{F:hartman_overview}
-is an example of such an edge: our algorithm halts
+is an example of such a chord: our algorithm halts
 $P$ at $*$, divides the remaining subgraph along the chord,
 and considers separately the left and right halves, with $*$ as
 ``$y$'' on the right, see Figure~\ref{F:hartman_difference}.
@@ -1537,18 +1541,18 @@ outer face vertices $x_i,y_i,z_i\in G_i$ for $i=1,2$.
 \begin{center}
 \SolidGraph
 \begin{tikzpicture}[scale=1.1]
-    \node (y) at (0.0cm, 1.35cm) [label=above:${u_1,y}$] {};
-    \node (x) at (1.5cm, 1.35cm) [label=above:${x,z}$] {};
+    \node (y) at (0.1cm, 1.3cm) [label=above:${u_1,y}$] {};
+    \node (x) at (1.4cm, 1.35cm) [label=above:${x,z}$] {};
     \node (bot) [empty] at (0.75cm, 0.0cm) {};
 
     \begin{pgfonlayer}{bg}
         \draw (x) edge (y);
-        \draw (bot) edge [dashed, bend right=55] (x);
-        \draw (bot) edge [dashed, bend left=55] (y);
+        \draw (bot) edge [dashed, bend right=60] (x);
+        \draw (bot) edge [dashed, bend left=60] (y);
     \end{pgfonlayer}
 
-    \node (yb) at (2.3cm, 1.35cm) [label=above:${x_1,z_1}$] {};
-    \node (xb) at (3.8cm, 1.35cm) [label=above:${y_1}$] {};
+    \node (yb) at (2.4cm, 1.35cm) [label=above:${x_1,z_1}$] {};
+    \node (xb) at (3.7cm, 1.35cm) [label=above:${y_1}$] {};
     \node (botb) [empty] at (3.05cm, 0.0cm) {};
 
     \node (bs) [empty] at (1.7cm, 0.75cm) {};
@@ -1558,24 +1562,24 @@ outer face vertices $x_i,y_i,z_i\in G_i$ for $i=1,2$.
 
     \begin{pgfonlayer}{bg}
         \draw (xb) edge (yb);
-        \draw (botb) edge [dashed, bend right=55] (xb);
-        \draw (botb) edge [dashed, bend left=55] (yb);
+        \draw (botb) edge [dashed, bend right=60] (xb);
+        \draw (botb) edge [dashed, bend left=60] (yb);
     \end{pgfonlayer}
 \end{tikzpicture}
 $\quad$
 \begin{tikzpicture}[scale=1.1]
-    \node (u1) at (0.0cm, 1.35cm) [label=above:${u_1}$] {};
-    \node (x) at (1.5cm, 1.35cm) [label=above:${x,z}$] {};
+    \node (u1) at (0.1cm, 1.35cm) [label=above:${u_1}$] {};
+    \node (x) at (1.4cm, 1.35cm) [label=above:${x,z}$] {};
     \node (y) [label=above:${y}$] at (0.75cm, 0.0cm) {};
 
     \begin{pgfonlayer}{bg}
         \draw (x) edge (u1);
-        \draw (y) edge [dashed, bend right=55] (x);
-        \draw (y) edge [dashed, bend left=55] (u1);
+        \draw (y) edge [dashed, bend right=60] (x);
+        \draw (y) edge [dashed, bend left=60] (u1);
     \end{pgfonlayer}
 
-    \node (u1b) at (2.3cm, 1.35cm) [label=above:${x_1}$] {};
-    \node (xb) at (3.8cm, 1.35cm) [label=above:${z_1}$] {};
+    \node (u1b) at (2.4cm, 1.35cm) [label=above:${x_1}$] {};
+    \node (xb) at (3.7cm, 1.35cm) [label=above:${z_1}$] {};
     \node (yb) [label=above:${y_1}$] at (3.05cm, 0.0cm) {};
 
     \node (bs) [empty] at (1.7cm, 0.75cm) {};
@@ -1585,8 +1589,8 @@ $\quad$
 
     \begin{pgfonlayer}{bg}
         \draw (xb) edge (u1b);
-        \draw (yb) edge [dashed, bend right=55] (xb);
-        \draw (yb) edge [dashed, bend left=55] (u1b);
+        \draw (yb) edge [dashed, bend right=60] (xb);
+        \draw (yb) edge [dashed, bend left=60] (u1b);
     \end{pgfonlayer}
 \end{tikzpicture}
 $\quad$

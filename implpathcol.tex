@@ -440,7 +440,7 @@ Together these colorings form a path $3$-coloring of $G$.\ggcnopf
 \begin{figure}
 \begin{center}
 \SolidGraph
-\begin{tikzpicture}[scale=1.2]
+\begin{tikzpicture}[scale=1.3]
     \node (p0)[label=above left:${u_1}$] at (160:1.0cm) {};
     \node (pn) [label=above right:${w_1}$] at (20:1.0cm) {};
     \node (q0) [label=below left:${u_2}$] at (200:1.0cm) {};
@@ -463,7 +463,7 @@ Together these colorings form a path $3$-coloring of $G$.\ggcnopf
   \draw (t0) edge (t1) [dashed];
 \end{tikzpicture}
 $\quad$
-\begin{tikzpicture}[scale=1.2]
+\begin{tikzpicture}[scale=1.3]
     \node (p0) [label=above left:${u_1}$] at (160:1.0cm) {};
     \node (p1) [label=above:${v_1}$] at (90:0.8cm) {};
     \node (pn) [label=above right:${w_1}$] at (20:1.0cm) {};
@@ -483,7 +483,7 @@ $\quad$
   \draw (pn) edge (qn);
   \draw (p1) edge (q1);
 \end{tikzpicture}
-$\qquad\qquad\quad$
+$\qquad\qquad$
 \begin{tikzpicture}[yscale=0.8,xscale=1.0]
         \node (v0) [label=left:{1}] at (-1.875cm, 1.5cm) {};
         \node (v1) [label=right:{1}] at (1.875cm, 1.5cm) {};
@@ -493,9 +493,9 @@ $\qquad\qquad\quad$
         \node (v5) [label=right:{1}] at (1.0cm, -0.25cm) {};
         \node (v6) [label=left:{3}] at (-1.25cm, -0.86cm) {};
         \node (v7) [label=left:{2}] at (-0.82cm, 0.056cm) {};
-        \node (v8) [label=below right:{3}] at (0.17cm, 0.03cm) {};
+        \node (v8) [label=above left:{3}] at (0.30cm, -0.22cm) {};
         \node (v9) [label=left:{2}] at (-0.65cm, 0.85cm) {};
-        \node (v10) [label=left:{1}] at (-0.1cm, -0.85cm) {};
+        \node (v10) [label=right:{1}] at (-0.1cm, -0.85cm) {};
         \node (v11) [label=below left:{1}] at (0.75cm, 1.65cm) {};
         \node (v12) [label=below:{2}] at (0.8cm, -1.25cm) {};
         \begin{pgfonlayer}{bg}
@@ -506,12 +506,13 @@ $\qquad\qquad\quad$
                 \draw (v5) edge (v12);
                 \draw (v4) edge [double,very thick] (v8);
                 \draw (v4) edge (v5);
+                \draw (v4) edge (v7);
                 \draw (v5) edge (v8);
                 \draw (v0) edge (v3);
                 \draw (v0) edge (v6);
                 \draw (v0) edge (v7);
                 \draw (v0) edge (v9);
-                \draw (v8) edge (v9);
+                % \draw (v8) edge (v9);
                 \draw (v4) edge (v9);
                 \draw (v7) edge [double,very thick] (v9);
                 \draw (v0) edge (v4);
@@ -921,12 +922,16 @@ $u_3=w_2$ or $u_3=w_1$. Thus $C$ is a face and we are done.
 Suppose that $c(u_3)=0$, i.e. $u_3\in\graphinto(C)$.
 Let $d\in \{1,2,3\}-\{c(u_1),c(u_2)\}$.
 Let $\ell_3:=\max_{v\in G}S(v)+1$. We will
-construct an induced $u_3,w_3$-path $P_3=v_1,v_2,\ldots, v_j$
-such that $v_1,v_2,\ldots,v_j\in N(P_1)$,
-and color each $v\in P_3$ with $c(v)\leftarrow d$.
-We'll also mark each $v\in N(P_3)- V(C)$
-with $S(v)\leftarrow\ell_3$,
-and make recursive calls to color $\graphinto(C)-P_3$.
+locate the induced $u_3,w_3$-path $P_3=v_1,v_2,\ldots, v_j$
+with $V(P_3)\subseteq N(P_1)$
+such that
+$\graphintc(P_1\cup P_3\cup u_1u_3\cup w_1w_3)$
+is the subgraph of $\graphintc(C)$ induced by $V(P_1)\cup N(P_1)-V(P_2)$,
+see Figure~\ref{F:poh_linear_1} (left).
+We'll color each $v\in P_3$ with $c(v)\leftarrow d$, and
+mark each $v\in N(P_3)- V(C)$
+with $S(v)\leftarrow\ell_3$.
+We'll also make recursive calls to color $\graphinto(C)-P_3$.
 It may be useful
 to refer to Figures~\ref{F:poh_linear_1} and \ref{F:poh_linear_2}.
 
@@ -936,7 +941,7 @@ the end of the path $P_3$ that we've constructed so far.
 Let $v_0:= u_2$ so that $v_{j-1}$ is defined for $j=1$.
 Let $i:= 1$ and $\adj{v_i}{x}:= \adj{v_i}{u_2}$;
 here $i,\adj{v_i}{x}$ store the last edge $v_ix$ that was visited
-where $v_i\in P_3$ and $x\in P_2$.
+such that $v_i\in P_3$ and $x\in P_2$.
 
 \textbf{Loop~2.} We'll build the path $P_3$, adding one vertex per
 iteration.
@@ -957,7 +962,6 @@ $v_{j-1}$ and $p_1(v_j)$ counter-clockwise. Each iteration
 will handle the current neighbor $\adj{v_j}{v}$.
 We'll make a recursive call for each
 induced cycle $C_1$ we discover with $V(C_1)\subseteq V(P_2)\cup V(P_3)$.
-Refer to Figure~\ref{F:poh_linear_1}.
 
 \textbf{Case~2.1.1.} Suppose that $c(v)=0$, i.e. $v\in\graphinto(C)$.
 If $S(v)=\ell_1$, i.e. $v\in N(P_1)$, and $z=\text{NULL}$, then set
@@ -969,7 +973,7 @@ Repeat Loop~2.1.
 Make a recursive call with input $(v_i, \adj{v_i}{x}, \ell_3)$
 to color $\graphintc(C_1)$, where
 $C_1=P_3[v_i,v_j]\cup C[v,x]\cup v_ix\cup v_jv$;
-see Figure~\ref{F:poh_linear_1} (middle).
+see Figure~\ref{F:poh_linear_1} (right).
 Assign $i\leftarrow j$, $\adj{v_i}{x}\leftarrow \adj{v_j}{v}$, and
 $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Repeat Loop~2.1.
 
@@ -999,7 +1003,7 @@ Repeat Loop~2.2.
 $v\in P_3$. Make a recursive
 call with input $(v_j, \adj{v_j}{y}, \ell_3)$ to color $\graphintc(C_1)$,
 where both the definition of $C_1$ and the next steps to take depend
-on $c(v)$. Refer to Figure~\ref{F:poh_linear_2}.
+on $c(v)$; see Figure~\ref{F:poh_linear_2}.
 
 If $c(v)=c(u_1)$, i.e. $v\in P_1$, then
 $C_1=C[v,y]\cup v_j\cup v_jy\cup v_jv$.
@@ -1021,37 +1025,171 @@ $u_3,w_3$-path, and $c$ is a path $3$-coloring of $\graphintc(C)$.
 \begin{figure}
 \begin{center}
 \SolidGraph
-\begin{tikzpicture}[scale=1.6]
-    \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
-    \node (vp) [label=above:${p_1(v_j)}$] at (1.625cm, 1.25cm) {};
-    \node (vi) [label=above:${w_1}$] at (2.5cm, 1.0cm) {};
-    \node (vi1) [label=below:${w_2}$] at (2.5cm, 0.0cm) {};
-    \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
-    \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
-    \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
-    \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
-    \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
-    \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
-    \node (y) [label=below:${v}$] at (2.0cm, 0.4cm) {};
+% \begin{tikzpicture}[scale=1.6]
+%     \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
+%     \node (vp) [label=above:${p_1(v_j)}$] at (1.625cm, 1.25cm) {};
+%     \node (vi) [label=above:${w_1}$] at (2.5cm, 1.0cm) {};
+%     \node (vi1) [label=below:${w_2}$] at (2.5cm, 0.0cm) {};
+%     \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
+%     \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
+%     \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
+%     \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
+%     \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
+%     \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
+%     \node (y) [label=below:${v}$] at (2.0cm, 0.4cm) {};
 
-    \begin{pgfonlayer}{bg}
-        \draw (v1) edge[dashed, bend left=15] (vp);
-        \draw (vp) edge[dashed] (vi);
-        \draw (vi) edge (vi1);
-        \draw (vi1) edge[dashed, bend left=15] (vs);
-        \draw (vs) edge[dashed] (vk);
-        \draw (vk) edge (v1);
-        \draw (v1) edge (u1);
-        \draw (vs) edge (ur);
-        \draw (vk) edge (u1);
-        \draw (u1) edge[dashed] (ur);
-        \draw (ur) edge[dashed] (uj1);
-        \draw (uj1) edge (uj);
-        \draw (uj) edge (y);
-        \draw (uj) edge (vp);
-    \end{pgfonlayer}
+%     \begin{pgfonlayer}{bg}
+%         \draw (v1) edge[dashed, bend left=15] (vp);
+%         \draw (vp) edge[dashed] (vi);
+%         \draw (vi) edge (vi1);
+%         \draw (vi1) edge[dashed, bend left=15] (vs);
+%         \draw (vs) edge[dashed] (vk);
+%         \draw (vk) edge (v1);
+%         \draw (v1) edge (u1);
+%         \draw (vs) edge (ur);
+%         \draw (vk) edge (u1);
+%         \draw (u1) edge[dashed] (ur);
+%         \draw (ur) edge[dashed] (uj1);
+%         \draw (uj1) edge (uj);
+%         \draw (uj) edge (y);
+%         \draw (uj) edge (vp);
+%     \end{pgfonlayer}
+% \end{tikzpicture}
+% $\quad$
+% \begin{tikzpicture}[scale=1.6]
+%     \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
+%     \node (vi) [label=above:${w_1}$] at (2.5cm, 1.0cm) {};
+%     \node (vi1) [label=below:${w_2}$] at (2.5cm, 0.0cm) {};
+%     \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
+%     \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
+%     \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
+%     \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
+%     \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
+%     \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
+%     \node (y) [label=below:${z}$] at (2.0cm, 0.5cm) {};
+%     \node (v) [label=above:${v,p_1(v_j)}$] at (1.625cm, 1.25cm) {};
+
+%     \begin{pgfonlayer}{bg}
+%         \draw (v1) edge[dashed, bend left=15] (v);
+
+%         \draw (v) edge[dashed] (vi);
+%         \draw (vi) edge (vi1);
+%         \draw (vi1) edge[dashed, bend left=15] (vs);
+%         \draw (vs) edge[dashed] (vk);
+%         \draw (vk) edge (v1);
+%         \draw (v1) edge (u1);
+%         \draw (vs) edge (ur);
+%         \draw (vk) edge (u1);
+%         \draw (u1) edge[dashed] (ur);
+%         \draw (ur) edge[dashed] (uj1);
+%         \draw (uj1) edge (uj);
+%         \draw (uj) edge (y);
+%         \draw (uj) edge (v);
+%     \end{pgfonlayer}
+% \end{tikzpicture}
+% $\qquad$
+\begin{tikzpicture}[yscale=0.8,xscale=1.0]
+        \node (v0) [label=left:{$u_1$}] at (-1.875cm, 1.5cm) {};
+        \node (v1) [label=right:{$w_1$}] at (1.875cm, 1.5cm) {};
+        \node (v2) [label=right:{$w_2$}] at (1.875cm, -1.5cm) {};
+        \node (v3) [label=left:{$u_2$}] at (-1.875cm, -1.5cm) {};
+        \node (v4) [label={268:{${w_3}$}}] at (1.1cm, 0.75) {};
+        \node (v5) at (1.0cm, -0.25cm) {};
+        \node (v6) [label={left:{${u_3}$}}] at (-1.25cm, -0.86cm) {};
+        \node (v7) at (-0.82cm, 0.056cm) {};
+        \node (v8) at (0.3cm, -0.22cm) {};
+        \node (v9) at (-0.65cm, 0.85cm) {};
+        \node (v10) at (-0.1cm, -0.85cm) {};
+        \node (v11) at (0.75cm, 1.65cm) {};
+        \node (v12) at (0.8cm, -1.25cm) {};
+
+        \begin{pgfonlayer}{bg}
+				% \draw[fill=blue!25] (v3) -- (v0) -- (v1) -- (v2) -- cycle;%(v5)
+					% -- (v8) -- (v10) -- (v6) -- cycle;
+				\fill[color=gray!25] (-1.875cm, 1.5cm) -- (0.75cm, 1.65cm) -- (1.875cm, 1.5cm) -- (1.1cm, 0.75) -- (-0.82cm, 0.056cm) -- (-1.25cm, -0.86cm) -- cycle;
+                \draw (v0) edge [double,very thick] (v11);
+                \draw (v6) edge (v8);
+                \draw (v6) edge (v7);
+                \draw (v7) edge (v8);
+                \draw (v5) edge (v12);
+                \draw (v4) edge (v8);
+                \draw (v4) edge (v5);
+                \draw (v4) edge (v7);
+                \draw (v5) edge (v8);
+                \draw (v0) edge (v3);
+                \draw (v0) edge (v6);
+                \draw (v0) edge (v7);
+                \draw (v0) edge (v9);
+                % \draw (v8) edge (v9);
+                \draw (v4) edge (v9);
+                \draw (v7) edge (v9);
+                \draw (v0) edge (v4);
+                \draw (v1) edge [double,very thick] (v11);
+                \draw (v1) edge (v4);
+                \draw (v1) edge (v2);
+                \draw (v2) edge (v4);
+                \draw (v2) edge (v5);
+                \draw (v2) edge [double,very thick] (v12);
+                \draw (v3) edge [double,very thick] (v12);
+                \draw (v3) edge (v6);
+				\draw (v10) edge (v12);
+				\draw (v3) edge (v10);
+				\draw (v8) edge (v10);
+				\draw (v6) edge (v10);
+				\draw (v4) edge (v11);
+				\draw (v8) edge (v12);
+        \end{pgfonlayer}
 \end{tikzpicture}
 $\quad$
+\begin{tikzpicture}[yscale=0.8,xscale=1.0]
+        \node (v0) [label=left:{1}] at (-1.875cm, 1.5cm) {};
+        \node (v1) [label=right:{1}] at (1.875cm, 1.5cm) {};
+        \node (v2) [label=right:{2}] at (1.875cm, -1.5cm) {};
+        \node (v3) [label=left:{2}] at (-1.875cm, -1.5cm) {};
+        \node (v4) [label=right:{3}] at (1.1cm, 0.75) {};
+        \node (v5) [label=right:{1}] at (1.0cm, -0.25cm) {};
+        \node (v6) [label=left:{3}] at (-1.25cm, -0.86cm) {};
+        \node (v7) [label=above left:{3}] at (-0.82cm, 0.056cm) {};
+        \node (v8) [label=below right:{1}] at (0.3cm, -0.22cm) {};
+        \node (v9) [label=above right:{2}] at (-0.65cm, 0.85cm) {};
+        \node (v10) [label=left:{1}] at (-0.1cm, -0.85cm) {};
+        \node (v11) [label=below left:{1}] at (0.75cm, 1.65cm) {};
+        \node (v12) [label=below:{2}] at (0.8cm, -1.25cm) {};
+        \begin{pgfonlayer}{bg}
+                \draw (v0) edge [double,very thick] (v11);
+                \draw (v6) edge (v8);
+                \draw (v6) edge [double,very thick] (v7);
+                \draw (v7) edge (v8);
+                \draw (v5) edge (v12);
+                \draw (v4) edge (v8);
+                \draw (v4) edge (v5);
+                \draw (v4) edge [double,very thick] (v7);
+                \draw (v5) edge [double,very thick] (v8);
+                \draw (v0) edge (v3);
+                \draw (v0) edge (v6);
+                \draw (v0) edge (v7);
+                \draw (v0) edge (v9);
+                % \draw (v8) edge (v9);
+                \draw (v4) edge (v9);
+                \draw (v7) edge (v9);
+                \draw (v0) edge (v4);
+                \draw (v1) edge [double,very thick] (v11);
+                \draw (v1) edge (v4);
+                \draw (v1) edge (v2);
+                \draw (v2) edge (v4);
+                \draw (v2) edge (v5);
+                \draw (v2) edge [double,very thick] (v12);
+                \draw (v3) edge [double,very thick] (v12);
+                \draw (v3) edge (v6);
+				\draw (v10) edge (v12);
+				\draw (v3) edge (v10);
+				\draw (v8) edge [double,very thick] (v10);
+				\draw (v6) edge (v10);
+				\draw (v4) edge (v11);
+				\draw (v8) edge (v12);
+        \end{pgfonlayer}
+\end{tikzpicture}
+$\qquad$
 \begin{tikzpicture}[scale=1.6]
     \node (v1) [label=above:${u_1}$] at (-0.25cm, 1.0cm) {};
     \node (vp) [label=above:${p_1(v_j)}$] at (1.375cm, 1.25cm) {};
@@ -1085,40 +1223,10 @@ $\quad$
         \draw (uj) edge (vp);
     \end{pgfonlayer}
 \end{tikzpicture}
-$\quad$
-\begin{tikzpicture}[scale=1.6]
-    \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
-    \node (vi) [label=above:${w_1}$] at (2.5cm, 1.0cm) {};
-    \node (vi1) [label=below:${w_2}$] at (2.5cm, 0.0cm) {};
-    \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
-    \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
-    \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
-    \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
-    \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
-    \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
-    \node (y) [label=below:${z}$] at (2.0cm, 0.5cm) {};
-    \node (v) [label=above:${v,p_1(v_j)}$] at (1.625cm, 1.25cm) {};
-
-    \begin{pgfonlayer}{bg}
-        \draw (v1) edge[dashed, bend left=15] (v);
-
-        \draw (v) edge[dashed] (vi);
-        \draw (vi) edge (vi1);
-        \draw (vi1) edge[dashed, bend left=15] (vs);
-        \draw (vs) edge[dashed] (vk);
-        \draw (vk) edge (v1);
-        \draw (v1) edge (u1);
-        \draw (vs) edge (ur);
-        \draw (vk) edge (u1);
-        \draw (u1) edge[dashed] (ur);
-        \draw (ur) edge[dashed] (uj1);
-        \draw (uj1) edge (uj);
-        \draw (uj) edge (y);
-        \draw (uj) edge (v);
-    \end{pgfonlayer}
-\end{tikzpicture}
-\caption{Algorithm~\ref{A:poh_linear}, Case~2.1.1 (left), Case~2.1.2 (middle),
-and Case~2.1.3 (right).}\label{F:poh_linear_1}
+\caption{Algorithm~\ref{A:poh_linear},
+the subgraph induced by $V(P_1)\cup N(P_1)-V(P_2)$ (left),
+a path $3$-coloring produced by the algorithm (middle), and a sketch of
+Case~2.1.2 (right).}\label{F:poh_linear_1}
 \end{center}
 \end{figure}
 
@@ -1229,7 +1337,8 @@ $\quad$
         \draw (y) edge[color=red] (uj1);
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{Algorithm~\ref{A:poh_linear}, Case~2.2.2 when $v\in P_1$ (left)
+\caption{Algorithm~\ref{A:poh_linear}, a sketch of
+Case~2.2.2 when $v\in P_1$ (left)
 and when $v=v_{j-1}$ (middle). Also, a sketch of why $P_3$ is an
 induced path (right).}
 \label{F:poh_linear_2}
@@ -1493,7 +1602,8 @@ The edge from the vertex labeled $*$ to $y$ in
 Figure~\ref{F:hartman_overview}
 is an example of such a chord: our algorithm halts
 $P$ at $*$, divides the remaining subgraph along the chord,
-and considers separately the left and right halves, with $*$ as
+and considers separately the left and right halves, with $*$
+serving as
 ``$y$'' on the right, see Figure~\ref{F:hartman_difference}.
 
 Given a coloring $c$ of a graph $G$, and $v\in G$, we define

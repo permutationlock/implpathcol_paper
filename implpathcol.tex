@@ -385,7 +385,7 @@ plane graphs.
 
 Let $C$ be a cycle in a connected plane graph $G$. If $u,v\in C$, then we define
 $C[u,v]$ to be the clockwise $u,v$-path
-around $C$; if $u=v$, then $C[u,u]=u$.
+along $C$; if $u=v$, then $C[u,u]=u$.
 Define $\graphintc(C)$ to
 be the subgraph of $G$ consisting of $C$ and all vertices and edges interior to
 $C$; equivalently, $\graphintc(C)$ is the maximal subgraph of
@@ -890,8 +890,8 @@ To find $P_3$ we may simply walk counter-clockwise from
 $u_3$ along $C_1$.
 
 Define
-$p_1:N(P_1)\to V(P_1)$ to map each $v\in N(P_1)$ to its neighbor farthest
-clockwise along $P_1$,
+$p_1:N(P_1)\to V(P_1)$ to be the map sending each $v\in N(P_1)$ to its
+farthest clockwise neighbor  along $P_1$,
 i.e. $V(C[p_1(v),w_1])\cap N(v)=\{p_1(v)\}$.
 
 \begin{figure}
@@ -1006,7 +1006,7 @@ $P_3=C_1-P_1$ (right).}\label{F:poh_linear_0}
 \end{center}
 \end{figure}
 
-\begin{algorithm}\label{A:poh_linear} Path $3$-Color (Neighbor Trace)
+\begin{algorithm}\label{A:poh_linear} Path $3$-Color (Neighborhood Walk)
 
 \textbf{Input.} Let $C$ be an induced cycle
 in a weakly triangulated plane
@@ -1053,7 +1053,7 @@ induced by $N(P_1)-V(P_2)$ in $\graphintc(C)$.
 \textbf{Step~1.}
 Let $a:=u_2$ and $z:= u_3$; here $z$ stores the current
 vertex of $C_1-P_1$, and $a$ stores the neighbor of $z$
-clockwise from $z$ around $C_1$.
+clockwise from $z$ along $C_1$.
 Let $t:= u_3$ and $\adj{t}{x}:= \adj{u_3}{u_2}$;
 here $t$ and $\adj{t}{x}$ store the last edge $tx$ visited
 where $t\in P_3$ and $x\in P_2$.
@@ -1064,15 +1064,15 @@ Color $c(z)\leftarrow d$.
 Find $\adj{z}{a}$ in $N(z)$ and let
 $\adj{z}{v}:= \nxt(\adj{z}{a})$.
 Let $b:=\text{NULL}$; here
-$b$ will store neighbor of $z$ counter-clockwise from $z$ around
+$b$ will store neighbor of $z$ counter-clockwise from $z$ along
 $C_1$.
 Let $\adj{z}{y}:=\text{NULL}$; here
 $\adj{z}{y}$ will store the last edge $zy$ visited
 where $y\in P_1$.
 
 \textbf{Loop~2.1.} We'll first consider the neighbors of
-$z$ between
-$\nxt_{z}(a)$ and $p_1(z)$ counter-clockwise. Each iteration
+$z$ from
+$\nxt_{z}(a)$ to $p_1(z)$ counter-clockwise. Each iteration
 will handle one neighbor $\adj{z}{v}$.
 We'll make a recursive call for each
 induced cycle $C'$ we discover with $V(C')\subseteq V(P_2)\cup V(P_3)$.
@@ -1097,7 +1097,7 @@ $\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$. Break Loop~2.1 and move to
 Loop~2.2. Note if $b=\text{NULL}$, then $z=w_3$.
 
 \textbf{Loop~2.2.} We'll now consider the
-neighbors of $z$ between $p_1(z)$ and $a$ counter-clockwise.
+neighbors of $z$ from $\nxt_{z}(p_1(z))$ to $a$ counter-clockwise.
 Each iteration will handle one neighbor $\adj{z}{v}$.
 We'll make a recursive call for each
 induced cycle $C'$ we discover with $V(C')\subseteq V(P_1)\cup V(P_3)$.
@@ -1320,7 +1320,7 @@ $\quad$
 \end{tikzpicture}
 \caption{A sketch of Algorithm~\ref{A:poh_linear} Case~2.2.1 (left),
 Case~2.2.2 when $v\in P_1$ (middle),
-and when $v=a$ (right); the highlighted region represents
+and when $v=a$ (right); in each sketch, the highlighted region represents
 $G_1$.}\label{F:poh_linear_1}
 \end{center}
 \end{figure}
@@ -1667,7 +1667,7 @@ $c(v)\in L(v)-\{c(y)\}$.
 We proceed by induction on $m$, the number of edges. Let
 $u_1,u_2,\ldots,u_k$ label the neighbors of $z$ in counter-clockwise
 order such that $u_1$ is the vertex immediately counter-clockwise
-from $z$ around $C$, and $u_k$ is the vertex clockwise from $z$ around $C$.
+from $z$ along $C$, and $u_k$ is the vertex clockwise from $z$ along $C$.
 In each of the subsequent cases we will apply the lemma separately
 to one or two subgraphs $G_1,G_2$ of $G$, with corresponding labeled
 outer face vertices $x_i,y_i,z_i\in G_i$ for $i=1,2$.
@@ -2100,9 +2100,9 @@ that $L(v)$ does not contain the color in $L(z)$.
 Let $A,B$ be length $n$ arrays such that for each $v\in C$ we have
 $A(v)=\adj{v}{a}$ and $B(v)=\adj{v}{b}$, where
 $a$ is the vertex
-immediately clockwise from $v$ around $C$, and
+immediately clockwise from $v$ along $C$, and
 $b$ is the vertex immediately counter clockwise
-from $v$ around $C$.
+from $v$ along $C$.
 
 Let $S$ be a length $n$ integer array such
 that, for $v\in\graphintc(C)$, $S(v)\ne 0$ if and only if $v\in C$, and

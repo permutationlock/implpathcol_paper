@@ -279,7 +279,7 @@ We will represent $G$ for computation via \textit{adjacency lists}:
 a list, for each vertex $v$, of the neighbors of $v$.
 A vertex is represented by an integer $0\dots n-1$.
 The order of each list represents the embedding. In algorithms
-$N(v)$ will refer to the adacency list.
+$N(v)$ will refer to the adjacency list.
 
 Let $v\in G$ and $u\in N(v)$. Define $\nxt_v(u)\in N(v)$ to be
 the neighbor counter-clockwise from $u$ around $v$,
@@ -845,7 +845,7 @@ on which Algorithm~\ref{A:poh_bfs} performs poorly.}\label{F:pyramid}
 
 Let $G$, $C$, $P_1$, and $P_2$ be as in Algorithm~\ref{A:poh_bfs},
 but assume $C$ is induced.
-For a subraph $H$ of $G$, let $N(H)$ be the set of
+For a subgraph $H$ of $G$, let $N(H)$ be the set of
 vertices in $G$ that are in $H$ or have a neighbor in $H$.
 Le $G_1$ be the subgraph of $\graphintc(C)$ induced by
 $N(P_1)-V(P_2)$, see Figure~\ref{F:poh_linear_0}. Let $C_1$
@@ -1257,8 +1257,8 @@ $v\in C-\{x,y\}$, and $|L(v)|\ge 3$ for each $v\in G-C$. An
 induced path $P$ is colored with $d\in L(x)$,
 proceeding from $x$ towards $y$ along $C[x,y]$,
 such that for each $v\in P$, $d\in L(v)$. Starting from
-$P=x$, the path is colored iteratively
-as follows: let $z$ be end of $P$ far from $x$, and
+$P=x$, the path is colored
+as follows: let $z$ be end of $P$ opposite $x$, and
 define $T_{z}=\{v\in N(z)\cap C[z,y]:d\in L(v)\}$; if $T_{z}\ne\emptyset$,
 the $v\in T_{z}$ farthest clockwise along $C$
 is colored and added to $P$, then the process is repeated.
@@ -2985,7 +2985,7 @@ stack when this local stack is full or empty.
 
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
 parallel execution.
-The first difficulty we ecnounter is that
+The first difficulty we encounter is that
 the recursive calls made in
 Algorithm~\ref{A:hartman_impl} relied on a sequential
 execution order.

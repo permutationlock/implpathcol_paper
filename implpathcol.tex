@@ -875,219 +875,28 @@ on which Algorithm~\ref{A:poh_bfs} performs poorly.}\label{F:pyramid}
 \end{center}
 \end{figure}
 
-However, Poh's argument only relied on $P_3$ being an induced $u_3,w_3$-path,
-not a path of minimal length.
-Algorithm~\ref{A:poh_linear} describes a linear time implementation
-of Poh's algorithm.
-
+Let $G$, $C$, $P_1$, and $P_2$ be as in Algorithm~\ref{A:poh_bfs},
+but assume $C$ is induced.
 For a subraph $H$ of $G$, let $N(H)$ be the set of
-vertices in $G-H$ with a neighbor in $H$.
-Let $C$ and $P_1=C[u_1,w_1]$ be as in Lemma~\ref{L:planar3c}. Let
-$p_1:N(P_1)\to V(P_1)$ map each $v\in N(v)$ to its neighbor farthest
+vertices in $G$ that are in $H$ or have a neighbor in $H$.
+Le $G_1$ be the subgraph of $\graphintc(C)$ induced by
+$N(P_1)-V(P_2)$, see Figure~\ref{F:poh_linear_0}. Let $C_1$
+be the outer face of $G_1$.
+Algorithm~\ref{A:poh_linear} describes a linear time modification of
+Poh's algorithm where the $u_3,w_3$-path $P_3$
+is chosen to be $C_1-P_1$; to see that $P_3$
+is induced, note each $v\in P_3$ has a neighbor in $P_1$.
+To find $P_3$ we may simply walk counter-clockwise from
+$u_3$ along $C_1$.
+
+Define
+$p_1:N(P_1)\to V(P_1)$ to map each $v\in N(P_1)$ to its neighbor farthest
 clockwise along $P_1$,
 i.e. $V(C[p_1(v),w_1])\cap N(v)=\{p_1(v)\}$.
-
-\begin{algorithm}\label{A:poh_linear} Path $3$-Color (Neighbor Trace)
-
-\textbf{Input.} Let $C$ be an induced cycle
-in a weakly triangulated plane
-graph $G$ represented via adjacency lists.
-Let $c$ be a length $n$ array
-representing a $2$-coloring of $C$ such
-that each color class induces a nonempty path,
-respectively $P_1=C[u_1,w_1]$ and
-$P_2=C[w_2,u_2]$, where $u_1,u_2,w_1,w_2\in C$. Assume that $c(v)=0$
-for each $v\in\graphinto(C)$.
-Let $S$ be a length $n$ integer array and let $\ell_1$ be an integer
-such that for each $v\in\graphinto(C)$ we have $S(v)=\ell_1$ if and only if
-$v\in N(P_1)$.
-
-The concrete input will be $G$, $c$, and $S$,
-along with the tuple $(u_1, \adj{{u_1}}{u_2}, \ell_1)$.
-
-\textbf{Output.} For each vertex $v\in\graphinto(C)$ a color in
-$\{1,2,3\}$ will be
-assigned to $c(v)$ such that $c$ represents a path $3$-coloring of
-$\graphintc(C)$ extending the original $2$-coloring of $C$.
-Moreover, if $v\in \graphinto(C)$ has a neighbor $u\in C$,
-then $c(v)\ne c(u)$.
-
-\textbf{Procedure.} Let $\adj{u_1}{u_3}:=\nxt(\adj{u_1}{u_2})$.
-
-\textbf{Base case.}
-If $c(u_3)\ne 0$, then
-$u_3=w_2$ or $u_3=w_1$. Thus $C$ is a face and we are done. 
-
-\textbf{Recursive case.}
-Suppose that $c(u_3)=0$, i.e. $u_3\in\graphinto(C)$.
-Let $d\in \{1,2,3\}-\{c(u_1),c(u_2)\}$.
-Let $\ell_3:=\max_{v\in G}S(v)+1$. We will
-locate the induced $u_3,w_3$-path $P_3$
-with $V(P_3)\subseteq N(P_1)$
-such that
-$\graphintc(P_1\cup P_3\cup u_1u_3\cup w_1w_3)$
-is the subgraph of $\graphintc(C)$ induced by $V(P_1)\cup N(P_1)-V(P_2)$,
-see Figure~\ref{F:poh_linear_1} (left).
-We'll color each $v\in P_3$ with $c(v)\leftarrow d$, and
-mark each $v\in N(P_3)- V(C)$
-with $S(v)\leftarrow\ell_3$.
-In addition, to color $\graphinto(C)-P_3$, we'll make a recursive call on
-each cycle induced by a subset of $V(P_3)\cup V(P_2)$ or
-$V(P_3)\cup V(P_1)$.
-
-\textbf{Step~1.}
-Let $j:= 1$ and $v_j:= u_3$; here $j,v_j$ store
-the end of the path $P_3=v_1,v_2,\ldots,v_j$ as it is colored.
-Let $v_0:= u_2$ so that $v_{j-1}$ is defined for $j=1$.
-Let $i:= 1$ and $\adj{v_i}{x}:= \adj{v_i}{u_2}$;
-here $i,\adj{v_i}{x}$ store the last edge $v_ix$ that was visited
-such that $v_i\in P_3$ and $x\in P_2$.
-
-\textbf{Loop~2.} We'll build the path $P_3$, adding one vertex per
-iteration.
-Assign $c(v_j)\leftarrow d$.
-Find $\adj{v_j}{v_{j-1}}$ in $N(v_j)$ and let
-$\adj{v_j}{v}:= \nxt(\adj{v_j}{v_{j-1}})$.
-Let $z:=\text{NULL}$; here
-$z$ will store the first neighbor of $v_j$
-counter-clockwise from $v_{j-1}$ that is in
-$N(P_1)- V(C)$ (if any).
-Let $\adj{v_j}{y}:=\text{NULL}$; here
-$\adj{v_j}{y}$ will store the last edge $v_jy$ encountered
-such that $y\in P_1$ (if any).
-
-\textbf{Loop~2.1.} We'll first consider the neighbors of
-$v_j$ between
-$v_{j-1}$ and $p_1(v_j)$ counter-clockwise. Each iteration
-will handle the current neighbor $\adj{v_j}{v}$.
-We'll make a recursive call for each
-induced cycle $C_1$ we discover with $V(C_1)\subseteq V(P_2)\cup V(P_3)$.
-
-\textbf{Case~2.1.1.} Suppose that $c(v)=0$, i.e. $v\in\graphinto(C)$.
-If $S(v)=\ell_1$, i.e. $v\in N(P_1)$, and $z=\text{NULL}$, then set
-$z\leftarrow v$. Set $S(v)\leftarrow \ell_3$ and
-$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$.
-Repeat Loop~2.1.
-
-\textbf{Case~2.1.2.} Suppose that $c(v)=c(u_2)$, i.e. $v\in P_2$.
-Make a recursive call with input $(v_i, \adj{v_i}{x}, \ell_3)$
-to color $\graphintc(C_1)$, where
-$C_1=P_3[v_i,v_j]\cup C[v,x]\cup v_ix\cup v_jv$;
-see Figure~\ref{F:poh_linear_1} (right).
-Assign $i\leftarrow j$, $\adj{v_i}{x}\leftarrow \adj{v_j}{v}$, and
-$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Repeat Loop~2.1.
-
-\textbf{Case~2.1.3.} Suppose that $c(v)=c(u_1)$, i.e. $v=p_1(v_j)\in P_1$.
-Assign $\adj{v_j}{y}\leftarrow \adj{v_j}{v}$ and
-$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Break Loop~2.1 and proceed to
-Loop~2.2.
-
-Note that if $z=\text{NULL}$, then $v_j=w_3$. To see this, observe that
-since $v\in P_1$,
-$\prv_{v_j}(v)\in N(P_1)$,
-and $\prv_{v_j}(v)\not\in P_1$, we must have
-$\prv_{v_j}(v)\in C-P_1=P_2$.
-
-\textbf{Loop~2.2.} We'll now consider the
-neighbors of $v_j$ between $p_1(v_j)$ and $v_{j-1}$ counter-clockwise.
-Each iteration will handle the current neighbor $\adj{v_j}{v}$.
-We'll make a recursive call for each
-induced cycle $C_1$ we discover with $V(C_1)\subseteq V(P_1)\cup V(P_3)$.
-Observe $\adj{v_j}{y}\ne\text{NULL}$.
-
-\textbf{Case~2.2.1.} Suppose that $c(v)=0$, i.e. $v\in\graphinto(C)-P_3$.
-Assign $S(v)\leftarrow \ell_3$ and $\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$.
-Repeat Loop~2.2.
-
-\textbf{Case~2.2.2.} Suppose that $c(v)\ne 0$, i.e. $v\in C$ or
-$v\in P_3$. Make a recursive
-call with input $(v_j, \adj{v_j}{y}, \ell_3)$ to color $\graphintc(C_1)$,
-where both the definition of $C_1$ and the next steps to take depend
-on $c(v)$; see Figure~\ref{F:poh_linear_2}.
-
-If $c(v)=c(u_1)$, i.e. $v\in P_1$, then
-$C_1=C[v,y]\cup v_j\cup v_jy\cup v_jv$.
-Assign $\adj{v_j}{y}\leftarrow\adj{v_j}{v}$ and
-$\adj{v_j}{v}\leftarrow\nxt(\adj{v_j}{v})$. Repeat Loop~2.2.
-
-Otherwise,
-$v=v_{j-1}$ (either $j>1$ and $v\in P_3$, or $j=1$ so
-$v=u_2\in P_2$ and $t=u_1$).
-Then $C_1=C[p_1(v),y]\cup P_3[v,v_j]\cup vp_1(v)\cup v_jy$.
-Break Loop~2.2 and proceed to Step~2.3. 
-
-\textbf{Step~2.3.} If $z\ne\text{NULL}$, then
-assign $j\leftarrow j+1$, $v_j\leftarrow z$, and
-repeat Loop~2. Otherwise, $v_j=w_3$, $P_3$ is an induced
-$u_3,w_3$-path, and $c$ is a path $3$-coloring of $\graphintc(C)$.
-\end{algorithm}
 
 \begin{figure}
 \begin{center}
 \SolidGraph
-% \begin{tikzpicture}[scale=1.6]
-%     \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
-%     \node (vp) [label=above:${p_1(v_j)}$] at (1.625cm, 1.25cm) {};
-%     \node (vi) [label=above:${w_1}$] at (2.5cm, 1.0cm) {};
-%     \node (vi1) [label=below:${w_2}$] at (2.5cm, 0.0cm) {};
-%     \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
-%     \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
-%     \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
-%     \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
-%     \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
-%     \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
-%     \node (y) [label=below:${v}$] at (2.0cm, 0.4cm) {};
-
-%     \begin{pgfonlayer}{bg}
-%         \draw (v1) edge[dashed, bend left=15] (vp);
-%         \draw (vp) edge[dashed] (vi);
-%         \draw (vi) edge (vi1);
-%         \draw (vi1) edge[dashed, bend left=15] (vs);
-%         \draw (vs) edge[dashed] (vk);
-%         \draw (vk) edge (v1);
-%         \draw (v1) edge (u1);
-%         \draw (vs) edge (ur);
-%         \draw (vk) edge (u1);
-%         \draw (u1) edge[dashed] (ur);
-%         \draw (ur) edge[dashed] (uj1);
-%         \draw (uj1) edge (uj);
-%         \draw (uj) edge (y);
-%         \draw (uj) edge (vp);
-%     \end{pgfonlayer}
-% \end{tikzpicture}
-% $\quad$
-% \begin{tikzpicture}[scale=1.6]
-%     \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
-%     \node (vi) [label=above:${w_1}$] at (2.5cm, 1.0cm) {};
-%     \node (vi1) [label=below:${w_2}$] at (2.5cm, 0.0cm) {};
-%     \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
-%     \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
-%     \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
-%     \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
-%     \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
-%     \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
-%     \node (y) [label=below:${z}$] at (2.0cm, 0.5cm) {};
-%     \node (v) [label=above:${v,p_1(v_j)}$] at (1.625cm, 1.25cm) {};
-
-%     \begin{pgfonlayer}{bg}
-%         \draw (v1) edge[dashed, bend left=15] (v);
-
-%         \draw (v) edge[dashed] (vi);
-%         \draw (vi) edge (vi1);
-%         \draw (vi1) edge[dashed, bend left=15] (vs);
-%         \draw (vs) edge[dashed] (vk);
-%         \draw (vk) edge (v1);
-%         \draw (v1) edge (u1);
-%         \draw (vs) edge (ur);
-%         \draw (vk) edge (u1);
-%         \draw (u1) edge[dashed] (ur);
-%         \draw (ur) edge[dashed] (uj1);
-%         \draw (uj1) edge (uj);
-%         \draw (uj) edge (y);
-%         \draw (uj) edge (v);
-%     \end{pgfonlayer}
-% \end{tikzpicture}
-% $\qquad$
 \begin{tikzpicture}[yscale=0.8,xscale=1.0]
         \node (v0) [label=left:{$u_1$}] at (-1.875cm, 1.5cm) {};
         \node (v1) [label=right:{$w_1$}] at (1.875cm, 1.5cm) {};
@@ -1140,7 +949,7 @@ $u_3,w_3$-path, and $c$ is a path $3$-coloring of $\graphintc(C)$.
 				\draw (v8) edge (v12);
         \end{pgfonlayer}
 \end{tikzpicture}
-$\quad$
+$\qquad$
 \begin{tikzpicture}[yscale=0.8,xscale=1.0]
         \node (v0) [label=left:{1}] at (-1.875cm, 1.5cm) {};
         \node (v1) [label=right:{1}] at (1.875cm, 1.5cm) {};
@@ -1189,24 +998,221 @@ $\quad$
 				\draw (v8) edge (v12);
         \end{pgfonlayer}
 \end{tikzpicture}
-$\qquad$
-\begin{tikzpicture}[scale=1.6]
+\caption{
+A Poh example highlighting the subgraph $G_1$
+induced by $N(P_1)-V(P_2)$ (left),
+and the path $3$-coloring output from Poh's algorithm when choosing
+$P_3=C_1-P_1$ (right).}\label{F:poh_linear_0}
+\end{center}
+\end{figure}
+
+\begin{algorithm}\label{A:poh_linear} Path $3$-Color (Neighbor Trace)
+
+\textbf{Input.} Let $C$ be an induced cycle
+in a weakly triangulated plane
+graph $G$ represented via adjacency lists.
+Let $c$ be a length $n$ array
+representing a $2$-coloring of $C$ such
+that each color class induces a nonempty path,
+respectively $P_1=C[u_1,w_1]$ and
+$P_2=C[w_2,u_2]$, where $u_1,u_2,w_1,w_2\in C$. Assume that $c(v)=0$
+for each $v\in\graphinto(C)$.
+Let $S$ be a length $n$ array, and $\ell_1$ an integer,
+such that for $v\in\graphinto(C)$, $S(v)=\ell_1$ if and only if
+$v\in N(P_1)$.
+
+The concrete input will be $G$, $c$, and $S$,
+along with the tuple $(u_1, \adj{{u_1}}{u_2}, \ell_1)$.
+
+\textbf{Output.} For each vertex $v\in\graphinto(C)$ a color in
+$\{1,2,3\}$ will be
+assigned to $c(v)$ such that $c$ represents a path $3$-coloring of
+$\graphintc(C)$ extending the original $2$-coloring of $C$.
+Moreover, if $v\in \graphinto(C)$ has a neighbor $u\in C$,
+then $c(v)\ne c(u)$.
+
+\textbf{Procedure.} Let $\adj{u_1}{u_3}:=\nxt(\adj{u_1}{u_2})$.
+
+\textbf{Base case.}
+If $c(u_3)\ne 0$, then
+$u_3=w_2$ or $u_3=w_1$. Thus $C$ is a face and we are done. 
+
+\textbf{Recursive case.}
+Suppose that $c(u_3)=0$, i.e. $u_3\in\graphinto(C)$.
+Let $d\in \{1,2,3\}-\{c(u_1),c(u_2)\}$.
+Let $\ell_3:=\max_{v\in G}S(v)+1$. We'll
+walk the induced $u_3,w_3$-path $C_1-P_1$,
+where $C_1$ is the outer face of the subgraph $G_1$
+induced by $N(P_1)-V(P_2)$ in $\graphintc(C)$.
+% color each $v\in P_3$ with $c(v)\leftarrow d$,
+% mark each $v\in N(P_3)$ with $S(v)\leftarrow\ell_3$,
+% and make a recursive call on
+% each cycle induced by a subset of $V(P_3)\cup V(P_2)$ or
+% $V(P_3)\cup V(P_1)$.
+
+\textbf{Step~1.}
+Let $a:=u_2$ and $z:= u_3$; here $z$ stores the current
+vertex of $C_1-P_1$, and $a$ stores the neighbor of $z$
+clockwise from $z$ around $C_1$.
+Let $t:= u_3$ and $\adj{t}{x}:= \adj{u_3}{u_2}$;
+here $t$ and $\adj{t}{x}$ store the last edge $tx$ visited
+where $t\in P_3$ and $x\in P_2$.
+
+\textbf{Loop~2.} We'll walk counter-clockwise
+along $C_1$, coloring one vertex $z$ per iteration, until $z=w_3$.
+Color $c(z)\leftarrow d$.
+Find $\adj{z}{a}$ in $N(z)$ and let
+$\adj{z}{v}:= \nxt(\adj{z}{a})$.
+Let $b:=\text{NULL}$; here
+$b$ will store neighbor of $z$ counter-clockwise from $z$ around
+$C_1$.
+Let $\adj{z}{y}:=\text{NULL}$; here
+$\adj{z}{y}$ will store the last edge $zy$ visited
+where $y\in P_1$.
+
+\textbf{Loop~2.1.} We'll first consider the neighbors of
+$z$ between
+$\nxt_{z}(a)$ and $p_1(z)$ counter-clockwise. Each iteration
+will handle one neighbor $\adj{z}{v}$.
+We'll make a recursive call for each
+induced cycle $C'$ we discover with $V(C')\subseteq V(P_2)\cup V(P_3)$.
+
+\textbf{Case~2.1.1.} Suppose that $c(v)=0$, i.e. $v\in\graphinto(C)$.
+If $S(v)=\ell_1$ and $b=\text{NULL}$, then $v\in C_1$ and we set
+$b\leftarrow v$. Set $S(v)\leftarrow \ell_3$ and
+$\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$.
+Repeat Loop~2.1.
+
+\textbf{Case~2.1.2.} Suppose that $c(v)=c(u_2)$, i.e. $v\in P_2$.
+Make a recursive call with input $(t, \adj{t}{x}, \ell_3)$
+to color $\graphintc(C')$, where
+$C'=P_3[t,z]\cup C[v,x]\cup tx\cup zv$;
+see Figure~\ref{F:poh_linear_1} (left).
+Assign $t\leftarrow z$, $\adj{t}{x}\leftarrow \adj{z}{v}$, and
+$\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$. Repeat Loop~2.1.
+
+\textbf{Case~2.1.3.} Suppose that $c(v)=c(u_1)$, i.e. $v=p_1(z)\in P_1$.
+Assign $\adj{z}{y}\leftarrow \adj{z}{v}$ and
+$\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$. Break Loop~2.1 and move to
+Loop~2.2. Note if $b=\text{NULL}$, then $z=w_3$.
+
+\textbf{Loop~2.2.} We'll now consider the
+neighbors of $z$ between $p_1(z)$ and $a$ counter-clockwise.
+Each iteration will handle one neighbor $\adj{z}{v}$.
+We'll make a recursive call for each
+induced cycle $C'$ we discover with $V(C')\subseteq V(P_1)\cup V(P_3)$.
+Observe that $\adj{z}{y}\ne\text{NULL}$.
+
+\textbf{Case~2.2.1.} Suppose that $c(v)=0$, i.e. $v\in\graphinto(C)-P_3$.
+Assign $S(v)\leftarrow \ell_3$ and $\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$.
+Repeat Loop~2.2.
+
+\textbf{Case~2.2.2.} Suppose that $c(v)\ne 0$, i.e. $v\in C$ or
+$v\in P_3$. Make a recursive
+call with input $(z, \adj{z}{y}, \ell_3)$ to color $\graphintc(C')$;
+both the definition of $C'$ and the next steps to take depend
+on $c(v)$, see Figure~\ref{F:poh_linear_1} (middle, right).
+
+If $c(v)=c(u_1)$, i.e. $v\in P_1$, then
+$C'=C[v,y]\cup z\cup zy\cup zv$.
+Assign $\adj{z}{y}\leftarrow\adj{z}{v}$ and
+$\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$. Repeat Loop~2.2.
+
+Otherwise,
+$v=a$ and $C'=C[p_1(v),y]\cup P_3[v,z]\cup vp_1(v)\cup zy$.
+Break Loop~2.2 and proceed to Step~2.3. 
+
+\textbf{Step~2.3.} If $b\ne\text{NULL}$, then
+assign $a\leftarrow z$, $z\leftarrow b$, and
+repeat Loop~2. Otherwise, $z=w_3$ and $c$ is a path $3$-coloring of
+$\graphintc(C)$.
+\end{algorithm}
+
+\begin{figure}
+\begin{center}
+\SolidGraph
+% \begin{tikzpicture}[scale=1.6]
+%     \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
+%     \node (vp) [label=above:${p_1(z)}$] at (1.625cm, 1.25cm) {};
+%     \node (vi) [label=above:${w_1}$] at (2.5cm, 1.0cm) {};
+%     \node (vi1) [label=below:${w_2}$] at (2.5cm, 0.0cm) {};
+%     \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
+%     \node (vk) [label=below:${u_2}$] at (0.0cm, 0.0cm) {};
+%     \node (u1) [label=below right:${u_3}$] at (0.25cm, 0.5cm) {};
+%     \node (ur) [label=above:${t}$] at (0.75cm, 0.5cm) {};
+%     \node (uj1) [label=below:${f}$] at (1.25cm, 0.5cm) {};
+%     \node (uj) [label=below:${z}$] at (1.625cm, 0.5cm) {};
+%     \node (y) [label=below:${v}$] at (2.0cm, 0.4cm) {};
+
+%     \begin{pgfonlayer}{bg}
+%         \draw (v1) edge[dashed, bend left=15] (vp);
+%         \draw (vp) edge[dashed] (vi);
+%         \draw (vi) edge (vi1);
+%         \draw (vi1) edge[dashed, bend left=15] (vs);
+%         \draw (vs) edge[dashed] (vk);
+%         \draw (vk) edge (v1);
+%         \draw (v1) edge (u1);
+%         \draw (vs) edge (ur);
+%         \draw (vk) edge (u1);
+%         \draw (u1) edge[dashed] (ur);
+%         \draw (ur) edge[dashed] (uj1);
+%         \draw (uj1) edge (uj);
+%         \draw (uj) edge (y);
+%         \draw (uj) edge (vp);
+%     \end{pgfonlayer}
+% \end{tikzpicture}
+% $\quad$
+% \begin{tikzpicture}[scale=1.6]
+%     \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
+%     \node (vi) [label=above:${w_1}$] at (2.5cm, 1.0cm) {};
+%     \node (vi1) [label=below:${w_2}$] at (2.5cm, 0.0cm) {};
+%     \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
+%     \node (vk) [label=below:${u_2}$] at (0.0cm, 0.0cm) {};
+%     \node (u1) [label=below right:${u_3}$] at (0.25cm, 0.5cm) {};
+%     \node (ur) [label=above:${t}$] at (0.75cm, 0.5cm) {};
+%     \node (uj1) [label=below:${f}$] at (1.25cm, 0.5cm) {};
+%     \node (uj) [label=below:${z}$] at (1.625cm, 0.5cm) {};
+%     \node (y) [label=below:${b}$] at (2.0cm, 0.5cm) {};
+%     \node (v) [label=above:${v,p_1(z)}$] at (1.625cm, 1.25cm) {};
+
+%     \begin{pgfonlayer}{bg}
+%         \draw (v1) edge[dashed, bend left=15] (v);
+
+%         \draw (v) edge[dashed] (vi);
+%         \draw (vi) edge (vi1);
+%         \draw (vi1) edge[dashed, bend left=15] (vs);
+%         \draw (vs) edge[dashed] (vk);
+%         \draw (vk) edge (v1);
+%         \draw (v1) edge (u1);
+%         \draw (vs) edge (ur);
+%         \draw (vk) edge (u1);
+%         \draw (u1) edge[dashed] (ur);
+%         \draw (ur) edge[dashed] (uj1);
+%         \draw (uj1) edge (uj);
+%         \draw (uj) edge (y);
+%         \draw (uj) edge (v);
+%     \end{pgfonlayer}
+% \end{tikzpicture}
+% $\quad$
+\begin{tikzpicture}[scale=1.5]
     \node (v1) [label=above:${u_1}$] at (-0.25cm, 1.0cm) {};
-    \node (vp) [label=above:${p_1(v_j)}$] at (1.375cm, 1.25cm) {};
-    \node (vi) [label=above:${w_1}$] at (2.0cm, 1.0cm) {};
-    \node (vi1) [label=below:${w_2}$] at (2.0cm, 0.0cm) {};
+    \node (vp) [label=above:${p_1(z)}$] at (1.375cm, 1.25cm) {};
+    \node (vi) [label=above:${w_1}$] at (2.3cm, 1.0cm) {};
+    \node (vi1) [label=below:${w_2}$] at (2.3cm, 0.0cm) {};
     \node (vs) [label=below:${x}$] at (0.5cm, -0.15cm) {};
     \node (vt) [label=below:${v}$] at (1.375cm, -0.15cm) {};
-    \node (vk) [label=below:${u_2,v_0}$] at (-0.25cm, 0.0cm) {};
-    \node (u1) [label=below right:${v_1}$] at (0.0cm, 0.5cm) {};
-    \node (ur) [label=above:${v_i}$] at (0.5cm, 0.5cm) {};
-    \node (uj1) [label=above:${v_{j-1}}$] at (1.0cm, 0.5cm) {};
-    \node (uj) [label=above right:${v_j}$] at (1.375cm, 0.5cm) {};
+    \node (vk) [label=below:${u_2}$] at (-0.25cm, 0.0cm) {};
+    \node (u1) [label=below right:${u_3}$] at (0.0cm, 0.5cm) {};
+    \node (ur) [label=above:${t}$] at (0.5cm, 0.5cm) {};
+    \node (uj1) [label=above:${a}$] at (1.0cm, 0.5cm) {};
+    \node (uj) [label=above right:${z}$] at (1.375cm, 0.5cm) {};
+	\node (w3) [label=below left:${w_3}$] at (2.05cm, 0.5cm) {};
 
-	\node (D) [scale=1.25] [draw=none, fill=none] at (0.9375cm, 0.125cm) {$C_1$};
+	% \node (D) [scale=1.25] [draw=none, fill=none] at (0.9375cm, 0.15cm) {$C'$};
 
     \begin{pgfonlayer}{bg}
-        \draw (v1) edge[dashed, bend left=15] (vp);
+		\fill[color=gray!25] (0.0cm, 0.5cm) -- (2.05cm, 0.5cm) -- (2.3cm, 1.0cm) -- (1.375cm, 1.25cm) -- (-0.25cm, 1.0cm) -- cycle;
+        \draw (v1) edge[dashed] (vp);
         \draw (vp) edge[dashed] (vi);
         \draw (vi) edge (vi1);
         \draw (vi1) edge [dashed] (vt);
@@ -1221,40 +1227,38 @@ $\qquad$
         \draw (uj1) edge (uj);
         \draw (uj) edge (vt);
         \draw (uj) edge (vp);
+        \draw (vi) edge (w3);
+        \draw (vi1) edge (w3);
+		\draw (w3) edge[dashed] (uj);
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{Algorithm~\ref{A:poh_linear},
-the subgraph induced by $V(P_1)\cup N(P_1)-V(P_2)$ (left),
-a path $3$-coloring produced by the algorithm (middle), and a sketch of
-Case~2.1.2 (right).}\label{F:poh_linear_1}
-\end{center}
-\end{figure}
-
-\begin{figure}
-\begin{center}
-\SolidGraph
-\begin{tikzpicture}[scale=1.6]
+$\quad$
+\begin{tikzpicture}[scale=1.5]
     \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
-    \node (vi) [label=above:${w_1}$] at (2.4cm, 1.0cm) {};
-    \node (vi1) [label=below:${w_2}$] at (2.4cm, 0.0cm) {};
+    \node (vi) [label=above:${w_1}$] at (2.85cm, 1.0cm) {};
+    \node (vi1) [label=below:${w_2}$] at (2.85cm, 0.0cm) {};
     \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
-    \node (vt) [label=above:${v}$] at (1.25cm, 1.3cm) {};
+    \node (vt) [label=above:${v}$] at (1.25cm, 1.25cm) {};
     \node (vl) [label=above:${y}$] at (1.85cm, 1.2cm) {};
-    \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
-    \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
-    \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
-    \node (uj1) [label=below:${v_{j-1}}$] at (1.25cm, 0.5cm) {};
-    \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
-    \node (y) [label=below:${z}$] at (2.0cm, 0.5cm) {};
+    \node (vk) [label=below:${u_2}$] at (0.0cm, 0.0cm) {};
+    \node (u1) [label=below right:${u_3}$] at (0.25cm, 0.5cm) {};
+    \node (ur) [label=above:${t}$] at (0.75cm, 0.5cm) {};
+    \node (uj1) [label=below:${a}$] at (1.25cm, 0.5cm) {};
+    \node (uj) [label=below:${z}$] at (1.625cm, 0.5cm) {};
+    \node (y) [label=below:${b}$] at (2.0cm, 0.5cm) {};
+	\node (w3) [label=below left:${w_3}$] at (2.6cm, 0.5cm) {};
 
-	\node (D) [scale=1.25] [draw=none, fill=none] at (1.585cm, 1.04cm) {$C_1$};
+	% \node (D) [scale=1.25] [draw=none, fill=none] at (1.585cm, 1.04cm) {$C'$};
 
     \begin{pgfonlayer}{bg}
-        \draw (v1) edge[dashed, bend left=15] (vt);
+		\fill[color=gray!25] (0.25cm, 0.5cm) -- (2.6cm, 0.5cm) --
+			(2.85cm, 1.0cm) -- (1.85cm, 1.2cm) -- (1.25cm, 1.25cm) --
+			(0.0cm, 1.0cm) -- cycle;
+        \draw (v1) edge[dashed] (vt);
         \draw (vt) edge[dashed] (vl);
         \draw (vl) edge[dashed] (vi);
         \draw (vi) edge (vi1);
-        \draw (vi1) edge [dashed, bend left=15] (vs);
+        \draw (vi1) edge [dashed] (vs);
         \draw (vs) edge [dashed] (vk);
         \draw (vk) edge (v1);
         \draw (v1) edge (u1);
@@ -1266,31 +1270,38 @@ Case~2.1.2 (right).}\label{F:poh_linear_1}
         \draw (uj) edge (vt);
         \draw (uj) edge (vl);
         \draw (uj) edge (y);
+        \draw (vi) edge (w3);
+        \draw (vi1) edge (w3);
+		\draw (w3) edge[dashed] (y);
     \end{pgfonlayer}
 \end{tikzpicture}
 $\quad$
-\begin{tikzpicture}[scale=1.6]
+\begin{tikzpicture}[scale=1.5]
     \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
-    \node (vi) [label=above:${w_1}$] at (2.4cm, 1.0cm) {};
-    \node (vi1) [label=below:${w_2}$] at (2.4cm, 0.0cm) {};
+    \node (vi) [label=above:${w_1}$] at (2.85cm, 1.0cm) {};
+    \node (vi1) [label=below:${w_2}$] at (2.85cm, 0.0cm) {};
     \node (vs) [label=below:${x}$] at (0.75cm, -0.15cm) {};
     \node (vt) [label=above:${p_1(v)}$] at (1.25cm, 1.25cm) {};
     \node (vl) [label=above:${y}$] at (1.85cm, 1.2cm) {};
-    \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
-    \node (u1) [label=below right:${v_1}$] at (0.25cm, 0.5cm) {};
-    \node (ur) [label=above:${v_i}$] at (0.75cm, 0.5cm) {};
+    \node (vk) [label=below:${u_2}$] at (0.0cm, 0.0cm) {};
+    \node (u1) [label=below right:${u_3}$] at (0.25cm, 0.5cm) {};
+    \node (ur) [label=above:${t}$] at (0.75cm, 0.5cm) {};
     \node (uj1) [label=below:${v}$] at (1.25cm, 0.5cm) {};
-    \node (uj) [label=below:${v_j}$] at (1.625cm, 0.5cm) {};
-    \node (y) [label=below:${z}$] at (2.0cm, 0.5cm) {};
+    \node (uj) [label=below:${z}$] at (1.625cm, 0.5cm) {};
+    \node (y) [label=below:${b}$] at (2.0cm, 0.5cm) {};
+	\node (w3) [label=below left:${w_3}$] at (2.6cm, 0.5cm) {};
 
-	\node (D) [scale=1.25] [draw=none, fill=none] at (1.5cm, 0.915cm) {$C_1$};
+	% \node (D) [scale=1.25] [draw=none, fill=none] at (1.5cm, 0.915cm) {$C'$};
 
     \begin{pgfonlayer}{bg}
-        \draw (v1) edge[dashed, bend left=15] (vt);
+		\fill[color=gray!25] (0.25cm, 0.5cm) -- (2.6cm, 0.5cm) --
+			(2.85cm, 1.0cm) -- (1.85cm, 1.2cm) -- (1.25cm, 1.25cm) --
+			(0.0cm, 1.0cm) -- cycle;
+        \draw (v1) edge[dashed] (vt);
         \draw (vt) edge[dashed] (vl);
         \draw (vl) edge[dashed] (vi);
         \draw (vi) edge (vi1);
-        \draw (vi1) edge [dashed, bend left=15] (vs);
+        \draw (vi1) edge [dashed] (vs);
         \draw (vs) edge [dashed] (vk);
         \draw (vk) edge (v1);
         \draw (v1) edge (u1);
@@ -1302,62 +1313,75 @@ $\quad$
         \draw (uj1) edge (vt);
         \draw (uj) edge (vl);
         \draw (uj) edge (y);
+        \draw (vi) edge (w3);
+        \draw (vi1) edge (w3);
+		\draw (w3) edge[dashed] (y);
     \end{pgfonlayer}
 \end{tikzpicture}
-$\quad$
-\begin{tikzpicture}[scale=1.6]
-    \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
-    \node (vp) [label=above:${p_1(v_{j-1})}$] at (2.0cm, 1.15cm) {};
-    \node (vi) [label=above:${w_1}$] at (2.775cm, 1.0cm) {};
-    \node (vi1) [label=below:${w_2}$] at (2.775cm, 0.0cm) {};
-    \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
-    \node (u1) [label=above:${v_1}$] at (0.25cm, 0.4cm) {};
-    \node (ur) [label=above:${v_{k-1}}$] at (0.75cm, 0.4cm) {};
-    \node (uj1) [label=above:${v_k}$] at (1.125cm, 0.4cm) {};
-    \node (uj) [label=above:${v_{k+1}}$] at (1.5cm, 0.5cm) {};
-    \node (y1) [label=above right:${v_{j-1}}$] at (2.0cm, 0.5cm) {};
-    \node (y) [label=right:${v_j}$] at (2.25cm, 0.1cm) {};
-    \node (D) [draw=none, fill=none] at (1.0cm, -0.4725cm) {};
-
-    \node (D) [scale=1.25] [draw=none, fill=none] at (1.0cm, 0.925cm) {$D$};
-
-    \begin{pgfonlayer}{bg}
-        \draw (v1) edge[dashed, bend left=10] (vp);
-        \draw (vp) edge[dashed] (vi);
-        \draw (vi) edge (vi1);
-        \draw (vi1) edge[dashed, bend left=13] (vk);
-        \draw (vk) edge (v1);
-        \draw (vk) edge (u1);
-        \draw (u1) edge[dashed] (ur);
-        \draw (ur) edge (uj1);
-        \draw (uj1) edge (uj);
-        \draw (uj) edge[dashed] (y1);
-        \draw (y1) edge (y);
-        \draw (y1) edge (vp);
-        \draw (y) edge[color=red] (uj1);
-    \end{pgfonlayer}
-\end{tikzpicture}
-\caption{Algorithm~\ref{A:poh_linear}, a sketch of
-Case~2.2.2 when $v\in P_1$ (left)
-and when $v=v_{j-1}$ (middle). Also, a sketch of why $P_3$ is an
-induced path (right).}
-\label{F:poh_linear_2}
+\caption{A sketch of Algorithm~\ref{A:poh_linear} Case~2.2.1 (left),
+Case~2.2.2 when $v\in P_1$ (middle),
+and when $v=a$ (right); the highlighted region represents
+$G_1$.}\label{F:poh_linear_1}
 \end{center}
 \end{figure}
 
-We claim that the path $P_3=v_1,v_2,\ldots,v_j$ in 
-Algorithm~\ref{A:poh_linear} is always an induced subgraph of $G$.
-Suppose that $v_kv_j\in E(G)$ with $0<k<j-1$. Observe that
-\[
-    D = C[u_2,p_1(v_{j-1})]\cup P_3[v_1,v_{j-1}]\cup u_2v_1\cup 
-        v_{j-1} p_1(v_{j-1})
-\]
-is a cycle in $G$ with $v_{k-1},v_k,v_{k+1}\in D$ and
-$v_{j}\not\in\graphintc(D)$, see Figure~\ref{F:poh_linear_2} (right).
-Therefore $v_kv_j\not\in\graphintc(D)$ and
-$v_kv_j$ lies between $v_{k-1}$ and $v_{k+1}$ counter-clockwise
-in $N(v_k)$. But $v_{k+1}$ is the first neighbor
-in $N(P_1)$ counter-clockwise from $v_{k-1}$ around $v_k$, a contradiction.
+% \begin{figure}
+% \begin{center}
+% \SolidGraph
+% $\quad$
+% \begin{tikzpicture}[scale=1.6]
+%     \node (v1) [label=above:${u_1}$] at (0.0cm, 1.0cm) {};
+%     \node (vp) [label=above:${p_1(v_{j-1})}$] at (2.0cm, 1.15cm) {};
+%     \node (vi) [label=above:${w_1}$] at (2.775cm, 1.0cm) {};
+%     \node (vi1) [label=below:${w_2}$] at (2.775cm, 0.0cm) {};
+%     \node (vk) [label=below:${u_2,v_0}$] at (0.0cm, 0.0cm) {};
+%     \node (u1) [label=above:${v_1}$] at (0.25cm, 0.4cm) {};
+%     \node (ur) [label=above:${v_{k-1}}$] at (0.75cm, 0.4cm) {};
+%     \node (uj1) [label=above:${v_k}$] at (1.125cm, 0.4cm) {};
+%     \node (uj) [label=above:${v_{k+1}}$] at (1.5cm, 0.5cm) {};
+%     \node (y1) [label=above right:${v_{j-1}}$] at (2.0cm, 0.5cm) {};
+%     \node (y) [label=right:${v_j}$] at (2.25cm, 0.1cm) {};
+%     \node (D) [draw=none, fill=none] at (1.0cm, -0.4725cm) {};
+
+%     \node (D) [scale=1.25] [draw=none, fill=none] at (1.0cm, 0.925cm) {$D$};
+
+%     \begin{pgfonlayer}{bg}
+%         \draw (v1) edge[dashed, bend left=10] (vp);
+%         \draw (vp) edge[dashed] (vi);
+%         \draw (vi) edge (vi1);
+%         \draw (vi1) edge[dashed, bend left=13] (vk);
+%         \draw (vk) edge (v1);
+%         \draw (vk) edge (u1);
+%         \draw (u1) edge[dashed] (ur);
+%         \draw (ur) edge (uj1);
+%         \draw (uj1) edge (uj);
+%         \draw (uj) edge[dashed] (y1);
+%         \draw (y1) edge (y);
+%         \draw (y1) edge (vp);
+%         \draw (y) edge[color=red] (uj1);
+%     \end{pgfonlayer}
+% \end{tikzpicture}
+% \caption{A sketch of Algorithm~\ref{A:poh_linear}
+% Case~2.2.2 when $v\in P_1$ (left)
+% and when $v=v_{j-1}$ (middle). Also, a sketch of why $P_3$ is an
+% induced path (right).}
+% \label{F:poh_linear_2}
+% \end{center}
+% \end{figure}
+
+% We claim that the path $P_3=v_1,v_2,\ldots,v_j$ in 
+% Algorithm~\ref{A:poh_linear} is always an induced subgraph of $G$.
+% Suppose that $v_kv_j\in E(G)$ with $0<k<j-1$. Observe that
+% \[
+%     D = C[u_2,p_1(v_{j-1})]\cup P_3[v_1,v_{j-1}]\cup u_2v_1\cup 
+%         v_{j-1} p_1(v_{j-1})
+% \]
+% is a cycle in $G$ with $v_{k-1},v_k,v_{k+1}\in D$ and
+% $v_{j}\not\in\graphintc(D)$, see Figure~\ref{F:poh_linear_2} (right).
+% Therefore $v_kv_j\not\in\graphintc(D)$ and
+% $v_kv_j$ lies between $v_{k-1}$ and $v_{k+1}$ counter-clockwise
+% in $N(v_k)$. But $v_{k+1}$ is the first neighbor
+% in $N(P_1)$ counter-clockwise from $v_{k-1}$ around $v_k$, a contradiction.
 
 Given a triangulated plane graph $G$ represented via adjacency lists,
 we can apply
@@ -1412,6 +1436,43 @@ component of $G-P$, using the list assignment $L'$ defined by
 $L'(v)=L(v)-\{d\}$ if $v\in N(P)$, $L'(v)=L(v)$ if
 $v\not\in N(P)$. See Figure~\ref{F:hartman_overview}
 for an example.
+
+In Lemma~\ref{L:hartman3} below, we provide a different proof of Hartman's
+result, organized in such a way that it immediately
+describes a linear time algorithm for graphs
+represented as in Section~\ref{S:representation}.
+If $x=z$, then our $G,x,y$ match
+those in Hartman's \cite[Lemma~4.2]{Har1997}, but we assume
+that $G$ is biconnected;
+we follow a similar iterative procedure to color a path
+$P$ clockwise from $x$ along $C$, but we consider
+one edge at a time, and simultaneously remove
+$P$ as it is colored. If $x\ne z$, then $z$ is
+the farthest clockwise end of the path $P$ being colored;
+the rest of $P$ has already been removed
+(our $x$ is now Hartman's $x'$).
+
+For those familiar with Hartman's proof: the one major difference between
+our algorithm and Hartman's
+occurs in Case~3.2.3.2 of the proof of Lemma~\ref{L:hartman3} below.
+If we encounter a chord edge $zv\in E(G)-E(C)$
+($z$ is the current end of $P$) with
+$v\in C[z,y]$ and $L(z)\cap L(v)=\emptyset$ (i.e. $d\not\in L(v)$,
+where $d$ is the color of $P$),
+then instead of continuing to
+search for neighbors of $z$ in $C[z,v]$ that we might add
+to $P$, we
+apply the inductive hypothesis such that $z$ now serves as
+``$y$'' (see Figure~\ref{F:hartman_3_2_3} for a general illustration
+of this case).
+The edge from the vertex labeled $*$ to $y$ in
+Figure~\ref{F:hartman_overview}
+is an example of such a chord: our algorithm halts
+$P$ at $*$, divides the remaining subgraph along the chord,
+and considers separately the left and right halves, with $*$
+serving as
+``$y$'' on the right, see Figure~\ref{F:hartman_difference}.
+
 
 \begin{figure}
 \begin{center}
@@ -1485,21 +1546,6 @@ for an example.
 \cite[Lemma~4.2]{Har1997}.}\label{F:hartman_overview}
 \end{center}
 \end{figure}
-
-In Lemma~\ref{L:hartman3} below, we provide a different proof of Hartman's
-result, organized in such a way that it immediately
-describes a linear time algorithm for graphs
-represented as in Section~\ref{S:representation}.
-If $x=z$, then our $G,x,y$ match
-those in Hartman's \cite[Lemma~4.2]{Har1997}, but we assume
-that $G$ is biconnected;
-we follow a similar iterative procedure to color a path
-$P$ clockwise from $x$ along $C$, but we consider
-one edge at a time, and simultaneously remove
-$P$ as it is colored. If $x\ne z$, then $z$ is
-the farthest clockwise end of the path $P$ being colored;
-the rest of $P$ has already been removed
-(our $x$ is now Hartman's $x'$).
 
 \begin{figure}
 \begin{center}
@@ -1584,27 +1630,6 @@ Lemma~\ref{L:hartman3} (Algorithm~\ref{A:hartman_impl}).}
 \label{F:hartman_difference}
 \end{center}
 \end{figure}
-
-For those familiar with Hartman's proof: the one major difference between
-our algorithm and Hartman's
-occurs in Case~3.2.3.2 of the proof of Lemma~\ref{L:hartman3} below.
-If we encounter a chord edge $zv\in E(G)-E(C)$
-($z$ is the current end of $P$) with
-$v\in C[z,y]$ and $L(z)\cap L(v)=\emptyset$ (i.e. $d\not\in L(v)$,
-where $d$ is the color of $P$),
-then instead of continuing to
-search for neighbors of $z$ in $C[z,v]$ that we might add
-to $P$, we
-apply the inductive hypothesis such that $z$ now serves as
-``$y$'' (see Figure~\ref{F:hartman_3_2_3} for a general illustration
-of this case).
-The edge from the vertex labeled $*$ to $y$ in
-Figure~\ref{F:hartman_overview}
-is an example of such a chord: our algorithm halts
-$P$ at $*$, divides the remaining subgraph along the chord,
-and considers separately the left and right halves, with $*$
-serving as
-``$y$'' on the right, see Figure~\ref{F:hartman_difference}.
 
 Given a coloring $c$ of a graph $G$, and $v\in G$, we define
 $\text{deg}_c(v)$
@@ -2072,12 +2097,12 @@ or three, and for $v\in \graphinto(C)$ each list
 $L(v)$ has length three. Furthermore, for each $v\in C[x,z] - z$ assume
 that $L(v)$ does not contain the color in $L(z)$.
 
-Let $B,F$ be length $n$ arrays such that for each $v\in C$ we have
-$B(v)=\adj{v}{b}$ and $F(v)=\adj{v}{f}$, where
+Let $A,B$ be length $n$ arrays such that for each $v\in C$ we have
+$A(v)=\adj{v}{a}$ and $B(v)=\adj{v}{b}$, where
+$a$ is the vertex
+immediately clockwise from $v$ around $C$, and
 $b$ is the vertex immediately counter clockwise
-from $v$ around $C$,
-and $f$ is the vertex
-immediately clockwise from $v$ around $C$.
+from $v$ around $C$.
 
 Let $S$ be a length $n$ integer array such
 that, for $v\in\graphintc(C)$, $S(v)\ne 0$ if and only if $v\in C$, and
@@ -2094,7 +2119,7 @@ be a length $2m+2$ integer array such that if $v\in C$,
 then $M(S(v))=S(y)$ if and only if $v\in C[z,y]$.
 
 The concrete input will be $G$, $L$,
-$B$, $F$, $S$, $M$, and the tuple $(x,y,z)$.
+$A$, $B$, $S$, $M$, and the tuple $(x,y,z)$.
 
 \textbf{Output.} For each $v\in\graphintc(C)$, all but one color will be
 removed from the list $L(v)$. The remaining color in each list will represent
@@ -2107,17 +2132,16 @@ afterwards $\text{max}(S)\le\ell+2(m_C-1)$.
 \textbf{Procedure.} Let $\adj{z}{u_1}:= B(z)$. Our strategy
 will follow the proof of Lemma~\ref{L:hartman3}.
 
-\textbf{Base case.} If $B(z)=F(z)$, then $C=z,u_1$
+\textbf{Base case.} If $A(z)=B(z)$, then $C=z,u_1$
 is a length $1$ path. If $u_1\ne x$ and $u_1\ne y$, remove the
 color in $L(z)$ from $L(u_1)$, if it exists, then remove further colors
 until one color remains. Note that
 $m_C=1$ and $\text{max}(S)\le\ell+ 2(m_C-1)=\ell$ by definition.
 
-\textbf{Recursive case.} Suppose that $B(z)\ne F(z)$.
-Note that $n(C)>2$ and therefore $C$ is a cycle. Let
-$\adj{z}{u_2}:=\nxt(\adj{z}{u_1})$. It follows immediately
+\textbf{Recursive case.} Suppose that $A(z)\ne B(z)$.
+Let $\adj{z}{u_2}:=\nxt(\adj{z}{u_1})$. It follows immediately
 that $\text{max}(S)\le\ell+2(m_C-1)$ after Cases~1, 2,
-and 3.1, so we will only argue that this bound is satisfied after Case~3.2.
+and 3.1, so we will only argue this bound after Case~3.2.
 It may be useful to refer to
 Figures~\ref{F:hartman_1}, \ref{F:hartman_3_2}, and
 \ref{F:hartman_3_2_3}.
@@ -2136,7 +2160,7 @@ and $M(S(u_1))\leftarrow S(u_1)$,
 and make a recursive call with input $(u_1, y, z)$.
 
 \textbf{Case~3.} Suppose that $z\ne x$ and $u_1\ne y$.
-Remove $zu_1$ by assigning $F(u_1)\leftarrow\prv(\adj{u_1}{z})$
+Remove $zu_1$ by assigning $A(u_1)\leftarrow\prv(\adj{u_1}{z})$
 and $B(z)\leftarrow\nxt(\adj{z}{u_1})$;
 refer
 to Figure~\ref{F:hartman_1} (right),
@@ -2145,7 +2169,7 @@ Figure~\ref{F:hartman_3_2}, and Figure~\ref{F:hartman_3_2_3}.
 \textbf{Case~3.1.} Suppose that $S(u_2)=0$, that is $u_2\in
 \graphinto(C)$. Assign $S(u_2)\leftarrow S(x)$ and initialize
 $B(u_2)\leftarrow\adj{u_2}{u_1}=\nxt(\adj{u_2}{z})$ and
-$F(u_2)\leftarrow\adj{u_2}{z}$;
+$A(u_2)\leftarrow\adj{u_2}{z}$;
 refer to Figure~\ref{F:hartman_1} (right).
 Remove the color in $L(z)$ from
 $L(u_2)$.
@@ -2157,7 +2181,7 @@ the two blocks $G_1$ and $G_2$ of $\graphintc(C)-zu_1$.
 Note that $m_C-1=m(G_1)+m(G_2)$.
 
 As we've already removed the edge $zu_1$ by
-adjusting $B(z)$ and $F(u_1)$, it remains
+adjusting $B(z)$ and $A(u_1)$, it remains
 to ``split'' the
 neighborhood of $u_2$ at the edge $\adj{u_2}{z}$ such that the recursive
 call on $G_1$ considers only the neighbors of $u_2$ counter-clockwise
@@ -2167,13 +2191,14 @@ refer
 to Figure~\ref{F:hartman_3_2} and
 Figure~\ref{F:hartman_3_2_3}.
 
-Let $\adj{u_2}{b}:= B(u_2)$ and
-$\adj{u_2}{f}:= F(u_2)$.
-To represent $G_1$, assign $B(u_2)\leftarrow\nxt(\adj{u_2}{z})$
-and $F(u_2)\leftarrow\adj{u_2}{f}$.
+Let $\adj{u_2}{a}:= A(u_2)$ and $\adj{u_2}{b}:= B(u_2)$.
+To represent $G_1$, assign 
+$A(u_2)\leftarrow\adj{u_2}{a}$ and
+$B(u_2)\leftarrow\nxt(\adj{u_2}{z})$.
 To represent $G_2$,
-assign $B(u_2)\leftarrow\adj{u_2}{b}$
-and $F(u_2)\leftarrow\adj{u_2}{z}$.
+assign
+$F(u_2)\leftarrow\adj{u_2}{z}$ and
+$B(u_2)\leftarrow\adj{u_2}{b}$
 
 \textbf{Case~3.2.1.} Suppose that $S(u_2)=S(x)$, i.e. $u_2\in C[x,z]$. Make a
 recursive call on $G_2$ with input $(x, y, z)$;
@@ -2967,8 +2992,8 @@ lists. Let $L$ be a length $n$ array of color lists of length $3$,
 representing a list assignment of $G$. We may path $L$-color $G$ using
 Algorithm~\ref{A:hartman_impl} as follows.
 
-Create length $n$ arrays $B,F$ and initialize $B(v)$
-and $F(v)$ for each $v\in C$ on the outer face of $G$.
+Create length $n$ arrays $A,B$ and initialize $A(v)$ and $B(v)$
+for each $v\in C$ on the outer face of $G$.
 Create a length $n$ integer array
 $S$ and initialize $S(v)\leftarrow 1$ for each $v\in C$ and
 $S(v)\leftarrow 0$ for each $v\in G-C$. Pick any $u\in C$,
@@ -2986,7 +3011,7 @@ Case~1 makes a recursive call
 with an input that satisfies Case~2. Case~2 makes a recursive
 call with an input that satisfies Case~3.
 Therefore the total number of recursive calls made, and thus the
-overall time complexity, is
+overall time complexity,
 is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl} and
 \ref{F:hartman_impl_cont} for a concrete example.
 
@@ -3160,35 +3185,6 @@ $\quad$
 \end{center}
 \end{figure}
 
-Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl} perform
-recursive calls that operate on
-subgraphs that are disjoint apart from select vertices on their
-respective outer faces. Therefore it is possible to maintain a
-stack of
-independent recursive frames and have a pool of threads execute frames
-concurrently. The amount of parallelism possible with this method is highly
-dependent on the structure of the graph. E.g. when
-Algorithm~\ref{A:poh_linear} is run on a pyramid
-graph from Figure~\ref{F:pyramid} there will never be more
-than one frame on the stack.
-
-Our parallel implementation of Algorithm~\ref{A:poh_linear} maintains a
-shared lock-guarded stack from which all threads push and pop recursive
-frames. If no frames are
-available, a thread must idle until either a new frame is pushed to the
-stack by another thread or
-all threads are idle.
-To reduce lock contention, each thread may also
-maintain a
-small local stack of frames, and only access the shared
-stack when this local stack is full or empty.
-For the implementation and hardware
-used for benchmarks, the most optimal setup proved to be a
-local stack of $16$ frames for each thread: if a local stack filled up,
-$8$ frames were pushed to the
-shared stack; if a local stack emptied, $8$ frames were popped from the
-shared stack.
-
 \begin{figure}
 \begin{center}
 \begin{tabular}{r||l|l|l|l|l}
@@ -3221,6 +3217,35 @@ per graph (sample size $100$).}
     \label{F:benchmark_poh_thread}
 \end{center}
 \end{figure}
+
+Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl} perform
+recursive calls that operate on
+subgraphs that are disjoint apart from select vertices on their
+respective outer faces. Therefore it is possible to maintain a
+stack of
+independent recursive frames and have a pool of threads execute frames
+concurrently. The amount of parallelism possible with this method is highly
+dependent on the structure of the graph. E.g. when
+Algorithm~\ref{A:poh_linear} is run on a pyramid
+graph from Figure~\ref{F:pyramid} there will never be more
+than one frame on the stack.
+
+Our parallel implementation of Algorithm~\ref{A:poh_linear} maintains a
+shared lock-guarded stack from which all threads push and pop recursive
+frames. If no frames are
+available, a thread must idle until either a new frame is pushed to the
+stack by another thread or
+all threads are idle.
+To reduce lock contention, each thread may also
+maintain a
+small local stack of frames, and only access the shared
+stack when this local stack is full or empty.
+% For the implementation and hardware
+% used for benchmarks, the most optimal setup proved to be a
+% local stack of $16$ frames for each thread: if a local stack filled up,
+% $8$ frames were pushed to the
+% shared stack; if a local stack emptied, $8$ frames were popped from the
+% shared stack.
 
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
 parallel execution.

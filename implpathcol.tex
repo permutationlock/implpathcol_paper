@@ -1258,10 +1258,10 @@ induced path $P$ is colored with $d\in L(x)$,
 proceeding from $x$ towards $y$ along $C[x,y]$,
 such that for each $v\in P$, $d\in L(v)$. Starting from
 $P=x$, the path is colored iteratively
-as follows: let $z$ be the end of $P$ opposite $x$, and
-define $T=\{v\in N(z)\cap C[z,y]:d\in L(v)\}$; if $T\ne\emptyset$,
-then the farthest clockwise $v\in T$
-is colored and added to $P$, and the process is repeated.
+as follows: let $z$ be end of $P$ far from $x$, and
+define $T_{z}=\{v\in N(z)\cap C[z,y]:d\in L(v)\}$; if $T_{z}\ne\emptyset$,
+the $v\in T_{z}$ farthest clockwise along $C$
+is colored and added to $P$, then the process is repeated.
 After completing $P$, the algorithm is applied to each connected
 component of $G-P$, using the list assignment $L'$ defined by
 $L'(v)=L(v)-\{d\}$ if $v\in N(P)$, $L'(v)=L(v)$ if

@@ -844,22 +844,24 @@ on which Algorithm~\ref{A:poh_bfs} performs poorly.}\label{F:pyramid}
 \end{figure}
 
 Let $G$, $C$, $P_1$, and $P_2$ be as in Algorithm~\ref{A:poh_bfs},
-but assume $C$ is induced.
+but assume $C$ is induced in $G$.
 For a subgraph $H$ of $G$, let $N(H)$ be the set of
 vertices in $G$ that are in $H$ or have a neighbor in $H$.
 Le $G_1$ be the subgraph of $\graphintc(C)$ induced by
 $N(P_1)-V(P_2)$, see Figure~\ref{F:poh_linear_0}. Let $C_1$
 be the outer face of $G_1$.
-Algorithm~\ref{A:poh_linear} describes a linear time modification of
-Poh's algorithm where the $u_3,w_3$-path $P_3$
-is chosen to be $C_1-P_1$; to see that $P_3$
-is induced, note each $v\in P_3$ has a neighbor in $P_1$.
-To find $P_3$ we may simply walk counter-clockwise from
+Algorithm~\ref{A:poh_linear} describes a linear time version of
+Poh's algorithm where the $u_3,w_3$-path is $P_3=C_1-P_1$.
+Observe that $P_3$ is induced in $G$: $G_1$ is induced, so there is no chord of
+$P_3$ exterior to $C_1$,
+and each $v\in P_3$ has a neighbor in $P_1$, so there is no chord of $P_3$
+interior to $C_1$.
+To find $P_3$, we walk counter-clockwise from
 $u_3$ along $C_1$.
 
 Define
 $p_1:N(P_1)\to V(P_1)$ to be the map sending each $v\in N(P_1)$ to its
-farthest clockwise neighbor  along $P_1$,
+farthest clockwise neighbor along $P_1$,
 i.e. $V(C[p_1(v),w_1])\cap N(v)=\{p_1(v)\}$.
 
 \begin{figure}
@@ -965,7 +967,7 @@ $\qquad$
 \caption{
 A Poh example highlighting the subgraph $G_1$
 induced by $N(P_1)-V(P_2)$ (left),
-and the path $3$-coloring output from Poh's algorithm when choosing
+and the path $3$-coloring from the version of Poh's algorithm using
 $P_3=C_1-P_1$ (right).}\label{F:poh_linear_0}
 \end{center}
 \end{figure}
@@ -1005,14 +1007,14 @@ $u_3=w_2$ or $u_3=w_1$. Thus $C$ is a face and we are done.
 Suppose that $c(u_3)=0$, i.e. $u_3\in\graphinto(C)$.
 Let $d\in \{1,2,3\}-\{c(u_1),c(u_2)\}$.
 Let $\ell_3:=\max_{v\in G}S(v)+1$. We'll
-walk the induced $u_3,w_3$-path $C_1-P_1$,
+walk the induced $u_3,w_3$-path $P_3=C_1-P_1$,
 where $C_1$ is the outer face of the subgraph $G_1$
 induced by $N(P_1)-V(P_2)$ in $\graphintc(C)$.
 
 \textbf{Step~1.}
 Let $a:=u_2$ and $z:= u_3$; here $z$ stores the current
-vertex of $C_1-P_1$, and $a$ stores the neighbor of $z$
-clockwise from $z$ along $C_1$.
+vertex of $P_3$, and $a$ stores the neighbor of $z$
+clockwise from $z$ around $C_1$.
 Let $t:= u_3$ and $\adj{t}{x}:= \adj{u_3}{u_2}$;
 here $t$ and $\adj{t}{x}$ store the last edge $tx$ visited
 where $t\in P_3$ and $x\in P_2$.
@@ -1024,7 +1026,7 @@ Color $c(z)\leftarrow d$.
 Find $\adj{z}{a}$ in $N(z)$ and let
 $\adj{z}{v}:= \nxt(\adj{z}{a})$.
 Let $b:=\text{NULL}$; here
-$b$ will store neighbor of $z$ counter-clockwise from $z$ along
+$b$ will store neighbor of $z$ counter-clockwise from $z$ around
 $C_1$.
 Let $\adj{z}{y}:=\text{NULL}$; here
 $\adj{z}{y}$ will store the last edge $zy$ visited
@@ -1334,7 +1336,7 @@ see Figure~\ref{F:hartman_difference}.
         \draw (v3) edge (v8);
         \draw (v3) edge[very thick,double] (v6);
         \draw (v4) edge (v6);
-        \draw (v6) edge (v8);
+        \draw (v3) edge (v7);
         \draw (u) edge (v2);
         \draw (u) edge (v10);
         \draw (u) edge (v9);
@@ -1496,7 +1498,7 @@ $c(v)\in L(v)-\{c(y)\}$.
 We proceed by induction on $m$, the number of edges. Let
 $u_1,u_2,\ldots,u_k$ label the neighbors of $z$ in counter-clockwise
 order such that $u_1$ is the vertex immediately counter-clockwise
-from $z$ along $C$, and $u_k$ is the vertex clockwise from $z$ along $C$.
+from $z$ around $C$, and $u_k$ is the vertex clockwise from $z$ around $C$.
 In each of the subsequent cases we will apply the lemma separately
 to one or two subgraphs $G_1,G_2$ of $G$, with corresponding labeled
 outer face vertices $x_i,y_i,z_i\in G_i$ for $i=1,2$.
@@ -1929,9 +1931,9 @@ that $L(v)$ does not contain the color in $L(z)$.
 Let $A,B$ be length $n$ arrays such that for each $v\in C$ we have
 $A(v)=\adj{v}{a}$ and $B(v)=\adj{v}{b}$, where
 $a$ is the vertex
-immediately clockwise from $v$ along $C$, and
+immediately clockwise from $v$ around $C$, and
 $b$ is the vertex immediately counter clockwise
-from $v$ along $C$.
+from $v$ around $C$.
 
 Let $S$ be a length $n$ integer array such
 that, for $v\in\graphintc(C)$, $S(v)\ne 0$ if and only if $v\in C$, and
@@ -1970,7 +1972,7 @@ $m_C=1$ and $\text{max}(S)\le\ell+ 2(m_C-1)=\ell$ by definition.
 \textbf{Recursive case.} Suppose that $A(z)\ne B(z)$.
 Let $\adj{z}{u_2}:=\nxt(\adj{z}{u_1})$. It follows immediately
 that $\text{max}(S)\le\ell+2(m_C-1)$ after Cases~1, 2,
-and 3.1, so we will only argue this bound after Case~3.2.
+and 3.1, so we will only argue that this bound holds after Case~3.2.
 It may be useful to refer to
 Figures~\ref{F:hartman_1}, \ref{F:hartman_3_2}, and
 \ref{F:hartman_3_2_3}.
@@ -2743,7 +2745,7 @@ assign $S(u)\leftarrow 2$, and remove all but one color from $L(u)$.
 Create a length $2m+2$ array of integers $M$ and initialize
 $M(i)\leftarrow i$ for each $i\in\{0,1,2\}$.
 Finally, apply Algorithm~\ref{A:hartman_impl} with the input $G$, $L$,
-$B$, $F$, $S$, $M$, and $(u, u, u)$. The remaining color in each
+$A$, $B$, $S$, $M$, and $(u, u, u)$. The remaining color in each
 list in $L$ will represent a path $L$-coloring of $G$.
 
 Each case in Algorithm~\ref{A:hartman_impl} performs a fixed number

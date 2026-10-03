@@ -3038,7 +3038,7 @@ of frames and a stack of references to frames in the pool.
 Recursive frames are added to
 the pool when they appear in the usual course of the algorithm, but
 are only pushed to the stack if they are ready to execute.
-For each vertex $v\in G$, store an optional reference
+For each vertex $v\in G$, we store an optional reference
 to a frame that will become ready when $v$ has been colored, i.e. has had
 its color list reduced to length $1$. To allow for
 multiple frames to await the coloring of one vertex, each frame in the

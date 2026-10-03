@@ -922,7 +922,7 @@ $u_3=w_2$ or $u_3=w_1$. Thus $C$ is a face and we are done.
 Suppose that $c(u_3)=0$, i.e. $u_3\in\graphinto(C)$.
 Let $d\in \{1,2,3\}-\{c(u_1),c(u_2)\}$.
 Let $\ell_3:=\max_{v\in G}S(v)+1$. We will
-locate the induced $u_3,w_3$-path $P_3=v_1,v_2,\ldots, v_j$
+locate the induced $u_3,w_3$-path $P_3$
 with $V(P_3)\subseteq N(P_1)$
 such that
 $\graphintc(P_1\cup P_3\cup u_1u_3\cup w_1w_3)$
@@ -931,13 +931,13 @@ see Figure~\ref{F:poh_linear_1} (left).
 We'll color each $v\in P_3$ with $c(v)\leftarrow d$, and
 mark each $v\in N(P_3)- V(C)$
 with $S(v)\leftarrow\ell_3$.
-We'll also make recursive calls to color $\graphinto(C)-P_3$.
-It may be useful
-to refer to Figures~\ref{F:poh_linear_1} and \ref{F:poh_linear_2}.
+In addition, to color $\graphinto(C)-P_3$, we'll make a recursive call on
+each cycle induced by a subset of $V(P_3)\cup V(P_2)$ or
+$V(P_3)\cup V(P_1)$.
 
 \textbf{Step~1.}
 Let $j:= 1$ and $v_j:= u_3$; here $j,v_j$ store
-the end of the path $P_3$ that we've constructed so far.
+the end of the path $P_3=v_1,v_2,\ldots,v_j$ as it is colored.
 Let $v_0:= u_2$ so that $v_{j-1}$ is defined for $j=1$.
 Let $i:= 1$ and $\adj{v_i}{x}:= \adj{v_i}{u_2}$;
 here $i,\adj{v_i}{x}$ store the last edge $v_ix$ that was visited

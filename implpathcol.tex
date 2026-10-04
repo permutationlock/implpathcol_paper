@@ -850,8 +850,8 @@ vertices in $G$ that are in $H$ or have a neighbor in $H$.
 Le $G_1$ be the subgraph of $\graphintc(C)$ induced by
 $N(P_1)-V(P_2)$, see Figure~\ref{F:poh_linear_0}. Let $C_1$
 be the outer face of $G_1$.
-Algorithm~\ref{A:poh_linear} describes a linear time version of
-Poh's algorithm where the $u_3,w_3$-path is $P_3=C_1-P_1$.
+Algorithm~\ref{A:poh_linear} modifies Poh's algorithm to run in linear time
+by using $P_3=C_1-P_1$ as the $u_3,w_3$-path.
 Observe that $P_3$ is induced in $G$: $G_1$ is induced, so there is no chord of
 $P_3$ exterior to $C_1$,
 and each $v\in P_3$ has a neighbor in $P_1$, so there is no chord of $P_3$
@@ -883,7 +883,7 @@ i.e. $V(C[p_1(v),w_1])\cap N(v)=\{p_1(v)\}$.
         \node (v12) at (0.8cm, -1.25cm) {};
 
         \begin{pgfonlayer}{bg}
-				\fill[color=gray!35] (-1.875cm, 1.5cm) -- (0.75cm, 1.65cm) -- (1.875cm, 1.5cm) -- (1.1cm, 0.75) -- (-0.82cm, 0.056cm) -- (-1.25cm, -0.86cm) -- cycle;
+				\fill[color=gray!25] (-1.875cm, 1.5cm) -- (0.75cm, 1.65cm) -- (1.875cm, 1.5cm) -- (1.1cm, 0.75) -- (-0.82cm, 0.056cm) -- (-1.25cm, -0.86cm) -- cycle;
                 \draw (v0) edge [double,very thick] (v11);
                 \draw (v6) edge (v8);
                 \draw (v6) edge (v7);
@@ -967,8 +967,8 @@ $\qquad$
 \caption{
 A Poh example highlighting the subgraph $G_1$
 induced by $N(P_1)-V(P_2)$ (left),
-and the path $3$-coloring from the version of Poh's algorithm using
-$P_3=C_1-P_1$ (right).}\label{F:poh_linear_0}
+and the path $3$-coloring output from Poh's algorithm when
+coloring $P_3=C_1-P_1$ (right).}\label{F:poh_linear_0}
 \end{center}
 \end{figure}
 
@@ -998,6 +998,8 @@ Moreover, if $v\in \graphinto(C)$ has a neighbor $u\in C$,
 then $c(v)\ne c(u)$.
 
 \textbf{Procedure.} Let $\adj{u_1}{u_3}:=\nxt(\adj{u_1}{u_2})$.
+It may be useful to refer to Figures~\ref{F:poh_linear_0}
+and \ref{F:poh_linear_1}.
 
 \textbf{Base case.}
 If $c(u_3)\ne 0$, then
@@ -1009,25 +1011,27 @@ Let $d\in \{1,2,3\}-\{c(u_1),c(u_2)\}$.
 Let $\ell_3:=\max_{v\in G}S(v)+1$. We'll
 walk the induced $u_3,w_3$-path $P_3=C_1-P_1$,
 where $C_1$ is the outer face of the subgraph $G_1$
-induced by $N(P_1)-V(P_2)$ in $\graphintc(C)$.
+of $\graphintc(C)$
+induced by $N(P_1)-V(P_2)$.
 
 \textbf{Step~1.}
-Let $a:=u_2$ and $z:= u_3$; here $z$ stores the current
+Let $a:=u_1$ and $z:= u_3$; here $z$ stores the current
 vertex of $P_3$, and $a$ stores the neighbor of $z$
 clockwise from $z$ around $C_1$.
-Let $t:= u_3$ and $\adj{t}{x}:= \adj{u_3}{u_2}$;
+Let $t:=\text{NULL}$ and $\adj{t}{x}:=\text{NULL}$;
 here $t$ and $\adj{t}{x}$ store the last edge $tx$ visited
-where $t\in P_3$ and $x\in P_2$.
+where $t\in P_3$ and $x\in P_2$
+(the first such edge is $u_3u_2$).
 
 \textbf{Loop~2.} We'll walk counter-clockwise
-along $C_1$, coloring one vertex $z$ per iteration, halting
-after $z=w_3$.
+along $C_1$, coloring one vertex $z$ per iteration, and
+halting after $z=w_3$.
 Color $c(z)\leftarrow d$.
 Find $\adj{z}{a}$ in $N(z)$ and let
 $\adj{z}{v}:= \nxt(\adj{z}{a})$.
 Let $b:=\text{NULL}$; here
-$b$ will store neighbor of $z$ counter-clockwise from $z$ around
-$C_1$.
+$b$ will store neighbor of $z$ in $P_1$ that is
+counter-clockwise from $z$ around $C_1$, if it exists.
 Let $\adj{z}{y}:=\text{NULL}$; here
 $\adj{z}{y}$ will store the last edge $zy$ visited
 where $y\in P_1$.
@@ -1040,23 +1044,23 @@ We'll make a recursive call for each
 induced cycle $C'$ we discover with $V(C')\subseteq V(P_2)\cup V(P_3)$.
 
 \textbf{Case~2.1.1.} Suppose that $c(v)=0$, i.e. $v\in\graphinto(C)$.
-If $S(v)=\ell_1$ and $b=\text{NULL}$, then $v\in C_1$ and we set
+If $S(v)=\ell_1$ and $b=\text{NULL}$, then $v\in C_1-P_1$ and we set
 $b\leftarrow v$. Set $S(v)\leftarrow \ell_3$ and
 $\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$.
 Repeat Loop~2.1.
 
 \textbf{Case~2.1.2.} Suppose that $c(v)=c(u_2)$, i.e. $v\in P_2$.
-Make a recursive call with input $(t, \adj{t}{x}, \ell_3)$
+If $t\ne\text{NULL}$, make a recursive call with input $(t, \adj{t}{x}, \ell_3)$
 to color $\graphintc(C')$, where
 $C'=P_3[t,z]\cup C[v,x]\cup tx\cup zv$;
-see Figure~\ref{F:poh_linear_1} (left).
-Assign $t\leftarrow z$, $\adj{t}{x}\leftarrow \adj{z}{v}$, and
+refer to Figure~\ref{F:poh_linear_1} (left).
+Set $t\leftarrow z$, $\adj{t}{x}\leftarrow \adj{z}{v}$, and
 $\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$. Repeat Loop~2.1.
 
 \textbf{Case~2.1.3.} Suppose that $c(v)=c(u_1)$, i.e. $v=p_1(z)\in P_1$.
-Assign $\adj{z}{y}\leftarrow \adj{z}{v}$ and
-$\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$. Break Loop~2.1 and move to
-Loop~2.2. Note if $b=\text{NULL}$, then $z=w_3$.
+Break Loop~2.1. If $v=a$, skip to Step~2.3. Otherwise, set
+$\adj{z}{y}\leftarrow \adj{z}{v}$, $\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$,
+and proceed to Loop~2.2.
 
 \textbf{Loop~2.2.} We'll now consider the
 neighbors of $z$ from $\nxt_{z}(p_1(z))$ to $a$ counter-clockwise.
@@ -1069,20 +1073,21 @@ Observe that $\adj{z}{y}\ne\text{NULL}$.
 Assign $S(v)\leftarrow \ell_3$ and $\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$.
 Repeat Loop~2.2.
 
-\textbf{Case~2.2.2.} Suppose that $c(v)\ne 0$, i.e. $v\in C$ or
-$v\in P_3$. Make a recursive
-call with input $(z, \adj{z}{y}, \ell_3)$ to color $\graphintc(C')$;
-both the definition of $C'$ and the next steps to take depend
-on $c(v)$, see Figure~\ref{F:poh_linear_1} (middle, right).
+\textbf{Case~2.2.2.} Suppose that $c(v)\ne 0$ and $v\ne a$,
+i.e. $v\in P_1$. Make a recursive
+call with input $(z, \adj{z}{y}, \ell_3)$ to color $\graphintc(C')$,
+where $C'=C[v,y]\cup z\cup zy\cup zv$;
+see Figure~\ref{F:poh_linear_1} (middle).
+Set $\adj{z}{y}\leftarrow\adj{z}{v}$ and
+$\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$, then
+repeat Loop~2.2.
 
-If $c(v)=c(u_1)$, i.e. $v\in P_1$, then
-$C'=C[v,y]\cup z\cup zy\cup zv$.
-Assign $\adj{z}{y}\leftarrow\adj{z}{v}$ and
-$\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$. Repeat Loop~2.2.
-
-Otherwise,
-$v=a$ and $C'=C[p_1(v),y]\cup P_3[v,z]\cup vp_1(v)\cup zy$.
-Break Loop~2.2 and proceed to Step~2.3. 
+\textbf{Case~2.2.3.} 
+Suppose that $v=a$. Make a recursive
+call with input $(z, \adj{z}{y}, \ell_3)$ to color $\graphintc(C')$,
+where $C'=C[p_1(v),y]\cup P_3[v,z]\cup vp_1(v)\cup zy$;
+see Figure~\ref{F:poh_linear_1} (right).
+Break Loop~2.2 and proceed to Step~2.3.
 
 \textbf{Step~2.3.} If $b\ne\text{NULL}$, then
 assign $a\leftarrow z$, $z\leftarrow b$, and
@@ -1102,13 +1107,18 @@ $\graphintc(C)$.
     \node (vt) [label=below:${v}$] at (1.375cm, -0.15cm) {};
     \node (vk) [label=below:${u_2}$] at (-0.25cm, 0.0cm) {};
     \node (u1) [label=below right:${u_3}$] at (0.0cm, 0.5cm) {};
-    \node (ur) [label=above:${t}$] at (0.5cm, 0.5cm) {};
-    \node (uj1) [label=above:${a}$] at (1.0cm, 0.5cm) {};
-    \node (uj) [label=above right:${z}$] at (1.375cm, 0.5cm) {};
+    \node (ur) at (0.5cm, 0.5cm) {};
+    \node (uj1) at (1.0cm, 0.5cm) {};
+    \node (uj) at (1.375cm, 0.5cm) {};
 	\node (w3) [label=below left:${w_3}$] at (2.05cm, 0.5cm) {};
 
+	\node[draw=none,fill=none,scale=1.17] at (0.5cm, 0.72cm) {$t$};
+	\node[draw=none,fill=none,scale=1.17] at (1.0cm, 0.72cm) {$a$};
+	\node[draw=none,fill=none,scale=1.17] at (1.57cm, 0.7cm) {$z$};
+	\node[draw=none,fill=none,scale=1.17] at (0.935cm, 0.175cm) {$C'$};
+
     \begin{pgfonlayer}{bg}
-		\fill[color=gray!35] (0.0cm, 0.5cm) -- (2.05cm, 0.5cm) -- (2.3cm, 1.0cm) -- (1.375cm, 1.25cm) -- (-0.25cm, 1.0cm) -- cycle;
+		\fill[color=gray!25] (0.0cm, 0.5cm) -- (2.05cm, 0.5cm) -- (2.3cm, 1.0cm) -- (1.375cm, 1.25cm) -- (-0.25cm, 1.0cm) -- cycle;
         \draw (v1) edge[dashed] (vp);
         \draw (vp) edge[dashed] (vi);
         \draw (vi) edge (vi1);
@@ -1139,14 +1149,17 @@ $\quad$
     \node (vl) [label=above:${y}$] at (1.85cm, 1.2cm) {};
     \node (vk) [label=below:${u_2}$] at (0.0cm, 0.0cm) {};
     \node (u1) [label=below right:${u_3}$] at (0.25cm, 0.5cm) {};
-    \node (ur) [label=above:${t}$] at (0.75cm, 0.5cm) {};
+    \node (ur) at (0.75cm, 0.5cm) {};
     \node (uj1) [label=below:${a}$] at (1.25cm, 0.5cm) {};
     \node (uj) [label=below:${z}$] at (1.625cm, 0.5cm) {};
     \node (y) [label=below:${b}$] at (2.0cm, 0.5cm) {};
 	\node (w3) [label=below left:${w_3}$] at (2.6cm, 0.5cm) {};
 
+	\node[draw=none,fill=none,scale=1.17] at (0.75cm, 0.72cm) {$t$};
+	\node[draw=none,fill=none,scale=1.17] at (1.6cm, 1.0cm) {$C'$};
+
     \begin{pgfonlayer}{bg}
-		\fill[color=gray!35] (0.25cm, 0.5cm) -- (2.6cm, 0.5cm) --
+		\fill[color=gray!25] (0.25cm, 0.5cm) -- (2.6cm, 0.5cm) --
 			(2.85cm, 1.0cm) -- (1.85cm, 1.2cm) -- (1.25cm, 1.25cm) --
 			(0.0cm, 1.0cm) -- cycle;
         \draw (v1) edge[dashed] (vt);
@@ -1180,14 +1193,17 @@ $\quad$
     \node (vl) [label=above:${y}$] at (1.85cm, 1.2cm) {};
     \node (vk) [label=below:${u_2}$] at (0.0cm, 0.0cm) {};
     \node (u1) [label=below right:${u_3}$] at (0.25cm, 0.5cm) {};
-    \node (ur) [label=above:${t}$] at (0.75cm, 0.5cm) {};
+    \node (ur) at (0.75cm, 0.5cm) {};
     \node (uj1) [label=below:${v}$] at (1.25cm, 0.5cm) {};
     \node (uj) [label=below:${z}$] at (1.625cm, 0.5cm) {};
     \node (y) [label=below:${b}$] at (2.0cm, 0.5cm) {};
 	\node (w3) [label=below left:${w_3}$] at (2.6cm, 0.5cm) {};
 
+	\node[draw=none,fill=none,scale=1.17] at (0.75cm, 0.72cm) {$t$};
+	\node[draw=none,fill=none,scale=1.17] at (1.5cm, 0.9cm) {$C'$};
+
     \begin{pgfonlayer}{bg}
-		\fill[color=gray!35] (0.25cm, 0.5cm) -- (2.6cm, 0.5cm) --
+		\fill[color=gray!25] (0.25cm, 0.5cm) -- (2.6cm, 0.5cm) --
 			(2.85cm, 1.0cm) -- (1.85cm, 1.2cm) -- (1.25cm, 1.25cm) --
 			(0.0cm, 1.0cm) -- cycle;
         \draw (v1) edge[dashed] (vt);
@@ -1211,9 +1227,10 @@ $\quad$
 		\draw (w3) edge[dashed] (y);
     \end{pgfonlayer}
 \end{tikzpicture}
-\caption{A sketch of Algorithm~\ref{A:poh_linear} Case~2.2.1 (left),
-Case~2.2.2 when $v\in P_1$ (middle),
-and when $v=a$ (right); in each sketch, the highlighted region represents
+\caption{A sketch of Case~2.1.2 (left),
+Case~2.2.2 (middle), and Case~2.2.3 (right)
+in Algorithm~\ref{A:poh_linear}. In each sketch,
+the highlighted region represents
 $G_1$.}\label{F:poh_linear_1}
 \end{center}
 \end{figure}
@@ -1261,10 +1278,10 @@ proceeding from $x$ towards $y$ along $C[x,y]$,
 such that for each $v\in P$, $d\in L(v)$. Starting from
 $P=x$, the path is colored
 as follows: let $z$ be end of $P$ opposite $x$, and
-define $T_{z}=\{v\in N(z)\cap C[z,y]:d\in L(v)\}$; if $T_{z}\ne\emptyset$,
-the $v\in T_{z}$ farthest clockwise along $C$
-is colored and added to $P$, then the process is repeated.
-After completing $P$, the algorithm is applied to each connected
+define $T_{z}=\{v\in N(z)\cap V(C[z,y]):d\in L(v)\}$; if $T_{z}\ne\emptyset$,
+then the $v\in T_{z}$ farthest clockwise along $C$
+is colored and added to $P$, and this process is repeated with $z=v$.
+After coloring $P$, the algorithm is applied to each connected
 component of $G-P$, using the list assignment $L'$ defined by
 $L'(v)=L(v)-\{d\}$ if $v\in N(P)$, $L'(v)=L(v)$ if
 $v\not\in N(P)$. See Figure~\ref{F:hartman_overview}
@@ -1283,7 +1300,7 @@ one edge at a time, and simultaneously remove
 $P$ as it is colored. If $x\ne z$, then $z$ is
 the farthest clockwise end of the path $P$ being colored;
 the rest of $P$ has already been removed, and
-our $x$ is now Hartman's $x'$.
+our $x$ serves as Hartman's $x'$.
 
 For those familiar with Hartman's proof: the one major difference between
 our algorithm and Hartman's
@@ -2730,6 +2747,93 @@ Figure~\ref{F:hartman_impl}.}
 \end{center}
 \end{figure}
 
+\begin{figure}
+\begin{center}
+\SolidGraph
+\begin{tikzpicture}[yscale=0.8]
+        \node (v0) [label=left:{\{4\}}] at (-2.375000cm, 2.000000cm) {};
+        \node (v1) [label=right:{\{4,5\}}] at (2.375000cm, 2.000000cm) {};
+        \node (v2) [label=right:{\{5,2\}}] at (2.375000cm, -2.000000cm) {};
+        \node (v3) [label=left:{\{2,4\}}] at (-2.375000cm, -2.000000cm) {};
+        \node (v4) [label=right:{\{1,3,2\}}] at (-0.532660cm, -0.259649cm) {
+};
+        \node (v5) [label=above:{\{4,1,5\}}] at (-0.297357cm, 0.720239cm) {}
+;
+        \node (v6) [label=below:{\{3,2,1\}}] at (-0.112185cm, -1.346142cm) {
+};
+        \node (v7) [label=right:{\{3,4,5\}}] at (1.340525cm, 0.632695cm) {};
+        \node (v8) [label=left:{\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
+;
+        \begin{pgfonlayer}{bg}
+                \draw (v0) edge (v8);
+                \draw (v0) edge (v3);
+                \draw (v0) edge (v4);
+                \draw (v0) edge (v5);
+                \draw (v0) edge (v1);
+                \draw (v1) edge (v5);
+                \draw (v1) edge (v7);
+                \draw (v1) edge (v2);
+                \draw (v2) edge (v7);
+                \draw (v2) edge (v5);
+                \draw (v2) edge (v4);
+                \draw (v2) edge (v6);
+                \draw (v2) edge (v3);
+                \draw (v3) edge (v6);
+                \draw (v3) edge (v4);
+                \draw (v3) edge (v8);
+                \draw (v4) edge (v5);
+                \draw (v4) edge (v8);
+                \draw (v4) edge (v6);
+                \draw (v5) edge (v7);
+        \end{pgfonlayer}
+\end{tikzpicture}
+$\qquad$
+\begin{tikzpicture}[yscale=0.8]
+        \node (v0) [label=left:{4}] at (-2.375000cm, 2.000000cm) {};
+        \node (v1) [label=right:{5}] at (2.375000cm, 2.000000cm) {};
+        \node (v2) [label=right:{5}] at (2.375000cm, -2.000000cm) {};
+        \node (v3) [label=left:{2}] at (-2.375000cm, -2.000000cm) {};
+        \node (v4) [label=right:{2}] at (-0.532660cm, -0.259649cm) {
+};
+        \node (v5) [label=above:{1}] at (-0.297357cm, 0.720239cm) {}
+;
+        \node (v6) [label=below:{3}] at (-0.112185cm, -1.346142cm) {
+};
+        \node (v7) [label=right:{3}] at (1.340525cm, 0.632695cm) {};
+        \node (v8) [label=left:{3}] at (-1.705649cm, -0.111242cm) {}
+;
+        \begin{pgfonlayer}{bg}
+                \draw (v0) edge (v8);
+                \draw (v0) edge (v3);
+                \draw (v0) edge (v4);
+                \draw (v0) edge (v5);
+                \draw (v0) edge (v1);
+                \draw (v1) edge (v5);
+                \draw (v1) edge (v7);
+                \draw (v1) edge [double,very thick] (v2);
+                \draw (v2) edge (v7);
+                \draw (v2) edge (v5);
+                \draw (v2) edge (v4);
+                \draw (v2) edge (v6);
+                \draw (v2) edge (v3);
+                \draw (v3) edge (v6);
+                \draw (v3) edge [double,very thick] (v4);
+                \draw (v3) edge (v8);
+                \draw (v4) edge (v5);
+                \draw (v4) edge (v8);
+                \draw (v4) edge (v6);
+                \draw (v5) edge (v7);
+        \end{pgfonlayer}
+\end{tikzpicture}
+\caption{The initial list assignment $L$ (left) and the induced paths of the
+resulting path
+$L$-coloring (right)
+from the Algorithm~\ref{A:hartman_impl} example shown in
+Figure~\ref{F:hartman_impl} and Figure~\ref{F:hartman_impl_cont}.}
+\label{F:hartman_impl_comp}
+\end{center}
+\end{figure}
+
 Let $G$ be a triangulated plane graph
 represented by augmented adjacency
 lists. Let $L$ be a length $n$ array of color lists of length $3$,
@@ -2756,8 +2860,9 @@ with an input that satisfies Case~2. Case~2 makes a recursive
 call with an input that satisfies Case~3.
 Therefore the total number of recursive calls made, and thus the
 overall time complexity,
-is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl} and
-\ref{F:hartman_impl_cont} for a concrete example.
+is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl},
+\ref{F:hartman_impl_cont}, and \ref{F:hartman_impl_comp} for a
+concrete example.
 
 \section{Experimental Performance and Parallelism}\label{S:performance}
 

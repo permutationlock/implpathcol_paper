@@ -179,7 +179,7 @@ for graph theoretic terms.
 A graph is
 \defterm{planar} if it may be drawn in the plane by mapping
 each vertex to a point, and each edge to a simple arc between
-its incident vertices, such that the arcs intersect only at their
+its incident vertices such that the arcs intersect only at their
 endpoints. A \defterm{face} is a region
 of the plane not containing any point of the drawing; we'll
 refer to each face by the subgraph drawn on
@@ -311,22 +311,23 @@ representation may be constructed in $\mathcal{O}(m)$ time.
 \textbf{Input.} An adjacency list representation $N$ of a graph $G$.
 
 \textbf{Output.} An augmented adjacency list representation $N^*$ of
-$G$ with the same ordering of neighbors around each $v\in G$ as $N$.
+$G$ such that for each $v\in G$, the neighbors of $v$
+appear in $N^*(v)$ in the same order they appear in $N(v)$.
 
-\textbf{Step~1.} For each $v\in G$ construct an
+\textbf{Step~1.} For each $v\in G$, construct an
 augmented adjacency list $N^*(v)$
 with the same ordering as $N(v)$, leaving the
 $\adj{u}{v}$ portion of each entry $(u,\adj{u}{v})$ in $N^*(v)$
 uninitialized.
 
-\textbf{Step~2.} For each vertex $v$ construct a list $\text{Wrk}(v)$
+\textbf{Step~2.} For each vertex $v$, construct a list $\text{Wrk}(v)$
 of vertex-reference pairs with capacity $\text{deg}(v)$. For each $v$ from
-$0$ to $n-1$ iterate through
-$N^*(v)$. For each neighbor $u$ in $N^*(v)$ append the pair
+$0$ to $n-1$, iterate through
+$N^*(v)$. For each neighbor $u$ in $N^*(v)$, append the pair
 $(v,\adj{v}{u})$ to $\text{Wrk}(u)$,
 where $\adj{v}{u}$ is a reference to $u$'s entry $N^*(v)$.
 
-\textbf{Step~3.} For each $v$ from $n-1$ to $0$ iterate through
+\textbf{Step~3.} For each $v$ from $n-1$ to $0$, iterate through
 $\text{Wrk}(v)$. Upon reaching a pair $(u,\adj{u}{v})$ in
 $\text{Wrk}(v)$, the
 last element of $\text{Wrk}(u)$ will be $(v,\adj{v}{u})$;
@@ -350,8 +351,8 @@ $(w,\adj{w}{u})$ where $w\le v$.
 
 \section{Path Coloring}\label{S:path_color}
 
-In this section we describe a linear time algorithm to path $3$-color
-plane graphs.
+In this section we describe a path $3$-coloring algorithm
+based on a proof by Poh~\cite[Thm.~1]{Poh1990}.
 
 Let $C$ be a cycle in a connected plane graph $G$. If $u,v\in C$, then we define
 $C[u,v]$ to be the clockwise $u,v$-path
@@ -381,21 +382,21 @@ of the outer face
 $C$. We may write $P_1=C[u_1,w_1]$ and $P_2=C[w_2,u_2]$ for vertices
 $u_1,u_2,w_1,w_2\in C$.
 
-Suppose that $C$ is an induced subgraph of $G$. Let
-$u_3,w_3\in G-C$ be such that the cycles
+Suppose that $C$ is an induced subgraph of $G$. Take
+$u_3,w_3\in G-C$ such that the cycles
 $u_3,u_2,u_1$ and $w_3,w_1,w_2$ are faces of $G$; note that
 $u_3$ and $w_3$ are uniquely determined, but it may be that $u_3=w_3$. Since
 $C$ is induced, $G-C$ is connected.
-Let $P_3$ be a shortest $u_3,w_3$-path in $G-C$, and
-note that $P_3$ is an induced subgraph of $G$.
-Color each vertex of $P_3$ with the color $d\in\{1,2,3\}- S$.
+Let $P_3$ be an induced $u_3,w_3$-path in $G-C$.
+Color each vertex of $P_3$ with $d\in\{1,2,3\}- S$.
 Let $C_1=P_1\cup P_3\cup u_3u_1\cup w_3w_1$ and
 $C_2=P_2\cup P_3\cup u_3u_2\cup w_3w_2$, see Figure~\ref{F:poh_proof} (left).
-By the inductive hypothesis, $c$ extends to path
-$3$-colorings $c_1$ of $\graphintc(C_1)$ and $c_2$ of $\graphintc(C_2)$.
-Together $c_1$ and $c_2$ form a $3$-coloring of $G$.
-Since $C,P_3,\graphinto(C_1),\graphinto(C_2)$ partition $V(G)$, and no
-vertex in one partition shares a color with a neighbor in another,
+By the inductive hypothesis, the $2$-coloring of $C_1$ extends to a path
+$3$-coloring of $\graphintc(C_1)$. Similarly, the coloring of $C_2$ extends to
+a path $3$-coloring of $\graphintc(C_2)$.
+Together these colorings form a $3$-coloring of $G$.
+Since $C$, $P_3$, $\graphinto(C_1)$, and $\graphinto(C_2)$ partition $V(G)$, and no
+vertex shares a color with a neighbor in a different parition,
 this $3$-coloring is a path coloring satisfying the lemma.
 
 Suppose that $C$ is not an induced subgraph. Then there
@@ -713,9 +714,10 @@ the outer triangle is $2$-colored such that the top vertex is
 assigned a color distinct from the bottom two. At recursive depth $i$,
 Algorithm~\ref{A:poh_bfs} will perform a breadth first search of the
 pyramid shaped interior  subgraph with sides of length $r=k-i$, starting
-from the vertex in the bottom left corner. The search will hit all
+from the vertex in the bottom left corner. The search will visit all
 $r(r+1)/2$ vertices of the interior pyramid.
-Therefore the total number of operations performed will be
+Therefore the time complexity of Algorithm~\ref{A:poh_bfs} on $\{A_k\}_{k\in\mathbb{N}}$
+is
 \[
     \Omega\left( \sum_{r=1}^k\frac{r(r+1)}{2} \right)
     =\Omega(k^3)
@@ -990,7 +992,7 @@ $v\in N(P_1)$.
 The concrete input will be $G$, $c$, and $S$,
 along with the tuple $(u_1, \adj{{u_1}}{u_2}, \ell_1)$.
 
-\textbf{Output.} For each vertex $v\in\graphinto(C)$ a color in
+\textbf{Output.} For each vertex $v\in\graphinto(C)$, a color in
 $\{1,2,3\}$ will be
 assigned to $c(v)$ such that $c$ represents a path $3$-coloring of
 $\graphintc(C)$ extending the original $2$-coloring of $C$.
@@ -1030,7 +1032,7 @@ Color $c(z)\leftarrow d$.
 Find $\adj{z}{a}$ in $N(z)$ and let
 $\adj{z}{v}:= \nxt(\adj{z}{a})$.
 Let $b:=\text{NULL}$; here
-$b$ will store neighbor of $z$ in $P_1$ that is
+$b$ will store neighbor of $z$ in $P_3$ that is
 counter-clockwise from $z$ around $C_1$, if it exists.
 Let $\adj{z}{y}:=\text{NULL}$; here
 $\adj{z}{y}$ will store the last edge $zy$ visited
@@ -1044,7 +1046,7 @@ We'll make a recursive call for each
 induced cycle $C'$ we discover with $V(C')\subseteq V(P_2)\cup V(P_3)$.
 
 \textbf{Case~2.1.1.} Suppose that $c(v)=0$, i.e. $v\in\graphinto(C)$.
-If $S(v)=\ell_1$ and $b=\text{NULL}$, then $v\in C_1-P_1$ and we set
+If $S(v)=\ell_1$ and $b=\text{NULL}$, then $v\in P_3$ and we set
 $b\leftarrow v$. Set $S(v)\leftarrow \ell_3$ and
 $\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$.
 Repeat Loop~2.1.
@@ -1092,7 +1094,7 @@ Break Loop~2.2 and proceed to Step~2.3.
 \textbf{Step~2.3.} If $b\ne\text{NULL}$, then
 assign $a\leftarrow z$, $z\leftarrow b$, and
 repeat Loop~2. Otherwise, $z=w_3$ and $c$ is a path $3$-coloring of
-$\graphintc(C)$.
+$\graphintc(C)$, so we are done.
 \end{algorithm}
 
 \begin{figure}
@@ -1259,7 +1261,7 @@ $\mathcal{O}(n)$.
 
 \section{Path List-Coloring}\label{S:path_choose}
 
-In this section we describe a linear time algorithm to path color
+In this section we describe an algorithm to path color
 plane graphs such that each vertex receives a color from a specified list.
 Hartman showed that this is always possible when each vertex is given a
 list of $3$ colors~\cite[Thm.~4.1]{Har1997}. Around the same
@@ -1494,18 +1496,18 @@ $z\in C[x,y]$. Let $L$ be a list assignment of $G$ such that
     |L(v)| &\ge 3 \text{ for } v\in G-C,
 \end{align*}
 and if $v\in C[x,z]-z$, then $L(v)\cap L(z)=\emptyset$.
-There exists a path $L$-coloring of $G$ such that $\text{deg}_c(x)\le 1$,
+There exists a path $L$-coloring $c$ of $G$ such that $\text{deg}_c(x)\le 1$,
 $\text{deg}_c(y)\le 1$, and $\text{deg}_c(z)\le 1$. Moreover,
 if $z=y$, or if $C[z,y]=z,y$ and $L(z)\cap L(y)=\emptyset$,
 then $\text{deg}_c(z)=0$.
 \end{lemma}
 
 \begin{proof}
-Suppose that $m=|E(G)|\le 1$. Then $G=C$. We define a path
+Suppose that $m=m(G)=|E(G)|\le 1$. Then $G=C$. We define a path
 $L$-coloring $c$ of $G$ as follows.
-Define $c(x)\in L(x)$ and $c(y)\in L(y)$ to be the color in
+Let $c(x)\in L(x)$ and $c(y)\in L(y)$ be the color in
 each respective list.
-If $m=0$, then $n(G)=1$ and $c$ is trivially a path $L$-coloring.
+If $m=0$, then $n(G)=1$ and $c$ trivially satisfies the lemma.
 Otherwise $m=1$ and $n(G)= 2$. If $x\ne y$, then $c$ is a
 path $L$-coloring of $G$ with the constraints of the lemma.
 Otherwise the remaining
@@ -1645,8 +1647,8 @@ and \ref{F:hartman_3_2_3}.
 Suppose that $u_2\in G-C$. Define $L'(u_2)=L(u_2)- L(z)$ and
 $L'(v)=L(v)$ for each $v\in G-u_2$. Note that $|L'(u_2)|\ge |L(u_2)|-1\ge 2$.
 Let $C_1$ be the outer face of $G_1=G-zu_1$,
-and observe that $C_1[x,z]$ is the union of $C[x,z]$ with the edge $u_1z$ removed
-and the path $u_1,u_2,z$. Since $|L'(u_2)|\ge 2$ and $L'(u_2)\cap
+and observe that $C_1$ is the union of $C-u_1z$ with the
+path $u_1,u_2,z$. Since $|L'(u_2)|\ge 2$ and $L'(u_2)\cap
 L'(z)=\emptyset$, we may apply the inductive hypothesis
 to find a path $L'$-coloring of $G_1$ with $x_1=x$, $y_1=y$, $z_1=z$.
 
@@ -1669,7 +1671,7 @@ $v\in G_2-u_2$, and
 $\text{deg}_c(u_2)=\text{deg}_{c_1}(u_2)+\text{deg}_{c_2}(u_2)$.
 To show that $c$ is a path $L$-coloring of $G$ it suffices to show that
 $\text{deg}_{c}(u_2)\le 2$. We'll also need to show that the
-$\text{deg}_c$ constraints hold for $x,y,z$, but these often follow
+$\text{deg}_c$ constraints hold for $x,y,z$, but these will often follow
 immediately from the inductive hypothesis.
 
 \begin{figure}
@@ -1942,7 +1944,7 @@ Let $L$ be a length $n$ array of lists of colors
 such that for $v\in\{x,y,z\}$ each list $L(v)$ has length one,
 for $v\in C-\{x,y,z\}$ each list $L(v)$ has length two
 or three, and for $v\in \graphinto(C)$ each list
-$L(v)$ has length three. Furthermore, for each $v\in C[x,z] - z$ assume
+$L(v)$ has length three. Furthermore, for each $v\in C[x,z] - z$, assume
 that $L(v)$ does not contain the color in $L(z)$.
 
 Let $A,B$ be length $n$ arrays such that for each $v\in C$ we have
@@ -1955,11 +1957,13 @@ from $v$ around $C$.
 Let $S$ be a length $n$ integer array such
 that, for $v\in\graphintc(C)$, $S(v)\ne 0$ if and only if $v\in C$, and
 $S(v)=S(x)$ if and only if $v\in C[x,z]-z$ (or $v=x=z$).
+
 Let $\text{max}(S)=\text{max}_{v\in G} S(v)$ and
-$m_C=m(\graphintc(C))$.
-If $z\ne x$, then define $\ell=\text{max}(S)$.
-If $z=x$ and $C[y,x]\ne y,x$, then define $\ell=\text{max}(S)+1$.
-Otherwise, define $\ell=\text{max}(S)+2$. Assume that
+$m_C=m(\graphintc(C))$. Define $\ell=\text{max}(S)+r$, where $r$
+is determined by the procedure case below that the input satisfies.
+If $m_C=1$ (Base case) or $z\ne x$ (Case~3), then $r=0$.
+If $z=x$ and $C[y,x]\ne y,x$ (Case~2), then $r=1$.
+Otherwise $z=x$ and $C[y,x]=y,x$ (Case~1), and $r=2$. Assume that
 $\ell < 2(m-m_C) + 4$.
 
 Let $M$
@@ -2023,7 +2027,7 @@ Remove the color in $L(z)$ from
 $L(u_2)$.
 Make a recursive call with the same input $(x, y, z)$.
 
-\textbf{Case~3.2.} Suppose that $S(u_2)\ne 0$, that is, $u_2\in C$. Just as in
+\textbf{Case~3.2.} Suppose that $S(u_2)\ne 0$, that is $u_2\in C$. Just as in
 Case~3.2 of the proof of Lemma~\ref{L:hartman3}, we will separately consider
 the two blocks $G_1$ and $G_2$ of $\graphintc(C)-zu_1$.
 Note that $m_C-1=m(G_1)+m(G_2)$.
@@ -2057,7 +2061,7 @@ on $G_1$ with input $(u_2, u_2, u_2)$.
 Finally, observe that
 $\text{max}(S)\le\ell + 2m(G_1)-2 + 1 + 2m(G_2)-1<\ell+2(m_C-1)$.
 
-\textbf{Case~3.2.2.} Suppose that $z\ne x$ and $S(u_2)\ne 0$, but
+\textbf{Case~3.2.2.} Suppose that $S(u_2)\ne 0$, but
 $S(u_2)\ne S(x)$ and $M(S(u_2))\ne S(y)$. In other words, suppose that
 $u_2\in C[y,x]-x-y$.
 First remove the color in $L(z)$ from $L(u_2)$, if it exists, then remove
@@ -2070,7 +2074,7 @@ make a recursive call on $G_2$ with input $(u_2, y, z)$.
 Finally, observe that
 $\text{max}(S)\le\ell + 2m(G_1) + 1 + 2m(G_2)-2<\ell+2(m_C-1)$.
 
-\textbf{Case~3.2.3.} Suppose that $z\ne x$ and $M(S(u_2))=S(y)$, i.e.
+\textbf{Case~3.2.3.} Suppose that $M(S(u_2))=S(y)$, i.e.
 $u_2\in C[z,y]$. There are
 two cases to consider, see Figure~\ref{F:hartman_3_2_3}.
 
@@ -2825,11 +2829,11 @@ $\qquad$
                 \draw (v5) edge (v7);
         \end{pgfonlayer}
 \end{tikzpicture}
-\caption{The initial list assignment $L$ (left) and the induced paths of the
+\caption{The initial list assignment $L$ (left) and the
 resulting path
 $L$-coloring (right)
-from the Algorithm~\ref{A:hartman_impl} example shown in
-Figure~\ref{F:hartman_impl} and Figure~\ref{F:hartman_impl_cont}.}
+from the Algorithm~\ref{A:hartman_impl} example in
+Figures~\ref{F:hartman_impl} and \ref{F:hartman_impl_cont}.}
 \label{F:hartman_impl_comp}
 \end{center}
 \end{figure}
@@ -2856,9 +2860,9 @@ Each case in Algorithm~\ref{A:hartman_impl} performs a fixed number
 of constant time operations. Case~3 removes an edge
 from the subgraph(s) under consideration.
 Case~1 makes a recursive call
-with an input that satisfies Case~2. Case~2 makes a recursive
+with an input that satisfies Case~2, and Case~2 makes a recursive
 call with an input that satisfies Case~3.
-Therefore the total number of recursive calls made, and thus the
+Therefore the total number of recursive calls made, thus the
 overall time complexity,
 is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl},
 \ref{F:hartman_impl_cont}, and \ref{F:hartman_impl_comp} for a
@@ -2872,33 +2876,6 @@ plane triangulations of order $10^i$ was
 generated. Each algorithm was run on a each set of samples,
 see the timings in Figure~\ref{F:benchmark} and the plot
 in Figure~\ref{F:plot}.
-
-Plane triangulations were sampled using the method of
-Poulalhon and Schaeffer~\cite{Pou2006}.
-Vertex labels were shuffled in each sampled graph, and the
-corresponding adjacency list arrays were re-ordered in memory,
-to avoid representation bias from the sampling algorithm.
-List assignments for Algorithm~\ref{A:hartman_impl} were
-uniformly drawn from a set of six colors.
-
-A breadth-first search (BFS) implemented with
-a circular array FIFO queue was run on the same set of graphs
-as a baseline
-algorithm that hits every half-edge of a graph exactly once.
-All binaries 
-were compiled with Clang 19.1.7 and run on a Linux 6.12.9 machine
-with an x86\_64 Intel N100 processor.
-Both source code and binaries are available~\cite{Bro2017}.
-
-The performance of
-Algorithm~\ref{A:hartman_impl} was similar to
-Algorithm~\ref{A:poh_linear} on the sample, but
-Algorithm~\ref{A:hartman_impl} requires an
-augmented adjacency list representation.
-If one
-is not immediately available, then time required to execute
-Algorithm~\ref{A:hartman_impl} would also include
-Algorithm~\ref{A:augment}.
 
 \begin{figure}[p]
 \begin{center}
@@ -2937,18 +2914,6 @@ Algorithm~\ref{A:augment}.
     \label{F:benchmark}
 \end{center}
 \end{figure}
-
-A benchmark was also run to test the performance of
-Algorithm~\ref{A:poh_bfs} and
-Algorithm~\ref{A:poh_linear} on the collection of pyramid graphs
-$\{A_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:pyramid}.
-Algorithm~\ref{A:poh_bfs} scaled very
-poorly on pyramids, as expected; see the timings
-in Figure~\ref{F:pyramid_benchmark} and plot in Figure~\ref{F:plot}. Once again,
-vertex labels were uniformly
-shuffled, and adjacency lists re-ordered in memory.
-For each $n=10^i$ we selected the closest integer $k$ to
-$\sqrt{2n-6}$ so that $n(A_k)\approx n$.
 
 \begin{figure}[p]
 \begin{center}
@@ -3067,6 +3032,43 @@ per graph (sample size $100$).}
 \end{center}
 \end{figure}
 
+Plane triangulations were sampled using the method of
+Poulalhon and Schaeffer~\cite{Pou2006}.
+Vertex labels were shuffled in each sampled graph, and the
+corresponding adjacency list arrays were re-ordered in memory,
+to avoid representation bias from the sampling algorithm.
+List assignments for Algorithm~\ref{A:hartman_impl} were
+uniformly drawn from a set of six colors.
+
+A breadth-first search (BFS) implemented with
+a circular array FIFO queue was run on the same set of graphs
+as a baseline
+algorithm that hits every half-edge of a graph exactly once.
+All binaries 
+were compiled with Clang 19.1.7 and run on a Linux 6.12.9 machine
+with an x86\_64 Intel N100 processor.
+Both source code and binaries are available~\cite{Bro2017}.
+
+The performance of
+Algorithm~\ref{A:hartman_impl} was similar to
+Algorithm~\ref{A:poh_linear} on the sample, but
+Algorithm~\ref{A:hartman_impl} requires an
+augmented adjacency list representation.
+If one
+is not immediately available, then time required to execute
+Algorithm~\ref{A:hartman_impl} would also include
+Algorithm~\ref{A:augment}.
+
+A benchmark was also run to test the performance of
+Algorithm~\ref{A:poh_bfs} and
+Algorithm~\ref{A:poh_linear} on the collection of pyramid graphs
+$\{A_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:pyramid}.
+Algorithm~\ref{A:poh_bfs} scaled as expected, see the timings
+in Figure~\ref{F:pyramid_benchmark} and the plot in
+Figure~\ref{F:plot}.
+For each $n=10^i$ we selected the closest integer $k$ to
+$\sqrt{2n-6}$ so that $n(A_k)\approx n$.
+
 Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl} perform
 recursive calls that operate on
 subgraphs that are disjoint apart from select vertices on their
@@ -3092,8 +3094,8 @@ stack when this local stack is full or empty.
 
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
 parallel execution.
-The first difficulty we encounter is that
-the recursive calls made in
+The first difficulty is that
+the recursive calls in Case~3.2 of
 Algorithm~\ref{A:hartman_impl} relied on a sequential
 execution order.
 If we save a local copy of
@@ -3149,7 +3151,7 @@ For each vertex $v\in G$, we store an optional reference
 to a frame that will become ready when $v$ has been colored, i.e. has had
 its color list reduced to length $1$. To allow for
 multiple frames to await the coloring of one vertex, each frame in the
-pool stores an ``intrusive linked list,'' that is, an optional
+pool stores an ``intrusive linked list,'' i.e. an optional
 reference to the next frame in line. When a frame is added to the pool and
 it needs to await a vertex that has another frame waiting on it,
 the new frame is added to the linked list of the existing frame.
@@ -3158,8 +3160,8 @@ is pushed to the stack.
 
 Benchmarks in Figures~\ref{F:benchmark_poh_thread} and \ref{F:benchmark_hartman_thread}
 showed some benefit to the parallel
-versions of Algorithms~\ref{A:poh_linear} and\ref{A:hartman_impl} when $n\ge 10^4$, with
-significant improvements for very large graphs.
+implementations of Algorithms~\ref{A:poh_linear} and\ref{A:hartman_impl} when $n\ge 10^4$, with
+significant improvements for larger graphs.
 
 \begin{thebibliography}{99}
 

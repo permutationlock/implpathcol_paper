@@ -277,7 +277,7 @@ Myrvold~\cite{BoMy2004}.
 
 We will represent $G$ for computation via \textit{adjacency lists}:
 a list, for each vertex $v$, of the neighbors of $v$.
-A vertex is represented by an integer $0\dots n-1$.
+A vertex will be represented by an integer $0\dots n-1$.
 The order of each list represents the embedding. In algorithms
 $N(v)$ will refer to the adjacency list.
 
@@ -396,7 +396,7 @@ $3$-coloring of $\graphintc(C_1)$. Similarly, the coloring of $C_2$ extends to
 a path $3$-coloring of $\graphintc(C_2)$.
 Together these colorings form a $3$-coloring of $G$.
 Since $C$, $P_3$, $\graphinto(C_1)$, and $\graphinto(C_2)$ partition $V(G)$, and no
-vertex shares a color with a neighbor in a different parition,
+vertex shares a color with a neighbor in a different partition,
 this $3$-coloring is a path coloring satisfying the lemma.
 
 Suppose that $C$ is not an induced subgraph. Then there
@@ -433,7 +433,7 @@ Together these colorings form a path $3$-coloring of $G$.\ggcnopf
   \draw (qn) edge (t1);
   \draw (t0) edge (t1) [dashed];
 \end{tikzpicture}
-$\quad$
+$\qquad$
 \begin{tikzpicture}[scale=1.3]
     \node (p0) [label=above left:${u_1}$] at (160:1.0cm) {};
     \node (p1) [label=above:${v_1}$] at (90:0.8cm) {};
@@ -454,56 +454,8 @@ $\quad$
   \draw (pn) edge (qn);
   \draw (p1) edge (q1);
 \end{tikzpicture}
-$\qquad\qquad$
-\begin{tikzpicture}[yscale=0.8,xscale=1.0]
-        \node (v0) [label=left:{1}] at (-1.875cm, 1.5cm) {};
-        \node (v1) [label=right:{1}] at (1.875cm, 1.5cm) {};
-        \node (v2) [label=right:{2}] at (1.875cm, -1.5cm) {};
-        \node (v3) [label=left:{2}] at (-1.875cm, -1.5cm) {};
-        \node (v4) [label=right:{3}] at (1.1cm, 0.75) {};
-        \node (v5) [label=right:{1}] at (1.0cm, -0.25cm) {};
-        \node (v6) [label=left:{3}] at (-1.25cm, -0.86cm) {};
-        \node (v7) [label=left:{2}] at (-0.82cm, 0.056cm) {};
-        \node (v8) [label=above left:{3}] at (0.30cm, -0.22cm) {};
-        \node (v9) [label=left:{2}] at (-0.65cm, 0.85cm) {};
-        \node (v10) [label=right:{1}] at (-0.1cm, -0.85cm) {};
-        \node (v11) [label=below left:{1}] at (0.75cm, 1.65cm) {};
-        \node (v12) [label=below:{2}] at (0.8cm, -1.25cm) {};
-        \begin{pgfonlayer}{bg}
-                \draw (v0) edge [double,very thick] (v11);
-                \draw (v6) edge [double,very thick] (v8);
-                \draw (v6) edge (v7);
-                \draw (v7) edge (v8);
-                \draw (v5) edge (v12);
-                \draw (v4) edge [double,very thick] (v8);
-                \draw (v4) edge (v5);
-                \draw (v4) edge (v7);
-                \draw (v5) edge (v8);
-                \draw (v0) edge (v3);
-                \draw (v0) edge (v6);
-                \draw (v0) edge (v7);
-                \draw (v0) edge (v9);
-                \draw (v4) edge (v9);
-                \draw (v7) edge [double,very thick] (v9);
-                \draw (v0) edge (v4);
-                \draw (v1) edge [double,very thick] (v11);
-                \draw (v1) edge (v4);
-                \draw (v1) edge (v2);
-                \draw (v2) edge (v4);
-                \draw (v2) edge (v5);
-                \draw (v2) edge [double,very thick] (v12);
-                \draw (v3) edge [double,very thick] (v12);
-                \draw (v3) edge (v6);
-				\draw (v10) edge (v12);
-				\draw (v3) edge (v10);
-				\draw (v8) edge (v10);
-				\draw (v6) edge (v10);
-				\draw (v4) edge (v11);
-				\draw (v8) edge (v12);
-        \end{pgfonlayer}
-\end{tikzpicture}
-\caption{The proof of Lemma~\ref{L:planar3c} (left),
-a graph colored by Poh's algorithm (right).}
+\caption{The proof of Lemma~\ref{L:planar3c} when $C$ is induced (left),
+or has a chord (right).}
 \label{F:poh_proof}
 \end{center}
 \end{figure}
@@ -516,344 +468,15 @@ to produce a triangulated plane graph $G'$. Theorem~\ref{T:planar3c}
 follows immediately as any path coloring of
 $G'$ is also a path coloring of $G$.
 
-A natural way to implement Poh's algorithm is to locate $u_3$,
-then use a breadth-first search to construct a shortest
-$u_3,w_3$-path and/or locate a chord edge, see Algorithm~\ref{A:poh_bfs}.
-
-\begin{algorithm}\label{A:poh_bfs} Path $3$-Color (BFS)
-
-\textbf{Input.} 
-Let $C$ be a cycle or length $1$ path
-in a weakly triangulated plane graph $G$ represented via adjacency lists.
-Let  $c$ be a length $n$ array representing a $2$-coloring of $C$ such
-that each color class induces a nonempty path, respectively
-$P_1=C[u_1,w_1]$ and $P_2=C[w_2,u_2]$ for $u_1,u_2,w_1,w_2\in C$.
-Assume $c(v)=0$ for each $v\in\graphinto(C)$.
-
-The concrete input will be $G$, $c$, and the tuple
-$(u_1, w_1, \adj{{u_1}}{u_2}, w_2)$. 
-
-\textbf{Output.} For each vertex $v\in\graphinto(C)$, a color in
-$\{1,2,3\}$ will be
-assigned to $c(v)$ such that $c$ represents a path $3$-coloring of
-$\graphintc(C)$ extending the original $2$-coloring of $C$. Moreover, if
-$v\in \graphinto(C)$ has a neighbor $u\in C$, then $c(v)\ne c(u)$.
-
-\textbf{Base case.} If $u_1=w_1$ and $u_2=w_2$, then $C$ is a length
-$1$ path and $\graphintc(C)=C$.
-
-\textbf{Recursive case.}
-Let $\adj{{u_1}}{u_3}:=\nxt(\adj{{u_1}}{u_2})$.
-Observe $u_3,u_2,u_1$ is a face of $G$, see Figure~\ref{F:poh_bfs}.
-
-\textbf{Case~1.} Suppose that $c(u_3)\ne 0$.
-If $c(u_3)=c(u_2)$, then $u_3\in P_2$.
-Make a recursive call with the input $(u_1, w_1, \adj{u_1}{u_3}, w_2)$
-to color
-$\graphintc(C_1)$ where $C_1=C[u_1,u_3]\cup u_1u_3$. Otherwise, $c(u_3)=c(v_1)$ and
-$u_3\in P_1$. Iterate through $N(u_3)$ to find $\adj{u_3}{u_2}$.
-Make a recursive call with the input
-$(u_3, w_1, \adj{u_3}{u_2}, w_2)$
-to color $\graphintc(C_1)$, where $C_1=C[u_3,u_2]\cup u_3u_2$. 
-
-\textbf{Case~2.} Suppose that $c(u_3)=0$, i.e. $u_3\in \graphinto(C)$.
-Perform a breadth-first search in $\graphinto(C)$ starting from $u_3$;
-such a search may be implemented by visiting $v\in G$ only
-if $c(v)=0$. Terminate the search upon finding a vertex
-$w_3$ with a pair of subsequent neighbors $\adj{w_3}{v_2}$
-and $\adj{w_3}{v_1}=\nxt(\adj{w_3}{v_2})$ such that $c(v_2)=c(u_2)$ and
-$c(v_1)=c(u_1)$,
-i.e. $v_2\in P_2$ and $v_1\in P_1$. Backtrack along the
-search tree from $w_3$ to find a shortest $u_3,w_3$-path $P_3$.
-For each vertex $v\in P_3$, assign $c(v)\leftarrow d$, where $d\in
-\{1,2,3\}-\{c(u_1),c(u_2)\}$.
-
-Iterate through
-$N(u_3)$ and $N(v_1)$ to find $\adj{u_3}{u_2}$ and
-$\adj{v_1}{v_2}$.
-We make a recursive call
-\vspace{-0.75em}
-\begin{enumerate}
-\itemsep-0.25em
-\item{with input $(u_1, v_1, \adj{{u_1}}{u_3}, w_3)$ to color
-$\graphintc(C_1)$, where $C_1=C[u_1,v_1]\cup P_3\cup v_1u_3\cup v_1w_3$,}
-\item{with input $(u_3,  w_3, \adj{u_3}{u_2}, v_2)$ to color
-$\graphintc(C_2)$, where $C_2=C[v_2,u_2]\cup P_3\cup u_3u_2\cup w_3v_2$,}
-\item{and with input $(v_1,  w_1, \adj{{v_1}}{v_2}, w_2)$
-to color $\graphintc(C_3)$, where $C_3=C[v_1,v_2]\cup v_1v_2$.}
-\end{enumerate}
-\end{algorithm}
-
-\begin{figure}
-\begin{center}
-\SolidGraph
-\begin{tikzpicture}[scale=0.75]
-  \node (v1) [label=above left:$u_1$] at (-2cm, 0.5cm) {};
-  \node (vi) [label=above right:$w_1$] at (0.5cm, 0.5cm) {};
-  \node (vi1) [label=below right:$w_2$] at (0.5cm, -0.75cm) {};
-  \node (vk) [label=below left:$u_2$] at (-2cm, -0.75cm) {};
-  \node (u) [label=above right:$u_3$] at (-1.25cm, -1.05cm) {};
-  \node (C1) [scale=1.25] [draw=none, fill=none] at (-0.7cm, -0.05cm) {$C_1$};
-  \draw (v1) edge (vk);
-  \draw (v1) edge (u);
-  \draw (vk) edge (u);
-  \draw (vi) edge (vi1);
-  \draw (v1) edge [dashed, bend left] (vi);
-  \draw (vi1) edge [dashed, bend left] (u);
-
-  \node (pv1) [label=above left:$u_1$] at (-2cm, 3.25cm) {};
-  \node (pvi) [label=above right:$w_1$] at (0.5cm, 3.25cm) {};
-  \node (pvi1) [label=below right:$w_2$] at (0.5cm, 2.0cm) {};
-  \node (pvk) [label=below left:$u_2$] at (-2cm, 2.0cm) {};
-  \node (pu) [label=below right:$u_3$] at (-1.25cm, 3.55cm) {};
-  \node (CP1) [scale=1.25] [draw=none, fill=none] at (-0.7cm, 2.55cm) {$C_1$};
-  \draw (pv1) edge (pvk);
-  \draw (pv1) edge (pu);
-  \draw (pvk) edge (pu);
-  \draw (pvi) edge (pvi1);
-  \draw (pu) edge [dashed, bend left] (pvi);
-  \draw (pvi1) edge [dashed, bend left] (pvk);
-\end{tikzpicture}
-$\qquad$
-\begin{tikzpicture}[scale=0.75]
-  \node (vl) [label=above right:$w_1$] at (2cm, 1cm) {};
-  \node (v1) [label=above left:$u_1$] at (-2cm, 1cm) {};
-  \node (vl1) [label=below right:$w_2$] at (2cm, -1cm) {};
-  \node (vk) [label=below left:$u_2$] at (-2cm, -1cm) {};
-  \node (w) [label=above left:$w_3$] at (0.5cm, 0cm) {};
-  \node (u) [label=above right:$u_3$] at (-1.5cm, 0cm) {};
-  \node (vi) [label=above:$v_1$] at (1cm, 1.5cm) {};
-  \node (vj) [label=below:$v_2$] at (1cm, -1.5cm) {};
-  
-  \node (CP) [scale=1.25] [draw=none, fill=none] at (-0.5cm, 1cm) {$C_1$};
-  \node (CQ) [scale=1.25] [draw=none, fill=none] at (-0.5cm, -1cm) {$C_2$};
-  \node (Ci) [scale=1.25] [draw=none, fill=none] at (1.5cm, 0cm) {$C_3$};
-  
-  \node (null) [draw=none, fill=none] at (270:2.5cm) {};
-  
-  \draw (vl) edge (vi) [dashed];
-  \draw (vi) edge [bend right] (v1) [dashed];
-  \draw (vl1) edge (vj) [dashed];
-  \draw (vj) edge [bend left] (vk) [dashed];
-  \draw (vl) edge (vl1);
-  \draw (v1) edge (vk);
-  \draw (vi) edge (vj);
-  \draw (v1) edge (u);
-  \draw (vk) edge (u);
-
-  \draw (u) edge (w) [dashed];
-  \draw (vi) edge (w);
-  \draw (vj) edge (w);
-
-  \node (bs) [empty] at (2.35cm, 0.0cm) {};
-  \node (bm) [empty] at (3.3cm, 0.0cm) {};
-  \node (be1) [empty] at (3.85cm, 0.75cm) {};
-  \node (be2) [empty] at (3.85cm, -0.75cm) {};
-  \node (be3) [empty] at (7.65cm, 0.0cm) {};
-
-  \draw (bs) edge [very thick] (bm);
-  \draw (bm) edge[very thick, ->, bend left] (be1);
-  \draw (bm) edge[very thick, ->, bend right] (be2);
-  \draw (bm) edge[very thick, ->] (be3);
-
-  \node (p0) [label=above right:$w_1$] at (9cm, 1cm) {};
-  \node (q0) [label=below right:$w_2$] at (9cm, -1cm) {};
-  \node (pi) [label=above:$v_1$] at (8cm, 1.5cm) {};
-  \node (qj) [label=below:$v_2$] at (8cm, -1.5cm) {};
-  
-  \node (pi_1) [label=above:$v_1$] at (7cm, 2cm) {};
-  \node (pn) [label=above left:$w_1$] at (4cm, 1.5cm) {};
-  \node (t0) [label=above left:$w_3$] at (6.5cm, 0.5cm) {};
-  \node (t1) [label=above right:$u_3$] at (4.5cm, 0.5cm) {};
-  
-  \node (CP) [scale=1.25] [draw=none, fill=none] at (5.5cm, 1.5cm) {$C_1$};
-  \node (CQ) [scale=1.25] [draw=none, fill=none] at (5.5cm, -1.5cm) {$C_2$};
-  \node (Ci) [scale=1.25] [draw=none, fill=none] at (8.5cm, 0cm) {$C_3$};
-  
-  \node (qj_1) [label=below:$v_2$] at (7cm, -2cm) {};
-  \node (qn) [label=below left:$u_2$] at (4cm, -1.5cm) {};
-  \node (t0_1) [label=below left:$w_3$] at (6.5cm, -0.5cm) {};
-  \node (t1_1) [label=below right:$u_3$] at (4.5cm, -0.5cm) {};
-
-  \draw (p0) edge (pi) [dashed];
-  \draw (pi_1) edge [bend right] (pn) [dashed];
-  \draw (q0) edge (qj) [dashed];
-  \draw (qj_1) edge [bend left] (qn) [dashed];
-  \draw (p0) edge (q0);
-  \draw (pi) edge (qj);
-  \draw (pn) edge (t1);
-  \draw (qn) edge (t1_1);
-  \draw (t1) edge (t0) [dashed];
-  \draw (t1_1) edge (t0_1) [dashed];
-  \draw (pi_1) edge (t0);
-  \draw (qj_1) edge (t0_1);
-\end{tikzpicture}
-\caption{Algorithm~\ref{A:poh_bfs}, Case~1 (left) and Case~2 (right).}
-\label{F:poh_bfs}
-\end{center}
-\end{figure}
-
-Let $G$ be a triangulated plane graph and
-let $C=v_1,v_2,v_3$ be the outer triangle of $G$ labeled in clockwise order.
-We may compute a path $3$-coloring $c$ of $G$ as follows.
-Create a length $n$ integer array $c$ and initialize each entry to zero.
-Assign $c(v_1)\leftarrow 1$,
-$c(v_2)\leftarrow 2$, and $c(v_3)\leftarrow 2$. Finally, apply
-Algorithm~\ref{A:poh_bfs}
-with input $G$, $c$, and
-$(v_1, v_1, \adj{{v_1}}{v_2}, v_3)$.
-
-Unfortunately, Algorithm~\ref{A:poh_bfs}
-is not linear. Consider the sequence of ``pyramid graphs''
-$\{A_k\}_{k\in\mathbb{N}}$ depicted in
-Figure~\ref{F:pyramid}.
-Fix $k\in\mathbb{N}$ and note that
-$n=n(A_k)=k(k+1)/2+3$.
-Assume that
-the outer triangle is $2$-colored such that the top vertex is
-assigned a color distinct from the bottom two. At recursive depth $i$,
-Algorithm~\ref{A:poh_bfs} will perform a breadth first search of the
-pyramid shaped interior  subgraph with sides of length $r=k-i$, starting
-from the vertex in the bottom left corner. The search will visit all
-$r(r+1)/2$ vertices of the interior pyramid.
-Therefore the time complexity of Algorithm~\ref{A:poh_bfs} on $\{A_k\}_{k\in\mathbb{N}}$
-is
-\[
-    \Omega\left( \sum_{r=1}^k\frac{r(r+1)}{2} \right)
-    =\Omega(k^3)
-    =\Omega(n^{3/2}).
-\]
-
-\begin{figure}
-\begin{center}
-\SolidGraph
-\begin{tikzpicture}[scale=0.9]
-  \node (t1) at (0cm, 1.75cm) {};
-  \node (t2) at (1.2cm, 0cm) {};
-  \node (t3) at (-1.2cm, 0cm) {};
-
-  \node (k1) at (0cm, 0.65cm) {};
-
-  \node (A1) [scale=1.25] [draw=none, fill=none] at (-1.0cm, 1.5cm) {$A_1$};
-
-  \begin{pgfonlayer}{bg}
-	  \draw (t1) edge (t2); \draw (t3) edge (t2); \draw (t1) edge (t3);
-          \draw (t1) edge (k1); \draw (t2) edge (k1);  \draw (t3) edge (k1);
-  \end{pgfonlayer}
-\end{tikzpicture}
-$\ $
-\begin{tikzpicture}[scale=0.9]
-  \node (t1) at (0cm, 2.25cm) {};
-  \node (t2) at (1.575cm, 0cm) {};
-  \node (t3) at (-1.575cm, 0cm) {};
-
-  \node (k1) at (-0.375cm, 0.65cm) {};
-  \node (k2) at (0.375cm, 0.65cm) {};
-  \node (l1) at (0cm, 1.15cm) {};
-
-  \node (A2) [scale=1.25] [draw=none, fill=none] at (-1.0cm, 2.0cm) {$A_2$};
-
-  \begin{pgfonlayer}{bg}
-	  \draw (t1) edge (t2); \draw (t3) edge (t2); \draw (t1) edge (t3);
-          \draw (t1) edge (k1); \draw (t1) edge (k2); 
-          \draw (t3) edge (k1); \draw (t2) edge (k2);
-          \draw (t1) edge (l1); \draw (t3) edge (k2);
-          \draw (k1) edge (k2); \draw (k1) edge (l1); \draw (k2) edge (l1);
-  \end{pgfonlayer}
-\end{tikzpicture}
-$\ $
-\begin{tikzpicture}[scale=0.9]
-  \node (t1) at (0cm, 2.75cm) {};
-  \node (t2) at (1.95cm, 0cm) {};
-  \node (t3) at (-1.95cm, 0cm) {};
-
-  \node (k1) at (-0.75cm, 0.65cm) {};
-  \node (k2) at (0cm, 0.65cm) {};
-  \node (k3) at (0.75cm, 0.65cm) {};
-  \node (l1) at (-0.375cm, 1.15cm) {};
-  \node (l2) at (0.375cm, 1.15cm) {};
-  \node (j1) at (0.0cm, 1.65cm) {};
-
-  \node (A3) [scale=1.25] [draw=none, fill=none] at (-1.0cm, 2.5cm) {$A_3$};
-
-  \begin{pgfonlayer}{bg}
-	  \draw (t1) edge (t2); \draw (t3) edge (t2); \draw (t1) edge (t3);
-          \draw (t1) edge (k1); \draw (t1) edge (k3);
-          \draw (t3) edge (k1); \draw (t2) edge (k3);
-          \draw (t3) edge (k2); \draw (t3) edge (k3);
-          \draw (t1) edge (l1); \draw (t1) edge (l2); \draw (t1) edge (j1);
-          \draw (k1) edge (k2); \draw (k3) edge (k2); \draw (l1) edge (l2);
-          \draw (k1) edge (l1); \draw (k2) edge (l1); \draw (k2) edge (l2);
-          \draw (k3) edge (l2); \draw (l1) edge (j1); \draw (l2) edge (j1);
-  \end{pgfonlayer}
-\end{tikzpicture}
-$\ldots$
-\begin{tikzpicture}[scale=0.9]
-  \node (t1) at (0cm, 3.5cm) {};
-  \node (t2) at (2.45cm, 0cm) {};
-  \node (t3) at (-2.45cm, 0cm) {};
-
-  \node (k1) at (-1.25cm, 0.65cm) {};
-  \node (k2) at (-0.5cm, 0.65cm) {};
-  \node (k3) at (0.25cm, 0.65cm) {};
-  \node (kn) at (1.25cm, 0.65cm) {};
-
-  \node (l1) at (-0.88cm, 1.15cm) {};
-  \node (l2) at (-0.12cm, 1.15cm) {};
-  \node (ln) at (0.88cm, 1.15cm) {};
-
-  \node (j1) at (-0.5cm, 1.65cm) {};
-  \node (jn) at (0.5cm, 1.65cm) {};
-
-  \node (p) at (0cm, 2.4cm) {};
-
-  \node (Ak) [scale=1.25] [draw=none, fill=none] at (-1.0cm, 3.25cm) {$A_k$};
-
-  \begin{pgfonlayer}{bg}
-	  \draw (t1) edge (t2); \draw (t3) edge (t2); \draw (t1) edge (t3);
-	  \draw (k1) edge (k2); \draw (k3) edge (k2);
-	  \draw (k3) edge (kn) [dashed];
-
-	  \draw (l1) edge (l2);
-	  \draw (l2) edge (ln) [dashed];
-
-	  \draw (j1) edge (jn) [dashed];
-
-	  \draw (j1) edge (p) [dashed];
-	  \draw (jn) edge (p) [dashed];
-
-	  \draw (t1) edge (k1); \draw (t1) edge (kn);
-	  \draw (t1) edge (l1); \draw (t1) edge (ln);
-	  \draw (t1) edge (p);
-	  \draw (t2) edge (kn); \draw (t3) edge (k1);
-
-	  \draw (k1) edge (l1); \draw (k2) edge (l1);
-	  \draw (k2) edge (l2); \draw (k3) edge (l2);
-	  \draw (kn) edge (ln);
-
-	  \draw (l1) edge (j1); \draw (l2) edge (j1);
-	  \draw (jn) edge (ln);
-
-	  \draw (j1) edge (t1); \draw (jn) edge (t1);
-
-	  \draw (t3) edge (k1); \draw (t3) edge (k2);
-	  \draw (t3) edge (k3); \draw (t3) edge (kn);
-  \end{pgfonlayer}
-\end{tikzpicture}
-\caption{The sequence of ``pyramid graphs''
-on which Algorithm~\ref{A:poh_bfs} performs poorly.}\label{F:pyramid}
-\end{center}
-\end{figure}
-
-Let $G$, $C$, $P_1$, and $P_2$ be as in Algorithm~\ref{A:poh_bfs},
-but assume $C$ is induced in $G$.
+Let $G$, $C$, $P_1$, and $P_2$ be as in Lemma~\ref{L:planar3c},
+and assume that $C$ is induced in $G$.
 For a subgraph $H$ of $G$, let $N(H)$ be the set of
-vertices in $G$ that are in $H$ or have a neighbor in $H$.
-Le $G_1$ be the subgraph of $\graphintc(C)$ induced by
-$N(P_1)-V(P_2)$, see Figure~\ref{F:poh_linear_0}. Let $C_1$
+vertices in $G-H$ that have a neighbor in $H$.
+Let $G_1$ be the subgraph of $\graphintc(C)$ induced by
+$V(P_1)\cup N(P_1)-V(P_2)$, see Figure~\ref{F:poh_linear_0}. Let $C_1$
 be the outer face of $G_1$.
-Algorithm~\ref{A:poh_linear} modifies Poh's algorithm to run in linear time
-by using $P_3=C_1-P_1$ as the $u_3,w_3$-path.
+Algorithm~\ref{A:poh_linear} implements Poh's algorithm in linear time
+using $P_3=C_1-P_1$ as the $u_3,w_3$-path.
 Observe that $P_3$ is induced in $G$: $G_1$ is induced, so there is no chord of
 $P_3$ exterior to $C_1$,
 and each $v\in P_3$ has a neighbor in $P_1$, so there is no chord of $P_3$
@@ -861,9 +484,8 @@ interior to $C_1$.
 To find $P_3$, we walk counter-clockwise from
 $u_3$ along $C_1$.
 
-Define
-$p_1:N(P_1)\to V(P_1)$ to be the map sending each $v\in N(P_1)$ to its
-farthest clockwise neighbor along $P_1$,
+Define $p_1:N(P_1)\to V(P_1)$ to be the map sending each $v\in N(P_1)$
+to its neighbor in $P_1$ that is farthest from $u_1$,
 i.e. $V(C[p_1(v),w_1])\cap N(v)=\{p_1(v)\}$.
 
 \begin{figure}
@@ -967,14 +589,14 @@ $\qquad$
         \end{pgfonlayer}
 \end{tikzpicture}
 \caption{
-A Poh example highlighting the subgraph $G_1$
-induced by $N(P_1)-V(P_2)$ (left),
-and the path $3$-coloring output from Poh's algorithm when
-coloring $P_3=C_1-P_1$ (right).}\label{F:poh_linear_0}
+An example setup for Poh's algorithm highlighting the subgraph $G_1$
+induced by $V(P_1)\cup N(P_1)-V(P_2)$ (left),
+and the path $3$-coloring output from
+Algorithm~\ref{A:poh_linear} (right).}\label{F:poh_linear_0}
 \end{center}
 \end{figure}
 
-\begin{algorithm}\label{A:poh_linear} Path $3$-Color (Neighborhood Walk)
+\begin{algorithm}\label{A:poh_linear} Path $3$-Color% (Neighborhood Walk)
 
 \textbf{Input.} Let $C$ be an induced cycle
 in a weakly triangulated plane
@@ -1014,7 +636,7 @@ Let $\ell_3:=\max_{v\in G}S(v)+1$. We'll
 walk the induced $u_3,w_3$-path $P_3=C_1-P_1$,
 where $C_1$ is the outer face of the subgraph $G_1$
 of $\graphintc(C)$
-induced by $N(P_1)-V(P_2)$.
+induced by $V(P_1)\cup N(P_1)-V(P_2)$.
 
 \textbf{Step~1.}
 Let $a:=u_1$ and $z:= u_3$; here $z$ stores the current
@@ -1289,41 +911,6 @@ $L'(v)=L(v)-\{d\}$ if $v\in N(P)$, $L'(v)=L(v)$ if
 $v\not\in N(P)$. See Figure~\ref{F:hartman_overview}
 for an example.
 
-In Lemma~\ref{L:hartman3} below, we provide a different proof of Hartman's
-result, organized in such a way that it immediately
-describes a linear time algorithm for graphs
-represented as in Section~\ref{S:representation}.
-If $x=z$, then our $G,x,y$ match
-those in Hartman's \cite[Lemma~4.2]{Har1997}, but we assume
-that $G$ is biconnected;
-we follow a similar iterative procedure to color a path
-$P$ clockwise from $x$ along $C$, but we consider
-one edge at a time, and simultaneously remove
-$P$ as it is colored. If $x\ne z$, then $z$ is
-the farthest clockwise end of the path $P$ being colored;
-the rest of $P$ has already been removed, and
-our $x$ serves as Hartman's $x'$.
-
-For those familiar with Hartman's proof: the one major difference between
-our algorithm and Hartman's
-occurs in Case~3.2.3.2 of the proof of Lemma~\ref{L:hartman3} below.
-If we encounter a chord edge $zv\in E(G)-E(C)$
-($z$ is the current end of $P$) with
-$v\in C[z,y]$ and $L(z)\cap L(v)=\emptyset$ (i.e. $d\not\in L(v)$,
-where $d$ is the color of $P$),
-then instead of continuing to
-search for neighbors of $z$ in $C[z,v]$ that we might add
-to $P$, we
-apply the inductive hypothesis such that $z$ now serves as
-``$y$'' (see Figure~\ref{F:hartman_3_2_3} for a general illustration
-of this case).
-The edge from the vertex labeled $*$ to $y$ in
-Figure~\ref{F:hartman_overview}
-is an example of such a chord: our algorithm halts
-$P$ at $*$, and divides the remaining subgraph at the chord,
-see Figure~\ref{F:hartman_difference}.
-
-
 \begin{figure}
 \begin{center}
 \SolidGraph
@@ -1481,6 +1068,41 @@ Lemma~\ref{L:hartman3} (Algorithm~\ref{A:hartman_impl}).}
 \end{center}
 \end{figure}
 
+In Lemma~\ref{L:hartman3} below, we provide a different proof of Hartman's
+result, organized in such a way that it immediately
+describes a linear time algorithm for graphs
+represented as in Section~\ref{S:representation}.
+If $x=z$, then our $G,x,y$ match
+those in Hartman's \cite[Lemma~4.2]{Har1997}, but we assume
+that $G$ is biconnected;
+we follow a similar iterative procedure to color a path
+$P$ clockwise from $x$ along $C$, but we consider
+one edge at a time, and simultaneously remove
+$P$ as it is colored. If $x\ne z$, then $z$ is
+the farthest clockwise end of the path $P$ being colored;
+the rest of $P$ has already been removed, and
+our $x$ serves as Hartman's $x'$.
+
+For those familiar with Hartman's proof: the one major difference between
+our algorithm and Hartman's
+occurs in Case~3.2.3.2 of the proof of Lemma~\ref{L:hartman3} below.
+If we encounter a chord edge $zv\in E(G)-E(C)$
+($z$ is the current end of $P$) with
+$v\in C[z,y]$ and $L(z)\cap L(v)=\emptyset$ (i.e. $d\not\in L(v)$,
+where $d$ is the color of $P$),
+then instead of continuing to
+search for neighbors of $z$ in $C[z,v]$ that we might add
+to $P$, we
+apply the inductive hypothesis such that $z$ now serves as
+``$y$'' (see Figure~\ref{F:hartman_3_2_3} for a general illustration
+of this case).
+The edge from the vertex labeled $*$ to $y$ in
+Figure~\ref{F:hartman_overview}
+is an example of such a chord: our algorithm halts
+$P$ at $*$, and divides the remaining subgraph at the chord,
+see Figure~\ref{F:hartman_difference}.
+
+
 Given a coloring $c$ of a graph $G$, and $v\in G$, we define
 $\text{deg}_c(v)$
 to be $\text{deg}(v)$ in the subgraph induced by $c(v)$'s color class,
@@ -1503,7 +1125,7 @@ then $\text{deg}_c(z)=0$.
 \end{lemma}
 
 \begin{proof}
-Suppose that $m=m(G)=|E(G)|\le 1$. Then $G=C$. We define a path
+Suppose that $m=m(G)\le 1$. Then $G=C$. We define a path
 $L$-coloring $c$ of $G$ as follows.
 Let $c(x)\in L(x)$ and $c(y)\in L(y)$ be the color in
 each respective list.
@@ -1511,7 +1133,7 @@ If $m=0$, then $n(G)=1$ and $c$ trivially satisfies the lemma.
 Otherwise $m=1$ and $n(G)= 2$. If $x\ne y$, then $c$ is a
 path $L$-coloring of $G$ with the constraints of the lemma.
 Otherwise the remaining
-$v\in G-y$ satisfies $|L(v)|\ge 2$, and we define
+$v\in G-y$ satisfies $|L(v)|\ge 2$, and we pick
 $c(v)\in L(v)-\{c(y)\}$.
 
 We proceed by induction on $m$, the number of edges. Let
@@ -1647,7 +1269,7 @@ and \ref{F:hartman_3_2_3}.
 Suppose that $u_2\in G-C$. Define $L'(u_2)=L(u_2)- L(z)$ and
 $L'(v)=L(v)$ for each $v\in G-u_2$. Note that $|L'(u_2)|\ge |L(u_2)|-1\ge 2$.
 Let $C_1$ be the outer face of $G_1=G-zu_1$,
-and observe that $C_1$ is the union of $C-u_1z$ with the
+and observe that $C_1[x,z]$ is the union of $C[x,z]-u_1z$ with the
 path $u_1,u_2,z$. Since $|L'(u_2)|\ge 2$ and $L'(u_2)\cap
 L'(z)=\emptyset$, we may apply the inductive hypothesis
 to find a path $L'$-coloring of $G_1$ with $x_1=x$, $y_1=y$, $z_1=z$.
@@ -1920,7 +1542,7 @@ edges
 to produce a triangulated plane graph $G'$. Pick $u\in G'$ on the outer face
 and $d\in L(u)$. Define the list assignment $L'$ by
 $L'(u)=\{d\}$ and $L'(v)=L(v)$ for $v\in G'-u$.
-By Lemma~\ref{L:hartman3} there exists a path $L'$-coloring $c$ of $G'$,
+By Lemma~\ref{L:hartman3} there exists a path $L'$-coloring of $G'$,
 and thus a path $L$-coloring of $G$.
 So Theorem~\ref{T:planar3} follows immediately from 
 Lemma~\ref{L:hartman3}.
@@ -2015,19 +1637,19 @@ and make a recursive call with input $(u_1, y, z)$.
 Remove $zu_1$ by assigning $A(u_1)\leftarrow\prv(\adj{u_1}{z})$
 and $B(z)\leftarrow\nxt(\adj{z}{u_1})$;
 refer
-to Figure~\ref{F:hartman_1} (right),
-Figure~\ref{F:hartman_3_2}, and Figure~\ref{F:hartman_3_2_3}.
+to Figures~\ref{F:hartman_1}, \ref{F:hartman_3_2}, and
+\ref{F:hartman_3_2_3}.
 
-\textbf{Case~3.1.} Suppose that $S(u_2)=0$, that is $u_2\in
-\graphinto(C)$. Assign $S(u_2)\leftarrow S(x)$ and initialize
+\textbf{Case~3.1.} Suppose that $S(u_2)=0$, i.e. $u_2\in
+\graphinto(C)$. Assign $S(u_2)\leftarrow S(x)$, and initialize
 $B(u_2)\leftarrow\adj{u_2}{u_1}=\nxt(\adj{u_2}{z})$ and
-$A(u_2)\leftarrow\adj{u_2}{z}$;
-refer to Figure~\ref{F:hartman_1} (right).
+$A(u_2)\leftarrow\adj{u_2}{z}$,
+see Figure~\ref{F:hartman_1} (right).
 Remove the color in $L(z)$ from
 $L(u_2)$.
 Make a recursive call with the same input $(x, y, z)$.
 
-\textbf{Case~3.2.} Suppose that $S(u_2)\ne 0$, that is $u_2\in C$. Just as in
+\textbf{Case~3.2.} Suppose that $S(u_2)\ne 0$, i.e. $u_2\in C$. Just as in
 Case~3.2 of the proof of Lemma~\ref{L:hartman3}, we will separately consider
 the two blocks $G_1$ and $G_2$ of $\graphintc(C)-zu_1$.
 Note that $m_C-1=m(G_1)+m(G_2)$.
@@ -2751,93 +2373,6 @@ Figure~\ref{F:hartman_impl}.}
 \end{center}
 \end{figure}
 
-\begin{figure}
-\begin{center}
-\SolidGraph
-\begin{tikzpicture}[yscale=0.8]
-        \node (v0) [label=left:{\{4\}}] at (-2.375000cm, 2.000000cm) {};
-        \node (v1) [label=right:{\{4,5\}}] at (2.375000cm, 2.000000cm) {};
-        \node (v2) [label=right:{\{5,2\}}] at (2.375000cm, -2.000000cm) {};
-        \node (v3) [label=left:{\{2,4\}}] at (-2.375000cm, -2.000000cm) {};
-        \node (v4) [label=right:{\{1,3,2\}}] at (-0.532660cm, -0.259649cm) {
-};
-        \node (v5) [label=above:{\{4,1,5\}}] at (-0.297357cm, 0.720239cm) {}
-;
-        \node (v6) [label=below:{\{3,2,1\}}] at (-0.112185cm, -1.346142cm) {
-};
-        \node (v7) [label=right:{\{3,4,5\}}] at (1.340525cm, 0.632695cm) {};
-        \node (v8) [label=left:{\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
-;
-        \begin{pgfonlayer}{bg}
-                \draw (v0) edge (v8);
-                \draw (v0) edge (v3);
-                \draw (v0) edge (v4);
-                \draw (v0) edge (v5);
-                \draw (v0) edge (v1);
-                \draw (v1) edge (v5);
-                \draw (v1) edge (v7);
-                \draw (v1) edge (v2);
-                \draw (v2) edge (v7);
-                \draw (v2) edge (v5);
-                \draw (v2) edge (v4);
-                \draw (v2) edge (v6);
-                \draw (v2) edge (v3);
-                \draw (v3) edge (v6);
-                \draw (v3) edge (v4);
-                \draw (v3) edge (v8);
-                \draw (v4) edge (v5);
-                \draw (v4) edge (v8);
-                \draw (v4) edge (v6);
-                \draw (v5) edge (v7);
-        \end{pgfonlayer}
-\end{tikzpicture}
-$\qquad$
-\begin{tikzpicture}[yscale=0.8]
-        \node (v0) [label=left:{4}] at (-2.375000cm, 2.000000cm) {};
-        \node (v1) [label=right:{5}] at (2.375000cm, 2.000000cm) {};
-        \node (v2) [label=right:{5}] at (2.375000cm, -2.000000cm) {};
-        \node (v3) [label=left:{2}] at (-2.375000cm, -2.000000cm) {};
-        \node (v4) [label=right:{2}] at (-0.532660cm, -0.259649cm) {
-};
-        \node (v5) [label=above:{1}] at (-0.297357cm, 0.720239cm) {}
-;
-        \node (v6) [label=below:{3}] at (-0.112185cm, -1.346142cm) {
-};
-        \node (v7) [label=right:{3}] at (1.340525cm, 0.632695cm) {};
-        \node (v8) [label=left:{3}] at (-1.705649cm, -0.111242cm) {}
-;
-        \begin{pgfonlayer}{bg}
-                \draw (v0) edge (v8);
-                \draw (v0) edge (v3);
-                \draw (v0) edge (v4);
-                \draw (v0) edge (v5);
-                \draw (v0) edge (v1);
-                \draw (v1) edge (v5);
-                \draw (v1) edge (v7);
-                \draw (v1) edge [double,very thick] (v2);
-                \draw (v2) edge (v7);
-                \draw (v2) edge (v5);
-                \draw (v2) edge (v4);
-                \draw (v2) edge (v6);
-                \draw (v2) edge (v3);
-                \draw (v3) edge (v6);
-                \draw (v3) edge [double,very thick] (v4);
-                \draw (v3) edge (v8);
-                \draw (v4) edge (v5);
-                \draw (v4) edge (v8);
-                \draw (v4) edge (v6);
-                \draw (v5) edge (v7);
-        \end{pgfonlayer}
-\end{tikzpicture}
-\caption{The initial list assignment $L$ (left) and the
-resulting path
-$L$-coloring (right)
-from the Algorithm~\ref{A:hartman_impl} example in
-Figures~\ref{F:hartman_impl} and \ref{F:hartman_impl_cont}.}
-\label{F:hartman_impl_comp}
-\end{center}
-\end{figure}
-
 Let $G$ be a triangulated plane graph
 represented by augmented adjacency
 lists. Let $L$ be a length $n$ array of color lists of length $3$,
@@ -2862,306 +2397,130 @@ from the subgraph(s) under consideration.
 Case~1 makes a recursive call
 with an input that satisfies Case~2, and Case~2 makes a recursive
 call with an input that satisfies Case~3.
-Therefore the total number of recursive calls made, thus the
+Therefore the total number of recursive calls made, and thus the
 overall time complexity,
-is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl},
-\ref{F:hartman_impl_cont}, and \ref{F:hartman_impl_comp} for a
-concrete example.
+is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl} and
+\ref{F:hartman_impl_cont} for a concrete example.
 
-\section{Experimental Performance and Parallelism}\label{S:performance}
+\section{Experimental Performance}\label{S:performance}
 
 A C implementation of each algorithm is available~\cite{Bro2017}.
-For each $i$ from $3\ldots 7$, a uniform random sample of $100$
+For each $i$ from $4\ldots 7$, a uniform random sample of $100$
 plane triangulations of order $10^i$ was
-generated. Each algorithm was run on a each set of samples,
-see the timings in Figure~\ref{F:benchmark} and the plot
-in Figure~\ref{F:plot}.
+generated using the method of
+Poulalhon and Schaeffer~\cite{Pou2006}. 
+Each algorithm, as well as a baseline breadth-first search (BFS),
+was run on the sample set; see Figure~\ref{F:plot}.
 
-\begin{figure}[p]
-\begin{center}
-\begin{tabular}{r||l|l|l|l|l}
-    & $n=10^{3}$ & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$
-        & $n=10^{7}$ \\
-\hline
-\hline
-    (\textcolor{black}{Black}) BFS & %$1.66\cdot 10^{2}$ & $2.26\cdot 10^3$ &
-    $9.72\cdot 10^{3}$ & $2.82\cdot 10^{5}$ &
-    $3.94\cdot 10^{6}$ & $1.04\cdot 10^{8}$ &
-    $1.31\cdot 10^{9}$ \\
-\hline
-    (\textcolor{green}{Green}) Algorithm~\ref{A:augment} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $3.35\cdot 10^{4}$ & $5.34\cdot 10^{5}$ &
-    $2.10\cdot 10^{7}$ & $4.15\cdot 10^{8}$ &
-    $4.65\cdot 10^{9}$ \\
-\hline
-    (\textcolor{brown}{Brown}) Algorithm~\ref{A:poh_bfs}  & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $2.24\cdot 10^{5}$ & $4.02\cdot 10^{6}$ &
-    $6.78\cdot 10^{7}$ & $1.99\cdot 10^{9}$ &
-    $3.57\cdot 10^{10}$ \\
-\hline
-    (\textcolor{red}{Red}) Algorithm~\ref{A:poh_linear} & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $4.63\cdot 10^{4}$ & $5.99\cdot 10^{5}$ &
-    $7.38\cdot 10^{6}$ & $1.58\cdot 10^{8}$ &
-    $1.83\cdot 10^{9}$ \\
-\hline
-    (\textcolor{blue}{Blue}) Algorithm~\ref{A:hartman_impl} & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $4.59\cdot 10^{4}$ & $6.46\cdot 10^{5}$ &
-    $9.89\cdot 10^{6}$ & $1.84\cdot 10^{8}$ &
-    $2.12\cdot 10^{9}$ \\
-\end{tabular}
-\caption{Average time (ns) per triangulated plane graph
-(sample size $100$).}
-    \label{F:benchmark}
-\end{center}
-\end{figure}
-
-\begin{figure}[p]
-\begin{center}
-\begin{tabular}{r||l|l|l|l|l}
-    & $n\approx10^{3}$ & $n\approx10^{4}$ & $n\approx10^{5}$ & $n\approx10^{6}$
-        & $n\approx10^{7}$ \\
-\hline
-\hline
-    (\textcolor{brown}{Brown}) Algorithm~\ref{A:poh_bfs} & 
-    $2.59\cdot 10^{5}$ & $8.71\cdot 10^{6}$ &
-    $4.78\cdot 10^{8}$ & $7.38\cdot 10^{10}$ &
-    $2.95\cdot 10^{12}$ \\
-\hline
-    (\textcolor{red}{Red}) Algorithm~\ref{A:poh_linear} & 
-    $1.95\cdot 10^{4}$ & $2.07\cdot 10^{5}$ &
-    $3.49\cdot 10^{6}$ & $1.48\cdot 10^{8}$ &
-    $2.26\cdot 10^{9}$ \\
-\end{tabular}
-\caption{Average time (ns) per pyramid graph from Figure~\ref{F:pyramid} (sample size 30).}
-    \label{F:pyramid_benchmark}
-\end{center}
-\end{figure}
-
-\begin{figure}[p]
+\begin{figure}
 \begin{center}
 \begin{tikzpicture}
-  \draw[very thin,color=gray,xstep=1.25,ystep=1.0] (-0.1,-0.1) grid (5.1, 6.1);
-  \node at (-0.6, 0.0) {$10^4$};
-  \node at (-0.6, 1.0) {$10^5$};
-  \node at (-0.6, 2.0) {$10^6$};
-  \node at (-0.6, 3.0) {$10^7$};
-  \node at (-0.6, 4.0) {$10^8$};
-  \node at (-0.6, 5.0) {$10^9$};
-  \node at (-0.6, 6.0) {$10^{10}$};
-  \node at (0.0,-0.4) {$10^3$};
-  \node at (1.25,-0.4) {$10^4$};
-  \node at (2.5,-0.4) {$10^5$};
-  \node at (3.75,-0.4) {$10^6$};
-  \node at (5.0,-0.4) {$10^7$};
+  \draw[very thin,color=gray,xstep=3.2,ystep=1.75] (-0.1,-0.1) grid (3.0*3.2+0.1, 4.6*1.75+0.1);
+  \node at (-0.6, 0.0) {$10^5$};
+  \node at (-0.6, 1.0*1.75) {$10^6$};
+  \node at (-0.6, 2.0*1.75) {$10^7$};
+  \node at (-0.6, 3.0*1.75) {$10^8$};
+  \node at (-0.6, 4.0*1.75) {$10^9$};
+  % \node at (-0.6, 5.0*1.75) {$10^{10}$};
+  \node at (0.0*3.2,-0.4) {$10^4$};
+  \node at (1.0*3.2,-0.4) {$10^5$};
+  \node at (2.0*3.2,-0.4) {$10^6$};
+  \node at (3.0*3.2,-0.4) {$10^7$};
 
-  \draw[->] (-0.2,0) -- (5.2,0) node[right] {$n$};
-  \draw[->] (0,-0.2) -- (0,6.25) node[above] {Time (ns)};
+  \draw[->] (-0.2,0) -- (3.0*3.2+0.2,0) node[right] {$n(G)$};
+  \draw[->] (0,-0.2) -- (0,4.6*1.75+0.4) node[above] {Time (ns)};
 
-  \draw[very thick,color=black] (0, -0.009*1.3333) -- (1.25, 1.088*1.3333) -- (2.5, 1.947*1.3333) -- (3.75, 3.013*1.3333)
-    -- (5, 3.838*1.3333);
-  \draw[very thick,color=brown] (0, 1.013*1.3333) -- (1.25, 1.953*1.3333) -- (2.5, 2.873*1.3333) -- (3.75, 3.974*1.3333)
-    -- (5, 4.915*1.3333);
-  \draw[very thick,color=red] (0, 0.499*1.3333) -- (1.25, 1.333*1.3333) -- (2.5, 2.151*1.3333) -- (3.75, 3.149*1.3333)
-    -- (5, 3.947*1.3333);
-  \draw[very thick,color=blue] (0, 0.495*1.3333) -- (1.25, 1.358*1.3333) -- (2.5, 2.245*1.3333) -- (3.75, 3.199*1.3333)
-    -- (5, 3.995*1.3333);
-  \draw[very thick,color=green] (0, 0.525) -- (1.25, 1.728) -- (2.5, 3.322) -- (3.75, 4.617)
-    -- (5, 5.667);
+  \draw[very thick,color=black]
+	(0.0*3.2, 0.450*1.75) --
+	(1.0*3.2, 1.595*1.75) --
+	(2.0*3.2, 3.017*1.75) --
+	(3.0*3.2, 4.117*1.75);
+  \draw[very thick,loosely dashed,color=brown]
+	(0.0*3.2, 0.728*1.75) --
+	(1.0*3.2, 2.322*1.75) --
+	(2.0*3.2, 3.618*1.75) --
+	(3.0*3.2, 4.667*1.75);
+  \draw[very thick,dashdotted,color=red]
+	(0.0*3.2, 0.777*1.75) --
+	(1.0*3.2, 1.868*1.75) --
+	(2.0*3.2, 3.199*1.75) --
+	(3.0*3.2, 4.262*1.75);
+  \draw[very thick,dashed,color=blue]
+	(0.0*3.2, 0.810*1.75) --
+	(1.0*3.2, 1.995*1.75) --
+	(2.0*3.2, 3.265*1.75) --
+	(3.0*3.2, 4.326*1.75);
+  \draw[very thick,densely dashdotted,color=orange]
+	(0.0*3.2, 0.497*1.75) --
+	(1.0*3.2, 1.474*1.75) --
+	(2.0*3.2, 2.747*1.75) --
+	(3.0*3.2, 3.815*1.75);
+  \draw[very thick,densely dashed,color=purple]
+	(0.0*3.2, 0.683*1.75) --
+	(1.0*3.2, 1.712*1.75) --
+	(2.0*3.2, 2.897*1.75) --
+	(3.0*3.2, 3.949*1.75);
+
+  \node at (3.0*3.2+1.8, 4.5*1.6-0.0*0.6) {BFS};
+  \draw[very thick,color=black] (3.0*3.2+0.4, 4.5*1.6-0.0*0.6) -- (3.0*3.2+1.2, 4.5*1.6-0.0*0.6);
+  \node at (3.0*3.2+2.1, 4.5*1.6-1.0*0.6) {Alg.~\ref{A:augment}};
+  \draw[very thick,loosely dashed,color=brown] (3.0*3.2+0.4, 4.5*1.6-1.0*0.6) -- (3.0*3.2+1.2, 4.5*1.6-1.0*0.6);
+  \node at (3.0*3.2+2.1, 4.5*1.6-2.0*0.6) {Alg.~\ref{A:poh_linear}};
+  \draw[very thick,dashdotted,color=red] (3.0*3.2+0.4, 4.5*1.6-2.0*0.6) -- (3.0*3.2+1.2, 4.5*1.6-2.0*0.6);
+  \node at (3.0*3.2+2.1, 4.5*1.6-3.0*0.6) {Alg.~\ref{A:hartman_impl}};
+  \draw[very thick,dashed,color=blue] (3.0*3.2+0.4, 4.5*1.6-3.0*0.6) -- (3.0*3.2+1.2, 4.5*1.6-3.0*0.6);
+  \node at (3.0*3.2+2.85, 4.5*1.6-4.0*0.6) {Alg.~\ref{A:poh_linear} (4 thr.)};
+  \draw[very thick,densely dashdotted,color=orange] (3.0*3.2+0.4, 4.5*1.6-4.0*0.6) -- (3.0*3.2+1.2, 4.5*1.6-4.0*0.6);
+  \node at (3.0*3.2+2.85, 4.5*1.6-5.0*0.6) {Alg.~\ref{A:hartman_impl} (4 thr.)};
+  \draw[very thick,densely dashed,color=purple] (3.0*3.2+0.4, 4.5*1.6-5.0*0.6) -- (3.0*3.2+1.2, 4.5*1.6-5.0*0.6);
 \end{tikzpicture}
-$\quad$
-\begin{tikzpicture}
-  \draw[very thin,color=gray,xstep=1.25,ystep=0.75] (-0.1,-0.1) grid (5.1, 6.1);
-  \node at (-0.6, 0.0) {$10^4$};
-  \node at (-0.6, 0.75) {$10^5$};
-  \node at (-0.6, 1.5) {$10^6$};
-  \node at (-0.6, 2.25) {$10^7$};
-  \node at (-0.6, 3.0) {$10^8$};
-  \node at (-0.6, 3.75) {$10^9$};
-  \node at (-0.6, 4.5) {$10^{10}$};
-  \node at (-0.6, 5.25) {$10^{11}$};
-  \node at (-0.6, 6.0) {$10^{12}$};
-  \node at (0.0,-0.4) {$10^3$};
-  \node at (1.25,-0.4) {$10^4$};
-  \node at (2.5,-0.4) {$10^5$};
-  \node at (3.75,-0.4) {$10^6$};
-  \node at (5.0,-0.4) {$10^7$};
-
-  \draw[->] (-0.2,0) -- (5.2,0) node[right] {$n$};
-  \draw[->] (0,-0.2) -- (0,6.25) node[above] {Time (ns)};
-
-  \draw[very thick,color=brown] (0, 1.060) -- (1.25, 2.205) -- (2.5, 3.510) -- (3.75,  5.151)
-    -- (5, 6.352);
-  \draw[very thick,color=red] (0, 0.216) -- (1.25, 0.987) -- (2.5, 1.907) -- (3.75, 3.128)
-    -- (5, 4.016);
-\end{tikzpicture}
-\caption{Plots of Figure~\ref{F:benchmark} (left) and Figure~\ref{F:pyramid_benchmark} (right).}
+\caption{Algorithm benchmarks on a uniform sample of plane triangulations.}
     \label{F:plot}
 \end{center}
 \end{figure}
 
-\begin{figure}
-\begin{center}
-\begin{tabular}{r||l|l|l|l|l}
-    Threads & $n=10^{3}$ & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$
-        & $n=10^{7}$ \\
-\hline
-\hline
-    1 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $4.63\cdot 10^{4}$ & $5.99\cdot 10^{5}$ &
-    $7.38\cdot 10^{6}$ & $1.58\cdot 10^{8}$ &
-    $1.83\cdot 10^{9}$ \\
-\hline
-    2 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $4.04\cdot 10^{4}$ & $4.61\cdot 10^{5}$ &
-    $4.49\cdot 10^{6}$ & $9.04\cdot 10^{7}$ &
-    $1.04\cdot 10^{9}$ \\
-\hline
-    3 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $4.12\cdot 10^{4}$ & $3.58\cdot 10^{5}$ &
-    $3.50\cdot 10^{6}$ & $6.75\cdot 10^{7}$ &
-    $7.83\cdot 10^{8}$ \\
-\hline
-    4 & % $4.28\cdot 10^{2}$ & $6.48\cdot 10^3$ &
-    $4.32\cdot 10^{4}$ & $3.14\cdot 10^{5}$ &
-    $2.98\cdot 10^{6}$ & $5.59\cdot 10^{7}$ &
-    $6.53\cdot 10^{8}$ \\
-\end{tabular}
-\caption{Parallel Algorithm~\ref{A:poh_linear} average time (ns)
-per graph (sample size $100$).}
-    \label{F:benchmark_poh_thread}
-\end{center}
-\end{figure}
-
-Plane triangulations were sampled using the method of
-Poulalhon and Schaeffer~\cite{Pou2006}.
-Vertex labels were shuffled in each sampled graph, and the
-corresponding adjacency list arrays were re-ordered in memory,
-to avoid representation bias from the sampling algorithm.
-List assignments for Algorithm~\ref{A:hartman_impl} were
-uniformly drawn from a set of six colors.
-
-A breadth-first search (BFS) implemented with
-a circular array FIFO queue was run on the same set of graphs
-as a baseline
-algorithm that hits every half-edge of a graph exactly once.
-All binaries 
-were compiled with Clang 19.1.7 and run on a Linux 6.12.9 machine
-with an x86\_64 Intel N100 processor.
-Both source code and binaries are available~\cite{Bro2017}.
-
-The performance of
-Algorithm~\ref{A:hartman_impl} was similar to
-Algorithm~\ref{A:poh_linear} on the sample, but
-Algorithm~\ref{A:hartman_impl} requires an
-augmented adjacency list representation.
-If one
-is not immediately available, then time required to execute
-Algorithm~\ref{A:hartman_impl} would also include
-Algorithm~\ref{A:augment}.
-
-A benchmark was also run to test the performance of
-Algorithm~\ref{A:poh_bfs} and
-Algorithm~\ref{A:poh_linear} on the collection of pyramid graphs
-$\{A_k\}_{k\in\mathbb{N}}$ from Figure~\ref{F:pyramid}.
-Algorithm~\ref{A:poh_bfs} scaled as expected, see the timings
-in Figure~\ref{F:pyramid_benchmark} and the plot in
-Figure~\ref{F:plot}.
-For each $n=10^i$ we selected the closest integer $k$ to
-$\sqrt{2n-6}$ so that $n(A_k)\approx n$.
-
-Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl} perform
-recursive calls that operate on
-subgraphs that are disjoint apart from select vertices on their
-respective outer faces. Therefore it is possible to maintain a
-stack of
-independent recursive frames and have a pool of threads execute frames
-concurrently. The amount of parallelism possible with this method is highly
-dependent on the structure of the graph. E.g. when
-Algorithm~\ref{A:poh_linear} is run on a pyramid
-graph from Figure~\ref{F:pyramid} there will never be more
-than one frame on the stack.
+In Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl}, it
+is possible to maintain a
+stack of independent recursive frames, and to have a pool of threads execute them
+concurrently. The amount of parallelism possible using this method
+varies greatly depending on the graph structure, but a
+2-3x performance
+gain was observed when using 4 threads to color large random triangulations;
+see Figure~\ref{F:plot}.
 
 Our parallel implementation of Algorithm~\ref{A:poh_linear} maintains a
-shared lock-guarded stack from which all threads push and pop recursive
-frames. If no frames are
-available, a thread must idle until either a new frame is pushed to the
-stack by another thread or
-all threads are idle.
-To reduce lock contention, each thread may also
-maintain a
+shared lock-guarded stack which all threads may push/pop recursive
+frames to/from.
+To reduce lock contention, each thread also
+maintains a
 small local stack of frames, and only access the shared
 stack when this local stack is full or empty.
 
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
-parallel execution.
-The first difficulty is that
-the recursive calls in Case~3.2 of
-Algorithm~\ref{A:hartman_impl} relied on a sequential
-execution order.
+parallel execution: the recursive calls in Case~3.2
+rely on a sequential execution order.
 If we save a local copy of
 $S(v), A(v), B(v)$ for each $v\in\{x, y,z\}$ alongside
 each frame, then the recursive calls in
 Case~3.2.1 with $u_2=x$, Case~3.2.2,
 Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$ become order independent.
-An atomic counter can be used to track $\text{max}(S)+1$.
-Unfortunately, in Case~3.2.1 with $u_2\ne x$ and Case~3.2.3.2 with $u_2\ne y$,
-the second recursive call will always depend on the color list $L(u_2)$
-produced by the first call.
-
-\begin{figure}
-\begin{center}
-\begin{tabular}{r||l|l|l|l|l}
-    Threads & $n=10^{3}$  & $n=10^{4}$ & $n=10^{5}$ & $n=10^{6}$
-        & $n=10^{7}$ \\
-\hline
-\hline
-    1 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $4.59\cdot 10^{4}$ & $6.46\cdot 10^{5}$ &
-    $9.89\cdot 10^{6}$ & $1.84\cdot 10^{8}$ &
-    $2.12\cdot 10^{9}$ \\
-\hline
-    2 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $6.22\cdot 10^{4}$ & $5.99\cdot 10^{5}$ &
-    $6.97\cdot 10^{6}$ & $1.23\cdot 10^{8}$ &
-    $1.40\cdot 10^{9}$ \\
-\hline
-    3 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $6.09\cdot 10^{4}$ & $5.02\cdot 10^{5}$ &
-    $5.65\cdot 10^{6}$ & $9.32\cdot 10^{7}$ &
-    $1.06\cdot 10^{9}$ \\
-\hline
-    4 & % $7.62\cdot 10^{2}$ & $9.30\cdot 10^3$ &
-    $6.58\cdot 10^{4}$ & $4.82\cdot 10^{5}$ &
-    $5.15\cdot 10^{6}$ & $7.89\cdot 10^{7}$ &
-    $8.90\cdot 10^{8}$ \\
-\end{tabular}
-    \caption{Parallel Algorithm~\ref{A:hartman_impl} average time (ns)
-    per graph (sample size $100$).}
-    \label{F:benchmark_hartman_thread}
-\end{center}
-\end{figure}
+However, in Case~3.2.1 with $u_2\ne x$, and Case~3.2.3.2 with $u_2\ne y$,
+the second call will always depend on the color list $L(u_2)$
+produced by the first.
 
 Our parallel implementation of Algorithm~\ref{A:hartman_impl}
 maintains a lock-guarded object pool
 of frames and a stack of references to frames in the pool.
-Recursive frames are added to
-the pool when they appear in the usual course of the algorithm, but
-are only pushed to the stack if they are ready to execute.
-For each vertex $v\in G$, we store an optional reference
-to a frame that will become ready when $v$ has been colored, i.e. has had
-its color list reduced to length $1$. To allow for
+Frames are added to
+the pool in the usual course of the algorithm, but
+only pushed to the stack if they are ready to execute.
+For each $v\in G$, we store an optional reference
+to a frame that will become ready when $v$ has been colored. To allow for
 multiple frames to await the coloring of one vertex, each frame in the
-pool stores an ``intrusive linked list,'' i.e. an optional
-reference to the next frame in line. When a frame is added to the pool and
-it needs to await a vertex that has another frame waiting on it,
-the new frame is added to the linked list of the existing frame.
+pool stores an optional reference to the next frame in line
+(an intrusive linked list).
 When a vertex $v$ is colored, each frame waiting on $v$
 is pushed to the stack.
-
-Benchmarks in Figures~\ref{F:benchmark_poh_thread} and \ref{F:benchmark_hartman_thread}
-showed some benefit to the parallel
-implementations of Algorithms~\ref{A:poh_linear} and\ref{A:hartman_impl} when $n\ge 10^4$, with
-significant improvements for larger graphs.
 
 \begin{thebibliography}{99}
 

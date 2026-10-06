@@ -476,7 +476,7 @@ Let $G_1$ be the subgraph of $\graphintc(C)$ induced by
 $V(P_1)\cup N(P_1)-V(P_2)$, see Figure~\ref{F:poh_linear_0}. Let $C_1$
 be the outer face of $G_1$.
 Algorithm~\ref{A:poh_linear} implements Poh's algorithm in linear time
-using $P_3=C_1-P_1$ as the $u_3,w_3$-path.
+by using $P_3=C_1-P_1$ as the $u_3,w_3$-path.
 Observe that $P_3$ is induced in $G$: $G_1$ is induced, so there is no chord of
 $P_3$ exterior to $C_1$,
 and each $v\in P_3$ has a neighbor in $P_1$, so there is no chord of $P_3$
@@ -591,7 +591,7 @@ $\qquad$
 \caption{
 An example setup for Poh's algorithm highlighting the subgraph $G_1$
 induced by $V(P_1)\cup N(P_1)-V(P_2)$ (left),
-and the path $3$-coloring output from
+and the path $3$-coloring from
 Algorithm~\ref{A:poh_linear} (right).}\label{F:poh_linear_0}
 \end{center}
 \end{figure}
@@ -903,7 +903,7 @@ such that for each $v\in P$, $d\in L(v)$. Starting from
 $P=x$, the path is colored
 as follows: let $z$ be end of $P$ opposite $x$, and
 define $T_{z}=\{v\in N(z)\cap V(C[z,y]):d\in L(v)\}$; if $T_{z}\ne\emptyset$,
-then the $v\in T_{z}$ farthest clockwise along $C$
+then the $v\in T_{z}$ farthest clockwise from $z$ along $C$
 is colored and added to $P$, and this process is repeated with $z=v$.
 After coloring $P$, the algorithm is applied to each connected
 component of $G-P$, using the list assignment $L'$ defined by
@@ -1586,7 +1586,7 @@ is determined by the procedure case below that the input satisfies.
 If $m_C=1$ (Base case) or $z\ne x$ (Case~3), then $r=0$.
 If $z=x$ and $C[y,x]\ne y,x$ (Case~2), then $r=1$.
 Otherwise $z=x$ and $C[y,x]=y,x$ (Case~1), and $r=2$. Assume that
-$\ell < 2(m-m_C) + 4$.
+$\ell < 2(m-m_C+1) + 2$.
 
 Let $M$
 be a length $2m+2$ integer array such that if $v\in C$,
@@ -1613,10 +1613,12 @@ until one color remains. Note that
 $m_C=1$ and $\text{max}(S)\le\ell+ 2(m_C-1)=\ell$ by definition.
 
 \textbf{Recursive case.} Suppose that $A(z)\ne B(z)$.
-Let $\adj{z}{u_2}:=\nxt(\adj{z}{u_1})$. It follows immediately
+Let $\adj{z}{u_2}:=\nxt(\adj{z}{u_1})$. It follows from the
+definition of $\ell$
 that $\text{max}(S)\le\ell+2(m_C-1)$ after Cases~1, 2,
-and 3.1, so we will only argue that this bound holds after Case~3.2.
-It may be useful to refer to
+and 3.1, so we will only argue why the bound
+holds after Case~3.2.
+It may be useful to see
 Figures~\ref{F:hartman_1}, \ref{F:hartman_3_2}, and
 \ref{F:hartman_3_2_3}.
 
@@ -1635,10 +1637,7 @@ and make a recursive call with input $(u_1, y, z)$.
 
 \textbf{Case~3.} Suppose that $z\ne x$ and $u_1\ne y$.
 Remove $zu_1$ by assigning $A(u_1)\leftarrow\prv(\adj{u_1}{z})$
-and $B(z)\leftarrow\nxt(\adj{z}{u_1})$;
-refer
-to Figures~\ref{F:hartman_1}, \ref{F:hartman_3_2}, and
-\ref{F:hartman_3_2_3}.
+and $B(z)\leftarrow\nxt(\adj{z}{u_1})$.
 
 \textbf{Case~3.1.} Suppose that $S(u_2)=0$, i.e. $u_2\in
 \graphinto(C)$. Assign $S(u_2)\leftarrow S(x)$, and initialize
@@ -1745,26 +1744,26 @@ $z$};
         \node (v8) [label=left:{0,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v0) edge [->, very thick] (v8);
-                \draw (v0) edge [very thick] (v3);
-                \draw (v0) edge [very thick] (v4);
-                \draw (v0) edge [very thick] (v5);
-                \draw (v0) edge [very thick] (v1);
-                \draw (v1) edge [very thick] (v5);
-                \draw (v1) edge [very thick] (v7);
-                \draw (v1) edge [very thick] (v2);
-                \draw (v2) edge [very thick] (v7);
-                \draw (v2) edge [very thick] (v5);
-                \draw (v2) edge [very thick] (v4);
-                \draw (v2) edge [very thick] (v6);
-                \draw (v2) edge [very thick] (v3);
-                \draw (v3) edge [very thick] (v6);
-                \draw (v3) edge [very thick] (v4);
-                \draw (v3) edge [very thick] (v8);
-                \draw (v4) edge [very thick] (v5);
-                \draw (v4) edge [very thick] (v8);
-                \draw (v4) edge [very thick] (v6);
-                \draw (v5) edge [very thick] (v7);
+                \draw (v0) edge [->, ultra thick] (v8);
+                \draw (v0) edge [ultra thick] (v3);
+                \draw (v0) edge [ultra thick] (v4);
+                \draw (v0) edge [ultra thick] (v5);
+                \draw (v0) edge [ultra thick] (v1);
+                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v2);
+                \draw (v2) edge [ultra thick] (v7);
+                \draw (v2) edge [ultra thick] (v5);
+                \draw (v2) edge [ultra thick] (v4);
+                \draw (v2) edge [ultra thick] (v6);
+                \draw (v2) edge [ultra thick] (v3);
+                \draw (v3) edge [ultra thick] (v6);
+                \draw (v3) edge [ultra thick] (v4);
+                \draw (v3) edge [ultra thick] (v8);
+                \draw (v4) edge [ultra thick] (v5);
+                \draw (v4) edge [ultra thick] (v8);
+                \draw (v4) edge [ultra thick] (v6);
+                \draw (v5) edge [ultra thick] (v7);
         \end{pgfonlayer}
 \end{tikzpicture}
 \begin{tikzpicture}
@@ -1784,26 +1783,26 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v0) edge [->, very thick] (v4);
-                \draw (v0) edge [very thick] (v8);
-                \draw (v0) edge [very thick] (v5);
-                \draw (v0) edge [very thick] (v1);
-                \draw (v1) edge [very thick] (v5);
-                \draw (v1) edge [very thick] (v7);
-                \draw (v1) edge [very thick] (v2);
-                \draw (v2) edge [very thick] (v7);
-                \draw (v2) edge [very thick] (v5);
-                \draw (v2) edge [very thick] (v4);
-                \draw (v2) edge [very thick] (v6);
-                \draw (v2) edge [very thick] (v3);
-                \draw (v3) edge [very thick] (v6);
-                \draw (v3) edge [very thick] (v4);
-                \draw (v3) edge [very thick] (v8);
+                \draw (v0) edge [->, ultra thick] (v4);
+                \draw (v0) edge [ultra thick] (v8);
+                \draw (v0) edge [ultra thick] (v5);
+                \draw (v0) edge [ultra thick] (v1);
+                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v2);
+                \draw (v2) edge [ultra thick] (v7);
+                \draw (v2) edge [ultra thick] (v5);
+                \draw (v2) edge [ultra thick] (v4);
+                \draw (v2) edge [ultra thick] (v6);
+                \draw (v2) edge [ultra thick] (v3);
+                \draw (v3) edge [ultra thick] (v6);
+                \draw (v3) edge [ultra thick] (v4);
+                \draw (v3) edge [ultra thick] (v8);
                 \draw (v0) edge [dotted] (v3);
-                \draw (v4) edge [very thick] (v5);
-                \draw (v4) edge [very thick] (v8);
-                \draw (v4) edge [very thick] (v6);
-                \draw (v5) edge [very thick] (v7);
+                \draw (v4) edge [ultra thick] (v5);
+                \draw (v4) edge [ultra thick] (v8);
+                \draw (v4) edge [ultra thick] (v6);
+                \draw (v5) edge [ultra thick] (v7);
         \end{pgfonlayer}
 \end{tikzpicture}
 
@@ -1824,26 +1823,26 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v0) edge [->, very thick] (v5);
-                \draw (v0) edge [very thick] (v4);
-                \draw (v0) edge [very thick] (v1);
-                \draw (v1) edge [very thick] (v5);
-                \draw (v1) edge [very thick] (v7);
-                \draw (v1) edge [very thick] (v2);
-                \draw (v2) edge [very thick] (v7);
-                \draw (v2) edge [very thick] (v5);
-                \draw (v2) edge [very thick] (v4);
-                \draw (v2) edge [very thick] (v6);
-                \draw (v2) edge [very thick] (v3);
-                \draw (v3) edge [very thick] (v6);
-                \draw (v3) edge [very thick] (v4);
-                \draw (v3) edge [very thick] (v8);
-                \draw (v4) edge [very thick] (v8);
-                \draw (v4) edge [very thick] (v6);
-                \draw (v4) edge [very thick] (v5);
+                \draw (v0) edge [->, ultra thick] (v5);
+                \draw (v0) edge [ultra thick] (v4);
+                \draw (v0) edge [ultra thick] (v1);
+                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v2);
+                \draw (v2) edge [ultra thick] (v7);
+                \draw (v2) edge [ultra thick] (v5);
+                \draw (v2) edge [ultra thick] (v4);
+                \draw (v2) edge [ultra thick] (v6);
+                \draw (v2) edge [ultra thick] (v3);
+                \draw (v3) edge [ultra thick] (v6);
+                \draw (v3) edge [ultra thick] (v4);
+                \draw (v3) edge [ultra thick] (v8);
+                \draw (v4) edge [ultra thick] (v8);
+                \draw (v4) edge [ultra thick] (v6);
+                \draw (v4) edge [ultra thick] (v5);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v0) edge [dotted] (v8);
-                \draw (v5) edge [very thick] (v7);
+                \draw (v5) edge [ultra thick] (v7);
         \end{pgfonlayer}
 \end{tikzpicture}
 \begin{tikzpicture}
@@ -1862,23 +1861,23 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v0) edge [->, very thick] (v1);
-                \draw (v0) edge [very thick] (v5);
-                \draw (v1) edge [very thick] (v5);
-                \draw (v1) edge [very thick] (v7);
-                \draw (v1) edge [very thick] (v2);
-                \draw (v2) edge [very thick] (v7);
-                \draw (v2) edge [very thick] (v5);
-                \draw (v2) edge [very thick] (v4);
-                \draw (v2) edge [very thick] (v6);
-                \draw (v2) edge [very thick] (v3);
-                \draw (v3) edge [very thick] (v6);
-                \draw (v3) edge [very thick] (v4);
-                \draw (v3) edge [very thick] (v8);
-                \draw (v4) edge [very thick] (v8);
-                \draw (v4) edge [very thick] (v6);
-                \draw (v4) edge [very thick] (v5);
-                \draw (v5) edge [very thick] (v7);
+                \draw (v0) edge [->, ultra thick] (v1);
+                \draw (v0) edge [ultra thick] (v5);
+                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v2);
+                \draw (v2) edge [ultra thick] (v7);
+                \draw (v2) edge [ultra thick] (v5);
+                \draw (v2) edge [ultra thick] (v4);
+                \draw (v2) edge [ultra thick] (v6);
+                \draw (v2) edge [ultra thick] (v3);
+                \draw (v3) edge [ultra thick] (v6);
+                \draw (v3) edge [ultra thick] (v4);
+                \draw (v3) edge [ultra thick] (v8);
+                \draw (v4) edge [ultra thick] (v8);
+                \draw (v4) edge [ultra thick] (v6);
+                \draw (v4) edge [ultra thick] (v5);
+                \draw (v5) edge [ultra thick] (v7);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v0) edge [dotted] (v8);
                 \draw (v0) edge [dotted] (v4);
@@ -1902,21 +1901,21 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v3) edge [->, very thick] (v6);
-                \draw (v3) edge [very thick] (v4);
-                \draw (v3) edge [very thick] (v8);
-                \draw (v4) edge [very thick] (v8);
-                \draw (v4) edge [very thick] (v6);
-                \draw (v4) edge [very thick] (v5);
-                \draw (v5) edge [very thick] (v7);
-                \draw (v1) edge [very thick] (v5);
-                \draw (v1) edge [very thick] (v7);
-                \draw (v1) edge [very thick] (v2);
-                \draw (v2) edge [very thick] (v7);
-                \draw (v2) edge [very thick] (v5);
-                \draw (v2) edge [very thick] (v4);
-                \draw (v2) edge [very thick] (v6);
-                \draw (v2) edge [very thick] (v3);
+                \draw (v3) edge [->, ultra thick] (v6);
+                \draw (v3) edge [ultra thick] (v4);
+                \draw (v3) edge [ultra thick] (v8);
+                \draw (v4) edge [ultra thick] (v8);
+                \draw (v4) edge [ultra thick] (v6);
+                \draw (v4) edge [ultra thick] (v5);
+                \draw (v5) edge [ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v2);
+                \draw (v2) edge [ultra thick] (v7);
+                \draw (v2) edge [ultra thick] (v5);
+                \draw (v2) edge [ultra thick] (v4);
+                \draw (v2) edge [ultra thick] (v6);
+                \draw (v2) edge [ultra thick] (v3);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v0) edge [dotted] (v8);
                 \draw (v0) edge [dotted] (v4);
@@ -1941,20 +1940,20 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v3) edge [->, very thick] (v4);
-                \draw (v3) edge [very thick] (v6);
-                \draw (v3) edge [very thick] (v8);
-                \draw (v4) edge [very thick] (v8);
-                \draw (v4) edge [very thick] (v6);
-                \draw (v4) edge [very thick] (v5);
-                \draw (v5) edge [very thick] (v7);
-                \draw (v1) edge [very thick] (v5);
-                \draw (v1) edge [very thick] (v7);
-                \draw (v1) edge [very thick] (v2);
-                \draw (v2) edge [very thick] (v7);
-                \draw (v2) edge [very thick] (v5);
-                \draw (v2) edge [very thick] (v4);
-                \draw (v2) edge [very thick] (v6);
+                \draw (v3) edge [->, ultra thick] (v4);
+                \draw (v3) edge [ultra thick] (v6);
+                \draw (v3) edge [ultra thick] (v8);
+                \draw (v4) edge [ultra thick] (v8);
+                \draw (v4) edge [ultra thick] (v6);
+                \draw (v4) edge [ultra thick] (v5);
+                \draw (v5) edge [ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v2);
+                \draw (v2) edge [ultra thick] (v7);
+                \draw (v2) edge [ultra thick] (v5);
+                \draw (v2) edge [ultra thick] (v4);
+                \draw (v2) edge [ultra thick] (v6);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v0) edge [dotted] (v8);
                 \draw (v0) edge [dotted] (v4);
@@ -1981,16 +1980,16 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v4) edge [->, very thick] (v2);
-                \draw (v4) edge [very thick] (v6);
-                \draw (v4) edge [very thick] (v5);
-                \draw (v5) edge [very thick] (v7);
-                \draw (v1) edge [very thick] (v5);
-                \draw (v1) edge [very thick] (v7);
-                \draw (v1) edge [very thick] (v2);
-                \draw (v2) edge [very thick] (v7);
-                \draw (v2) edge [very thick] (v5);
-                \draw (v2) edge [very thick] (v6);
+                \draw (v4) edge [->, ultra thick] (v2);
+                \draw (v4) edge [ultra thick] (v6);
+                \draw (v4) edge [ultra thick] (v5);
+                \draw (v5) edge [ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v2);
+                \draw (v2) edge [ultra thick] (v7);
+                \draw (v2) edge [ultra thick] (v5);
+                \draw (v2) edge [ultra thick] (v6);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2020,14 +2019,14 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v4) edge [->, very thick] (v5);
-                \draw (v5) edge [very thick](v7);
-                \draw (v1) edge [very thick](v5);
-                \draw (v1) edge [very thick](v7);
-                \draw (v1) edge [very thick](v2);
-                \draw (v2) edge [very thick](v7);
-                \draw (v2) edge [very thick](v5);
-                \draw (v2) edge [very thick](v4);
+                \draw (v4) edge [->, ultra thick] (v5);
+                \draw (v5) edge [ultra thick](v7);
+                \draw (v1) edge [ultra thick](v5);
+                \draw (v1) edge [ultra thick](v7);
+                \draw (v1) edge [ultra thick](v2);
+                \draw (v2) edge [ultra thick](v7);
+                \draw (v2) edge [ultra thick](v5);
+                \draw (v2) edge [ultra thick](v4);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2069,12 +2068,12 @@ $y$};
         \node (M) [shape=rectangle, draw=none, fill=white] at (0.0cm, -2.4cm) {$M(4)\leftarrow 3$};
 
         \begin{pgfonlayer}{bg}
-                \draw (v2) edge [->, very thick] (v7);
-                \draw (v2) edge [very thick] (v5);
-                \draw (v5) edge [very thick] (v7);
-                \draw (v1) edge [very thick] (v5);
-                \draw (v1) edge [very thick] (v7);
-                \draw (v1) edge [very thick] (v2);
+                \draw (v2) edge [->, ultra thick] (v7);
+                \draw (v2) edge [ultra thick] (v5);
+                \draw (v5) edge [ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v2);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2108,12 +2107,12 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v1) edge [->, very thick] (v7);
-                \draw (v1) edge [very thick] (v5);
-                \draw (v1) edge [very thick] (v2);
-                \draw (v2) edge [very thick] (v7);
-                \draw (v2) edge [very thick] (v5);
-                \draw (v5) edge [very thick] (v7);
+                \draw (v1) edge [->, ultra thick] (v7);
+                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [ultra thick] (v2);
+                \draw (v2) edge [ultra thick] (v7);
+                \draw (v2) edge [ultra thick] (v5);
+                \draw (v5) edge [ultra thick] (v7);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2148,11 +2147,11 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v1) edge [->, very thick] (v2);
-                \draw (v1) edge [very thick] (v7);
-                \draw (v2) edge [very thick] (v7);
-                \draw (v2) edge [very thick] (v5);
-                \draw (v5) edge [very thick] (v7);
+                \draw (v1) edge [->, ultra thick] (v2);
+                \draw (v1) edge [ultra thick] (v7);
+                \draw (v2) edge [ultra thick] (v7);
+                \draw (v2) edge [ultra thick] (v5);
+                \draw (v5) edge [ultra thick] (v7);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2187,9 +2186,9 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v2) edge [->, very thick] (v5);
-                \draw (v2) edge [very thick] (v7);
-                \draw (v5) edge [very thick] (v7);
+                \draw (v2) edge [->, ultra thick] (v5);
+                \draw (v2) edge [ultra thick] (v7);
+                \draw (v5) edge [ultra thick] (v7);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2228,7 +2227,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v5) edge [->, very thick] (v7);
+                \draw (v5) edge [->, ultra thick] (v7);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2267,7 +2266,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v2) edge [->, very thick] (v6);
+                \draw (v2) edge [->, ultra thick] (v6);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2307,9 +2306,9 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v4) edge [->, very thick] (v3);
-                \draw (v4) edge [very thick] (v8);
-                \draw (v3) edge [very thick] (v8);
+                \draw (v4) edge [->, ultra thick] (v3);
+                \draw (v4) edge [ultra thick] (v8);
+                \draw (v3) edge [ultra thick] (v8);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v0) edge [dotted] (v8);
                 \draw (v0) edge [dotted] (v4);
@@ -2345,7 +2344,7 @@ $z$};
         \node (v8) [label=left:{10,\{3\}}] at (-1.705649cm, -0.111242cm) {$x$}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v3) edge [->, very thick] (v8);
+                \draw (v3) edge [->, ultra thick] (v8);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v0) edge [dotted] (v8);
                 \draw (v0) edge [dotted] (v4);
@@ -2402,7 +2401,7 @@ overall time complexity,
 is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl} and
 \ref{F:hartman_impl_cont} for a concrete example.
 
-\section{Experimental Performance}\label{S:performance}
+\section{Experimental Performance and Parallelism}\label{S:performance}
 
 A C implementation of each algorithm is available~\cite{Bro2017}.
 For each $i$ from $4\ldots 7$, a uniform random sample of $100$
@@ -2415,66 +2414,69 @@ was run on the sample set; see Figure~\ref{F:plot}.
 \begin{figure}
 \begin{center}
 \begin{tikzpicture}
-  \draw[very thin,color=gray,xstep=3.2,ystep=1.75] (-0.1,-0.1) grid (3.0*3.2+0.1, 4.6*1.75+0.1);
+  \draw[very thin,color=gray,xstep=4.5,ystep=1.75] (-0.1,-0.1) grid (3.0*4.5+0.1, 5.0*1.75+0.1);
   \node at (-0.6, 0.0) {$10^5$};
   \node at (-0.6, 1.0*1.75) {$10^6$};
   \node at (-0.6, 2.0*1.75) {$10^7$};
   \node at (-0.6, 3.0*1.75) {$10^8$};
   \node at (-0.6, 4.0*1.75) {$10^9$};
-  % \node at (-0.6, 5.0*1.75) {$10^{10}$};
-  \node at (0.0*3.2,-0.4) {$10^4$};
-  \node at (1.0*3.2,-0.4) {$10^5$};
-  \node at (2.0*3.2,-0.4) {$10^6$};
-  \node at (3.0*3.2,-0.4) {$10^7$};
+  \node at (-0.6, 5.0*1.75) {$10^{10}$};
+  \node at (0.0*4.5,-0.4) {$10^4$};
+  \node at (1.0*4.5,-0.4) {$10^5$};
+  \node at (2.0*4.5,-0.4) {$10^6$};
+  \node at (3.0*4.5,-0.4) {$10^7$};
 
-  \draw[->] (-0.2,0) -- (3.0*3.2+0.2,0) node[right] {$n(G)$};
-  \draw[->] (0,-0.2) -- (0,4.6*1.75+0.4) node[above] {Time (ns)};
+  \draw[->] (-0.2,0) -- (3.0*4.5+0.2,0) node[right] {$n(G)$};
+  \draw[->] (0,-0.2) -- (0,5.0*1.75+0.2) node[above] {Time (ns)};
 
-  \draw[very thick,color=black]
-	(0.0*3.2, 0.450*1.75) --
-	(1.0*3.2, 1.595*1.75) --
-	(2.0*3.2, 3.017*1.75) --
-	(3.0*3.2, 4.117*1.75);
-  \draw[very thick,loosely dashed,color=brown]
-	(0.0*3.2, 0.728*1.75) --
-	(1.0*3.2, 2.322*1.75) --
-	(2.0*3.2, 3.618*1.75) --
-	(3.0*3.2, 4.667*1.75);
-  \draw[very thick,dashdotted,color=red]
-	(0.0*3.2, 0.777*1.75) --
-	(1.0*3.2, 1.868*1.75) --
-	(2.0*3.2, 3.199*1.75) --
-	(3.0*3.2, 4.262*1.75);
-  \draw[very thick,dashed,color=blue]
-	(0.0*3.2, 0.810*1.75) --
-	(1.0*3.2, 1.995*1.75) --
-	(2.0*3.2, 3.265*1.75) --
-	(3.0*3.2, 4.326*1.75);
-  \draw[very thick,densely dashdotted,color=orange]
-	(0.0*3.2, 0.497*1.75) --
-	(1.0*3.2, 1.474*1.75) --
-	(2.0*3.2, 2.747*1.75) --
-	(3.0*3.2, 3.815*1.75);
-  \draw[very thick,densely dashed,color=purple]
-	(0.0*3.2, 0.683*1.75) --
-	(1.0*3.2, 1.712*1.75) --
-	(2.0*3.2, 2.897*1.75) --
-	(3.0*3.2, 3.949*1.75);
+  \draw[ultra thick,color=black]
+	(0.0*4.5, 0.450*1.75) --
+	(1.0*4.5, 1.595*1.75) --
+	(2.0*4.5, 3.017*1.75) --
+	(3.0*4.5, 4.117*1.75);
+  \draw[thick,double,color=brown]
+	(0.0*4.5, 0.728*1.75) --
+	(1.0*4.5, 2.322*1.75) --
+	(2.0*4.5, 3.618*1.75) --
+	(3.0*4.5, 4.667*1.75);
+  \draw[ultra thick,loosely dashdotted,color=red]
+	(0.0*4.5, 0.777*1.75) --
+	(1.0*4.5, 1.868*1.75) --
+	(2.0*4.5, 3.199*1.75) --
+	(3.0*4.5, 4.262*1.75);
+  \draw[ultra thick,loosely dashed,color=blue]
+	(0.0*4.5, 0.810*1.75) --
+	(1.0*4.5, 1.995*1.75) --
+	(2.0*4.5, 3.265*1.75) --
+	(3.0*4.5, 4.326*1.75);
+  \draw[ultra thick,densely dashdotted,color=orange]
+	(0.0*4.5, 0.497*1.75) --
+	(1.0*4.5, 1.474*1.75) --
+	(2.0*4.5, 2.747*1.75) --
+	(3.0*4.5, 3.815*1.75);
+  \draw[ultra thick,densely dashed,color=purple]
+	(0.0*4.5, 0.683*1.75) --
+	(1.0*4.5, 1.712*1.75) --
+	(2.0*4.5, 2.897*1.75) --
+	(3.0*4.5, 3.949*1.75);
 
-  \node at (3.0*3.2+1.8, 4.5*1.6-0.0*0.6) {BFS};
-  \draw[very thick,color=black] (3.0*3.2+0.4, 4.5*1.6-0.0*0.6) -- (3.0*3.2+1.2, 4.5*1.6-0.0*0.6);
-  \node at (3.0*3.2+2.1, 4.5*1.6-1.0*0.6) {Alg.~\ref{A:augment}};
-  \draw[very thick,loosely dashed,color=brown] (3.0*3.2+0.4, 4.5*1.6-1.0*0.6) -- (3.0*3.2+1.2, 4.5*1.6-1.0*0.6);
-  \node at (3.0*3.2+2.1, 4.5*1.6-2.0*0.6) {Alg.~\ref{A:poh_linear}};
-  \draw[very thick,dashdotted,color=red] (3.0*3.2+0.4, 4.5*1.6-2.0*0.6) -- (3.0*3.2+1.2, 4.5*1.6-2.0*0.6);
-  \node at (3.0*3.2+2.1, 4.5*1.6-3.0*0.6) {Alg.~\ref{A:hartman_impl}};
-  \draw[very thick,dashed,color=blue] (3.0*3.2+0.4, 4.5*1.6-3.0*0.6) -- (3.0*3.2+1.2, 4.5*1.6-3.0*0.6);
-  \node at (3.0*3.2+2.85, 4.5*1.6-4.0*0.6) {Alg.~\ref{A:poh_linear} (4 thr.)};
-  \draw[very thick,densely dashdotted,color=orange] (3.0*3.2+0.4, 4.5*1.6-4.0*0.6) -- (3.0*3.2+1.2, 4.5*1.6-4.0*0.6);
-  \node at (3.0*3.2+2.85, 4.5*1.6-5.0*0.6) {Alg.~\ref{A:hartman_impl} (4 thr.)};
-  \draw[very thick,densely dashed,color=purple] (3.0*3.2+0.4, 4.5*1.6-5.0*0.6) -- (3.0*3.2+1.2, 4.5*1.6-5.0*0.6);
+  \draw[ultra thick, white] (2.0*4.5+0.1, 2.0*1.75) -- (2.69*4.5, 2.0*1.75);
+  \draw[ultra thick, white] (2.0*4.5+0.1, 1.0*1.75) -- (3.0*4.5-0.1, 1.0*1.75);
+
+  \node at (2.0*4.5+1.8, 2.25*1.75-0.0*0.6) {BFS};
+  \draw[ultra thick,color=black] (2.0*4.5+0.4, 2.25*1.75-0.0*0.6) -- (2.0*4.5+1.2, 2.25*1.75-0.0*0.6);
+  \node at (2.0*4.5+2.1, 2.25*1.75-1.0*0.6) {Alg.~\ref{A:augment}};
+  \draw[thick,double,color=brown] (2.0*4.5+0.4, 2.25*1.75-1.0*0.6) -- (2.0*4.5+1.2, 2.25*1.75-1.0*0.6);
+  \node at (2.0*4.5+2.1, 2.25*1.75-2.0*0.6) {Alg.~\ref{A:poh_linear}};
+  \draw[ultra thick,loosely dashdotted,color=red] (2.0*4.5+0.4, 2.25*1.75-2.0*0.6) -- (2.0*4.5+1.2, 2.25*1.75-2.0*0.6);
+  \node at (2.0*4.5+2.1, 2.25*1.75-3.0*0.6) {Alg.~\ref{A:hartman_impl}};
+  \draw[ultra thick,loosely dashed,color=blue] (2.0*4.5+0.4, 2.25*1.75-3.0*0.6) -- (2.0*4.5+1.2, 2.25*1.75-3.0*0.6);
+  \node at (2.0*4.5+2.85, 2.25*1.75-4.0*0.6) {Alg.~\ref{A:poh_linear} (4 thr.)};
+  \draw[ultra thick,densely dashdotted,color=orange] (2.0*4.5+0.4, 2.25*1.75-4.0*0.6) -- (2.0*4.5+1.2, 2.25*1.75-4.0*0.6);
+  \node at (2.0*4.5+2.85, 2.25*1.75-5.0*0.6) {Alg.~\ref{A:hartman_impl} (4 thr.)};
+  \draw[ultra thick,densely dashed,color=purple] (2.0*4.5+0.4, 2.25*1.75-5.0*0.6) -- (2.0*4.5+1.2, 2.25*1.75-5.0*0.6);
 \end{tikzpicture}
-\caption{Algorithm benchmarks on a uniform sample of plane triangulations.}
+\caption{Average algorithm time per plane triangulation on the uniform random sample.}
     \label{F:plot}
 \end{center}
 \end{figure}
@@ -2483,9 +2485,10 @@ In Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl}, it
 is possible to maintain a
 stack of independent recursive frames, and to have a pool of threads execute them
 concurrently. The amount of parallelism possible using this method
-varies greatly depending on the graph structure, but a
-2-3x performance
-gain was observed when using 4 threads to color large random triangulations;
+varies greatly depending on the graph structure, but around a
+3x performance
+gain (slightly more for Alg.~\ref{A:poh_linear}, slightly less for Alg.~\ref{A:hartman_impl})
+was observed when using 4 threads to color large random triangulations,
 see Figure~\ref{F:plot}.
 
 Our parallel implementation of Algorithm~\ref{A:poh_linear} maintains a
@@ -2503,10 +2506,10 @@ If we save a local copy of
 $S(v), A(v), B(v)$ for each $v\in\{x, y,z\}$ alongside
 each frame, then the recursive calls in
 Case~3.2.1 with $u_2=x$, Case~3.2.2,
-Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$ become order independent.
+Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$ become fully independent.
 However, in Case~3.2.1 with $u_2\ne x$, and Case~3.2.3.2 with $u_2\ne y$,
-the second call will always depend on the color list $L(u_2)$
-produced by the first.
+the second call will always depend on the one remaining color in $L(u_2)$
+that must be determined by the first call.
 
 Our parallel implementation of Algorithm~\ref{A:hartman_impl}
 maintains a lock-guarded object pool
@@ -2517,7 +2520,7 @@ only pushed to the stack if they are ready to execute.
 For each $v\in G$, we store an optional reference
 to a frame that will become ready when $v$ has been colored. To allow for
 multiple frames to await the coloring of one vertex, each frame in the
-pool stores an optional reference to the next frame in line
+pool stores an optional reference to a ``next frame in line''
 (an intrusive linked list).
 When a vertex $v$ is colored, each frame waiting on $v$
 is pushed to the stack.

@@ -485,7 +485,7 @@ To find $P_3$, we walk counter-clockwise from
 $u_3$ along $C_1$.
 
 Define $p_1:N(P_1)\to V(P_1)$ to be the map sending each $v\in N(P_1)$
-to its neighbor in $P_1$ that is farthest from $u_1$,
+to its neighbor in $P_1$ that is closest to $w_1$,
 i.e. $V(C[p_1(v),w_1])\cap N(v)=\{p_1(v)\}$.
 
 \begin{figure}
@@ -649,7 +649,7 @@ where $t\in P_3$ and $x\in P_2$
 
 \textbf{Loop~2.} We'll walk counter-clockwise
 along $C_1$, coloring one vertex $z$ per iteration, and
-halting after $z=w_3$.
+halt after $z=w_3$.
 Color $c(z)\leftarrow d$.
 Find $\adj{z}{a}$ in $N(z)$ and let
 $\adj{z}{v}:= \nxt(\adj{z}{a})$.
@@ -1125,7 +1125,7 @@ then $\text{deg}_c(z)=0$.
 \end{lemma}
 
 \begin{proof}
-Suppose that $m=m(G)\le 1$. Then $G=C$. We define a path
+Suppose that $m=e(G)\le 1$. Then $G=C$. We define a path
 $L$-coloring $c$ of $G$ as follows.
 Let $c(x)\in L(x)$ and $c(y)\in L(y)$ be the color in
 each respective list.
@@ -1581,7 +1581,7 @@ that, for $v\in\graphintc(C)$, $S(v)\ne 0$ if and only if $v\in C$, and
 $S(v)=S(x)$ if and only if $v\in C[x,z]-z$ (or $v=x=z$).
 
 Let $\text{max}(S)=\text{max}_{v\in G} S(v)$ and
-$m_C=m(\graphintc(C))$. Define $\ell=\text{max}(S)+r$, where $r$
+$m_C=e(\graphintc(C))$. Define $\ell=\text{max}(S)+r$, where $r$
 is determined by the procedure case below that the input satisfies.
 If $m_C=1$ (Base case) or $z\ne x$ (Case~3), then $r=0$.
 If $z=x$ and $C[y,x]\ne y,x$ (Case~2), then $r=1$.
@@ -1651,7 +1651,7 @@ Make a recursive call with the same input $(x, y, z)$.
 \textbf{Case~3.2.} Suppose that $S(u_2)\ne 0$, i.e. $u_2\in C$. Just as in
 Case~3.2 of the proof of Lemma~\ref{L:hartman3}, we will separately consider
 the two blocks $G_1$ and $G_2$ of $\graphintc(C)-zu_1$.
-Note that $m_C-1=m(G_1)+m(G_2)$.
+Note that $m_C-1=e(G_1)+e(G_2)$.
 
 As we've already removed the edge $zu_1$ by
 adjusting $B(z)$ and $A(u_1)$, it remains
@@ -1675,12 +1675,12 @@ $B(u_2)\leftarrow\adj{u_2}{b}$
 
 \textbf{Case~3.2.1.} Suppose that $S(u_2)=S(x)$, i.e. $u_2\in C[x,z]$. Make a
 recursive call on $G_2$ with input $(x, y, z)$;
-afterwards $\text{max}(S)\le\ell + 2m(G_1)-2$.
+afterwards $\text{max}(S)\le\ell + 2e(G_1)-2$.
 Assign $S(u_2)\leftarrow\text{max}(S)+1$ and
 $M(S(u_2))\leftarrow S(u_2)$, and make a recursive call
 on $G_1$ with input $(u_2, u_2, u_2)$.
 Finally, observe that
-$\text{max}(S)\le\ell + 2m(G_1)-2 + 1 + 2m(G_2)-1<\ell+2(m_C-1)$.
+$\text{max}(S)\le\ell + 2e(G_1)-2 + 1 + 2e(G_2)-1<\ell+2(m_C-1)$.
 
 \textbf{Case~3.2.2.} Suppose that $S(u_2)\ne 0$, but
 $S(u_2)\ne S(x)$ and $M(S(u_2))\ne S(y)$. In other words, suppose that
@@ -1688,12 +1688,12 @@ $u_2\in C[y,x]-x-y$.
 First remove the color in $L(z)$ from $L(u_2)$, if it exists, then remove
 colors until only one remains. Set $S(u_2)\leftarrow S(x)$.
 Make a recursive call on $G_1$ with input $(x, u_2, x)$;
-afterwards $\text{max}(S)\le\ell +2m(G_1)$.
+afterwards $\text{max}(S)\le\ell +2e(G_1)$.
 Set $S(u_2)\leftarrow\text{max}(S)+1$ and
 $M(S(u_2))\leftarrow S(u_2)$, and
 make a recursive call on $G_2$ with input $(u_2, y, z)$.
 Finally, observe that
-$\text{max}(S)\le\ell + 2m(G_1) + 1 + 2m(G_2)-2<\ell+2(m_C-1)$.
+$\text{max}(S)\le\ell + 2e(G_1) + 1 + 2e(G_2)-2<\ell+2(m_C-1)$.
 
 \textbf{Case~3.2.3.} Suppose that $M(S(u_2))=S(y)$, i.e.
 $u_2\in C[z,y]$. There are
@@ -1702,27 +1702,28 @@ two cases to consider, see Figure~\ref{F:hartman_3_2_3}.
 \textbf{Case~3.2.3.1.} Suppose that the color in $L(z)$ is in $L(u_2)$. Remove
 all colors from $L(u_2)$ except for the color in $L(z)$.
 Make a recursive call on $G_1$ with input $(x, y, u_2)$;
-afterwards $\text{max}(S)\le\ell + 2m(G_1)-2$.
+afterwards $\text{max}(S)\le\ell + 2e(G_1)-2$.
 Assign
 $S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$,
 and $M(S(z))\leftarrow S(z)$. Make a
 recursive call on $G_2$ with input $(u_2, z, u_2)$. Finally, observe that
-$\text{max}(S)\le\ell + 2m(G_1)-2 + 1 + 2m(G_2) - 1<\ell+2(m_C-1)$.
+$\text{max}(S)\le\ell + 2e(G_1)-2 + 1 + 2e(G_2) - 1<\ell+2(m_C-1)$.
 
 \textbf{Case~3.2.3.2.} Suppose that the color in $L(z)$ is not in $L(u_2)$.
 Assign $M(S(x))\leftarrow S(y)$. Make a recursive call on $G_1$
-with input $(x, y, x)$; afterwards $\text{max}(S)\le\ell + 2m(G_1)$.
+with input $(x, y, x)$; afterwards $\text{max}(S)\le\ell + 2e(G_1)$.
 Assign $S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$, and
 $M(S(z))\leftarrow S(z)$. Make a
 recursive call on $G_2$ with input $(u_2, z, u_2)$. Observe
-$\text{max}(S)\le\ell + 2m(G_1) + 1 + 2m(G_2) - 1=\ell+2(m_C-1)$.
+$\text{max}(S)\le\ell + 2e(G_1) + 1 + 2e(G_2) - 1=\ell+2(m_C-1)$.
 
 Note that this is the only case where
 $M(S(v))$ is set a value other than $S(v)$.
 Setting $M(S(x))\leftarrow S(y)$ effectively ``joins''
 $C[x,u_1]$ onto $C[u_2,y]$ to represent $C_1[z_1,y_1]$ in $G_1$,
-without having to re-mark each vertex in $C[x,u_1]$ with $S(y)$;
 see Figure~8.
+Without the array $M$, we'd need to re-mark each $v\in C[x,u_1]$ with
+$S(v)\leftarrow S(y)$.
 \end{algorithm}
 
 \begin{figure}
@@ -2486,8 +2487,8 @@ is possible to maintain a
 stack of independent recursive frames, and to have a pool of threads execute them
 concurrently. The amount of parallelism possible using this method
 greatly varies depending on the graph structure, but a
-2-3x performance
-gain (an average of 2.8x for Alg.~\ref{A:poh_linear}, and 2.4x for Alg.~\ref{A:hartman_impl})
+2-3x average performance
+gain (2.8x for Alg.~\ref{A:poh_linear}, and 2.4x for Alg.~\ref{A:hartman_impl})
 was observed when using 4 threads to path color large random triangulations,
 see Figure~\ref{F:plot}.
 

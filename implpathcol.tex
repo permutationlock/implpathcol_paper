@@ -2426,7 +2426,6 @@ see Figure~\ref{F:plot}.
 Our parallel implementation of Algorithm~\ref{A:poh_linear} maintains a
 shared lock-guarded stack which all threads may push/pop recursive
 frames to/from.
-
 To reduce lock contention, each thread also
 maintains a
 small local stack of frames, and only accesses the shared

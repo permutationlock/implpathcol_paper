@@ -591,7 +591,7 @@ $\qquad$
 \caption{
 An example setup for Poh's algorithm highlighting the subgraph $G_1$
 induced by $V(P_1)\cup N(P_1)-V(P_2)$ (left),
-and the path $3$-coloring from
+and a path $3$-coloring produced by
 Algorithm~\ref{A:poh_linear} (right).}\label{F:poh_linear_0}
 \end{center}
 \end{figure}
@@ -641,12 +641,12 @@ induced by $V(P_1)\cup N(P_1)-V(P_2)$.
 
 \textbf{Step~1.}
 Let $a:=u_1$ and $z:= u_3$; here $z$ stores the current
-vertex of $P_3$, and $a$ stores the neighbor of $z$
+vertex of $P_3$, and $a$ stores the vertex
 clockwise from $z$ around $C_1$.
 Let $t:=\text{NULL}$ and $\adj{t}{x}:=\text{NULL}$;
 here $t$ and $\adj{t}{x}$ store the last edge $tx$ visited
 where $t\in P_3$ and $x\in P_2$
-(the first such edge is $u_3u_2$).
+(the first such edge will be $u_3u_2$).
 
 \textbf{Loop~2.} We'll walk counter-clockwise
 along $C_1$, coloring one vertex $z$ per iteration, and
@@ -2410,8 +2410,8 @@ For each $i$ from $4\ldots 7$, a uniform random sample of $100$
 plane triangulations of order $10^i$ was
 generated using the method of
 Poulalhon and Schaeffer~\cite{Pou2006}. 
-Each algorithm, as well as a baseline breadth-first search (BFS),
-was run on the sample set; see Figure~\ref{F:plot}.
+Each algorithm, as well as a baseline $\mathcal{O}(n)$ breadth-first
+search (BFS), was run on the sample set; see Figure~\ref{F:plot}.
 
 In Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl}, it
 is possible to maintain a

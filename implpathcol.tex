@@ -150,7 +150,7 @@ Chris Hartman\\
 \begin{abstract}
 A \abstdefterm{path coloring} of a graph $G$ is a vertex coloring
 of $G$ such that each color class induces a disjoint union of paths.
-We present two efficient algorithms
+We present two efficient, linear-time algorithms
 to construct a path coloring of a plane graph.
 
 The first algorithm, based on a proof of Poh, %\cite{Poh1990}
@@ -267,10 +267,10 @@ if all of its interior (bounded) faces are triangles
 
 The input for each algorithm will be a weakly triangulated
 plane graph $G$ with $n$ vertices and $m$ edges.
-The input size will be $n$. By Euler's formula
-$m\le 3n-6$, so it is equivalent use input size $m$.
+The input size will be $n$. By Euler's formula,
+$m\le 3n-6$ if $n\ge 3$, so it is equivalent to use input size $m$.
 Planar graphs may be
-plane embedded and triangulated (by adding edges) in $\mathcal{O}(n)$ time,
+embedded and triangulated (by adding edges) in $\mathcal{O}(n)$ time,
 see e.g. Hopcroft
 and Tarjan~\cite{Hop1974} or Boyer and
 Myrvold~\cite{BoMy2004}.
@@ -402,10 +402,10 @@ this $3$-coloring is a path coloring satisfying the lemma.
 Suppose that $C$ is not an induced subgraph. Then there
 exists an edge $v_1v_2\in E(G)- E(C)$ with $v_1\in P_1$ and
 $v_2\in P_2$. Let $C_1=C[v_2,v_1]\cup v_1v_2$
-and $C_2=C[v_1,v_2]\cup v_1v_2$, see Figure~\ref{F:poh_proof}.
+and $C_2=C[v_1,v_2]\cup v_1v_2$, see Figure~\ref{F:poh_proof} (right).
 By the inductive hypothesis, $c$ extends to path
 $3$-colorings of $\graphintc(C_1)$ and $\graphintc(C_2)$.
-Together these colorings form a path $3$-coloring of $G$.\ggcnopf
+Together these colorings form a path $3$-coloring of $G$ satisfying the lemma.\ggcnopf
 \end{proof}
 
 \begin{figure}
@@ -475,14 +475,14 @@ vertices in $G-H$ that have a neighbor in $H$.
 Let $G_1$ be the subgraph of $\graphintc(C)$ induced by
 $V(P_1)\cup N(P_1)-V(P_2)$, see Figure~\ref{F:poh_linear_0}. Let $C_1$
 be the outer face of $G_1$.
-Algorithm~\ref{A:poh_linear} implements Poh's algorithm in linear time
-by using $P_3=C_1-P_1$ as the $u_3,w_3$-path.
+Algorithm~\ref{A:poh_linear} implements Poh's algorithm in $\mathcal{O}(n)$ time
+by using $P_3=C_1-P_1=C_1[w_3,u_3]$ as the $u_3,w_3$-path.
 Observe that $P_3$ is induced in $G$: $G_1$ is induced, so there is no chord of
 $P_3$ exterior to $C_1$,
 and each $v\in P_3$ has a neighbor in $P_1$, so there is no chord of $P_3$
 interior to $C_1$.
-To find $P_3$, we walk counter-clockwise from
-$u_3$ along $C_1$.
+To compute $P_3$ in the algorithm, we'll mark the vertices of $G_1$,
+then walk counter-clockwise from $u_3$ to $w_3$ along the outer face $C_1$.
 
 Define $p_1:N(P_1)\to V(P_1)$ to be the map sending each $v\in N(P_1)$
 to its neighbor in $P_1$ that is closest to $w_1$,

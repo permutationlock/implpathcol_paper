@@ -1281,7 +1281,7 @@ $G-zu_1$, i.e. $G-zu_1-u_2$ is disconnected.
 Define $C_1=C[u_2,u_1]\cup u_1u_2$ and
 $C_2=C[z,u_2]\cup zu_2$. Let $G_1=\graphintc(C_1)$ and $G_2=\graphintc(C_2)$.
 The subgraphs $G_1$ and $G_2$ are the two blocks of
-$G-zu_1$. Note that if $k=2$, then $G_1=G-z$ and $G_2=z,u_2$.
+$G-zu_1$.
 
 In each subsequent case we will apply the inductive
 hypothesis to find a path $L$-list-coloring $c_1$ of $G_1$ and a path
@@ -1293,9 +1293,7 @@ for each $v\in G_1-u_2$, $\text{deg}_c(v)=\text{deg}_{c_2}(v)$ for each
 $v\in G_2-u_2$, and
 $\text{deg}_c(u_2)=\text{deg}_{c_1}(u_2)+\text{deg}_{c_2}(u_2)$.
 To show that $c$ is a path $L$-list-coloring of $G$ it suffices to show that
-$\text{deg}_{c}(u_2)\le 2$. We'll also need to show that the
-$\text{deg}_c$ constraints hold for $x,y,z$, but these will often follow
-immediately from the inductive hypothesis.
+$\text{deg}_{c}(u_2)\le 2$.
 
 \begin{figure}
 \begin{center}
@@ -1401,9 +1399,10 @@ Define $L'(u_2)=\{c_2(u_2)\}$ and $L'(v)=L(v)$ for each
 $v\in G_1-u_2$. Find a path $L'$-list-coloring
 $c_1$ of $G_1$ with $x_1=y_1=z_1=u_2$. Since 
 $\text{deg}_{c_1}(u_2)=0$,
-$c$ is a path $L$-list-coloring of $G$. Moreover,
-$c_2$, and hence $c$, satisfies the $\text{deg}_c$
-constraints of the lemma for $x,y,z$.
+$c$ is a path $L$-list-coloring of $G$. Moreover, since
+$\text{deg}_c(v)=\text{deg}_{c_2}(v)$ for all $v\in G_2$,
+the $\text{deg}_c$ constraints for $x,y,z$ follow from the
+inductive hypothesis.
 
 \textbf{Case~3.2.2.}
 Suppose that $u_2\in C[y,x]-x-y$. Pick $d\in L(u_2)- L(z)$. Define
@@ -1414,10 +1413,12 @@ $L'$-list-coloring $c_1$ of
 $G_1$ with $x_1=z_1=x$ and $y_1=u_2$.
 Then find a path
 $L'$-list-coloring $c_2$ of $G_2$ with $x_2=u_2$, $y_2=y$, and
-$z_2=z$. Note that $\text{deg}_{c_1}(u_2)\le 1$ and
-$\text{deg}_{c_2}(u_2)\le 1$, thus $c$ is a path $L$-list-coloring of $G$.
-Since $x_1=x$ in $G_1-u_2$, and $y_2=y$ and $z_2=z$ in $G_2-u_2$, $c$
-satisfies the $\text{deg}_c$ constraints.
+$z_2=z$. Since $\text{deg}_{c_1}(u_2)\le 1$ and
+$\text{deg}_{c_2}(u_2)\le 1$, $c$ is a path $L$-list-coloring of $G$.
+Since $\text{deg}_c(x)=\text{deg}_{c_1}(x_1)$,
+$\text{deg}_c(y)=\text{deg}_{c_2}(y_2)$, and
+$\text{deg}_c(z)=\text{deg}_{c_2}(z_2)$, the $\text{deg}_c$ constraints
+again follow from the inductive hyptotheses.
 
 \begin{figure}
 \begin{center}
@@ -1518,9 +1519,11 @@ with $x_1=x$, $y_1=y$, and $z_1=u_2$. Then find a path $L'$-list-coloring $c_2$ 
 $G_2$ with $x_2=u_2$, $y_2=z$, and $z_2=u_2$. Since
 $\text{deg}_{c_1}(u_2)\le 1$ and $\text{deg}_{c_2}(u_2)=1$, it follows
 that $c$ is a path $L$-list-coloring of $G$. If $u_2=y$,
-then $z_1=y_1=y$ and $\text{deg}_{c_1}(y)=0$; thus $\text{deg}_c(y)=1$.
-So $\text{deg}_c(y)\le 1$ and
-$c$ satisfies the constraints.
+then $z_1=y_1=y$ and $\text{deg}_{c_1}(y)=0$; thus
+$\text{deg}_c(y)=\text{deg}_{c_2}(u_2)=1$. If $u_2\ne y$, then
+$\text{deg}_c(y)=\text{deg}_{c_1}(y_1)\le 1$.
+Moreover, $\text{deg}_c(z)=\text{deg}_{c_2}(y_2)=1$ and
+$\text{deg}_c(x)=\text{deg}_{c_1}(x_1)\le 1$.
 
 \textbf{Case~3.2.3.2.} Suppose that $L(z)\cap L(u_2)=\emptyset$. Find
 a path $L$-list-coloring $c_1$ of $G_1$ with
@@ -1529,11 +1532,12 @@ for each $v\in G_2-u_2$. Then find a path $L'$-list-coloring $c_2$ of $G_2$
 with $x_2=u_2$, $y_2=z$, and $z_2=u_2$. Because
 $C[z_2,y_2]=z_2,y_2$ and $L'(z_2)\cap L'(y_2)=\emptyset$, we must have
 $\text{deg}_{c_2}(u_2)=\text{deg}_{c_2}(z_2)=0$. Thus
-$c$ is a path $L$-list-coloring of $G$.
-
-Suppose $C[z,y]=z,y$. Then it must be that $u_2=y$ and $k=2$.
-Therefore $G_2=z,y$ and $\text{deg}_c(z)=0$, since
-$c(z)\not\in L(y)$. Thus $c$ satisfies the constraints of the lemma.
+$c$ is a path $L$-list-coloring of $G$. Moreover,
+$\text{deg}_c(x)=\text{deg}_{c_1}(x_1)\le 1$,
+$\text{deg}_c(y)=\text{deg}_{c_1}(y_1)\le 1$, and
+$\text{deg}_c(z)=\text{deg}_{c_2}(y_2)\le 1$.
+If $C[z,y]=z,y$, then $G_2=z,y$ and $\text{deg}_c(z)=0$, since
+$c(z)\not\in L(y)$.
 \ggcnopf
 \end{proof}
 
@@ -1545,7 +1549,7 @@ and $d\in L(u)$. Define the list assignment $L'$ by
 $L'(u)=\{d\}$ and $L'(v)=L(v)$ for $v\in G'-u$.
 By Lemma~\ref{L:hartman3} there exists a path $L'$-list-coloring of $G'$,
 and thus a path $L$-list-coloring of $G$.
-So Theorem~\ref{T:planar3} follows immediately from 
+So Theorem~\ref{T:planar3} follows from 
 Lemma~\ref{L:hartman3}.
 
 The proof of Lemma~\ref{L:hartman3} describes a linear time

@@ -2432,17 +2432,17 @@ small local stack of frames, and only accesses the shared
 stack when their local stack is full or empty.
 
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
-parallel execution: the recursive calls in Case~3.2
+parallel execution: the pairs of recursive calls in Case~3.2
 rely on a sequential execution order.
 If we save a local copy of
 $S(v), A(v), B(v)$ for each $v\in\{x, y,z\}$ alongside
 each frame, then the recursive calls in
 Case~3.2.1 with $u_2=x$, Case~3.2.2,
-Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$ become fully independent.
+Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$ become order independent.
 However, in Case~3.2.1 with $u_2\ne x$, and Case~3.2.3.2 with $u_2\ne y$,
-the second call will always depend on the color of $u_2$ (the one color
+the second call will always depend on the color of $u_2$ (the color
 remaining in $L(u_2)$)
-computed by the first call.
+computed by the first.
 
 \begin{figure}
 \begin{center}

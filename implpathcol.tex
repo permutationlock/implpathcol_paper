@@ -260,15 +260,15 @@ discusses how each algorithm may be modified to benefit from parallelism.
 A plane graph $G$ is \defterm{triangulated} (or \defterm{maximal})
 if it is connected
 and $n(G)\le 2$, or if every face of $G$ is a
-\defterm{triangle} (a length $3$ cycle). We say $G$ is
+\defterm{triangle} (a $3$-cycle). We say $G$ is
 \defterm{weakly triangulated}
 if all of its interior (bounded) faces are triangles
 (a triangulated graph is also weakly triangulated).
 
 The input for each algorithm will be a weakly triangulated
 plane graph $G$ with $n$ vertices and $m$ edges.
-The input size will be $n$. By Euler's formula,
-$m\le 3n-6$ if $n\ge 3$, so it is equivalent to use input size $m$.
+The input size will be $n$, but it is equivalent to use $m$:
+if $n\ge 3$, then $m\le 3n-6$ by Euler's formula.
 Planar graphs may be
 embedded and triangulated (by adding edges) in $\mathcal{O}(n)$ time,
 see e.g. Hopcroft
@@ -293,10 +293,10 @@ $\prv(\adj{v}{u})=\adj{v}{(\prv_v(u))}$.
 
 Adjacency lists naturally allow $\nxt(\adj{v}{u})$ to be computed
 in constant time.
-However, the linear time complexity of the algorithm discussed
-in Section~\ref{S:path_choose} depends on the ability to
-compute $\prv(\adj{v}{u})$ and the \defterm{back reference} $\adj{u}{v}$
-from $\adj{v}{u}$ in constant time as well.
+However, the $\mathcal{O}(n)$ time complexity of the algorithm discussed
+in Section~\ref{S:path_choose} depends on the ability, given any $\adj{v}{u}$,
+to compute $\prv(\adj{v}{u})$, and the \defterm{back reference} $\adj{u}{v}$,
+in $\mathcal{O}(1)$ time.
 Representing $N(v)$ via an array or
 doubly linked list solves computing both $\nxt(\adj{v}{u})$ and
 $\prv(\adj{v}{u})$, but
@@ -352,7 +352,7 @@ $(w,\adj{w}{u})$ where $w\le v$.
 \section{Path Coloring}\label{S:path_color}
 
 In this section we describe a path $3$-coloring algorithm
-based on a proof by Poh~\cite[Thm.~1]{Poh1990}.
+based on Poh's proof of \cite[Thm.~1]{Poh1990}.
 
 Let $C$ be a cycle in a connected plane graph $G$. If $u,v\in C$, then we define
 $C[u,v]$ to be the clockwise $u,v$-path
@@ -892,21 +892,22 @@ time \v{S}krekovski proved a
 weaker result using the same coloring
 strategy~\cite[Thm.~2.2b]{Skr1999}.
 
-In brief, the Hartman-\v{S}krekovski algorithm takes as its input a
+Hartman's algorithm takes as its input a
 weakly triangulated plane
-graph $G$ with outer face $C$, a list assignment $L$, and two
+graph $G$ with outer face $C$, a list assignment $L$, and
 vertices $x,y\in C$. It
-assumes that $|L(x)|\ge 1$, $|L(y)|\ge 1$, $|L(v)|\ge 2$ for each
-$v\in C-\{x,y\}$, and $|L(v)|\ge 3$ for each $v\in G-C$. An
+assumes $|L(v)|\ge 1$ if $v\in\{x,y\}\cup S$, $|L(v)|\ge 2$ if
+$v\in C-\{x,y\}\cup S$, and $|L(v)|\ge 3$ if $v\in G-C$,
+where $S$ is the set of cut-vertices separating $x$ from $y$. An
 induced path $P$ is colored with $d\in L(x)$,
-proceeding from $x$ towards $y$ along $C[x,y]$,
-such that for each $v\in P$, $d\in L(v)$. Starting from
-$P=x$, the path is colored
+proceeding from $x$ towards $y$ along $C[x,y]$. Starting from
+the single vertex $P=x$, the path $P$ is constructed
 as follows: let $z$ be the end of $P$ opposite $x$, and
 $T_{z}=\{v\in N(z)\cap V(C[z,y]):d\in L(v)\}$; if $T_{z}\ne\emptyset$,
 then the $v\in T_{z}$ closest to $y$ in $C[z,y]$
-is colored and added to $P$, and this process is repeated with $z=v$.
-After coloring $P$, the algorithm is recursively applied to each connected
+is colored and added to $P$; this process is then repeated (with $z=v$) until
+$T_z=\emptyset$.
+The algorithm is then recursively applied to each connected
 component of $G-P$, using the list assignment $L'$ defined by
 $L'(v)=L(v)-\{d\}$ if $v\in N(P)$, and $L'(v)=L(v)$ if
 $v\not\in N(P)$. See Figure~\ref{F:hartman_overview}
@@ -1074,12 +1075,12 @@ result, organized in such a way that it immediately
 describes a linear time algorithm for graphs
 represented as in Section~\ref{S:representation}.
 If $x=z$, then our $G,x,y$ match
-those in Hartman's \cite[Lemma~4.2]{Har1997}, but we assume
-that $G$ is biconnected;
+Hartman's, but we assume
+that $G$ is biconnected (so $S=\emptyset$);
 we follow a similar procedure to color a path
-$P$ clockwise from $x$ along $C$, but we consider
+$P$ clockwise from $x$ along $C[x,y]$, but we consider
 one edge at a time, and simultaneously remove
-$P$ as it is colored. If $x\ne z$, then $z$ is
+$P$ from $G$ as it is colored. If $x\ne z$, then $z$ is
 the farthest clockwise end of the path $P$ being colored;
 the rest of $P$ (if any) has already been removed, and
 our $x$ serves as Hartman's $x'$.
@@ -1095,14 +1096,13 @@ then instead of continuing to
 search for neighbors of $z$ in $C[z,v]$ that we might add
 to $P$, we
 apply the inductive hypothesis such that $z$ now serves as
-``$y$'' (see Figure~\ref{F:hartman_3_2_3} for a general illustration
-of this case).
-The edge from the vertex labeled $*$ to $y$ in
-Figure~\ref{F:hartman_overview}
-is an example of such a chord: our algorithm halts
-$P$ at $*$, and divides the remaining subgraph at the chord,
+``$y$''.
+In Figure~\ref{F:hartman_overview},
+the edge from the vertex labeled $*$ to $y$
+is such a chord: our algorithm would halt
+$P$ at $*$, and divide the remaining subgraph at the chord,
 see Figure~\ref{F:hartman_difference}.
-
+For a general illustration of this case, see Figure~\ref{F:hartman_3_2_3}.
 
 Given a coloring $c$ of a graph $G$, and $v\in G$, we define
 $\text{deg}_c(v)$

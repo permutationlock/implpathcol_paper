@@ -293,8 +293,8 @@ An adjacency list representation naturally allows
 $\nxt(\adj{v}{u})$ to be computed
 from $\adj{v}{u}$ in $\mathcal{O}(1)$ time.
 However, the $\mathcal{O}(n)$ time complexity of the path list-coloring algorithm
-in Section~\ref{S:path_choose} depends on a representation that, given any adjacency list entry $\adj{v}{u}$,
-can compute $\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and the \defterm{back reference} $\adj{u}{v}$,
+in Section~\ref{S:path_choose} depends on the ability, given any adjacency list entry $\adj{v}{u}$,
+to compute $\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and the \defterm{back reference} $\adj{u}{v}$,
 all in $\mathcal{O}(1)$ time.
 Representing $N(v)$ via an array or
 doubly linked list solves computing both $\nxt(\adj{v}{u})$ and

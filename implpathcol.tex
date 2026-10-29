@@ -344,7 +344,7 @@ Suppose that $v$ is the current vertex at a given iteration of
 the loop in Step~3. For each edge $uw\in E(G)$ such that
 $u<w$ and $v<w$, prior iterations of the loop will have initialized the
 back references for $(w, \adj{w}{u})$ in $N^*(u)$ and $(u, \adj{u}{w})$ in
-$N^*(w)$, and removed $(w,\adj{w}{u})$ from $\text{Wrk}(u)$. Therefore for
+$N^*(w)$, and removed $(w,\adj{w}{u})$ from $\text{Wrk}(u)$. Therefore, for
 each $(u,\adj{u}{v})$ in
 $\text{Wrk}(v)$, the list $\text{Wrk}(u)$ will only contain entries
 $(w,\adj{w}{u})$ where $w\le v$.

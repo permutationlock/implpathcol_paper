@@ -257,19 +257,17 @@ discusses how each algorithm may be modified to benefit from parallelism.
 
 \section{Graph Representations and Time Complexity}\label{S:representation}
 
-A plane graph $G$ is \defterm{triangulated} (or \defterm{maximal})
-if it is connected
-and $n(G)\le 2$, or if every face of $G$ is a
-\defterm{triangle} (a $3$-cycle). We say $G$ is
-\defterm{weakly triangulated}
-if all of its interior (bounded) faces are triangles
-(a triangulated graph is also weakly triangulated).
-
+A plane graph $G$ is \defterm{triangulated}
+if each of its faces is a
+a $3$-cycle, and \defterm{weakly triangulated}
+if each interior (bounded) face is a $3$-cycle.
 The input for each algorithm will be a weakly triangulated
 plane graph $G$ with $n$ vertices and $m$ edges.
-The input size will be $n$, but it is equivalent to use $m$:
+The input size will be $n$, but it is equivalent to take
+$m$ to be the input size:
 if $n\ge 3$, then $m\le 3n-6$ by Euler's formula.
-Planar graphs may be
+
+Any planar graph may be plane
 embedded and triangulated (by adding edges) in $\mathcal{O}(n)$ time,
 see e.g. Hopcroft
 and Tarjan~\cite{Hop1974} or Boyer and
@@ -278,8 +276,8 @@ Myrvold~\cite{BoMy2004}.
 We will represent $G$ for computation via \textit{adjacency lists}:
 a list, for each vertex $v$, of the neighbors of $v$.
 A vertex will be represented by an integer $0\dots n-1$.
-The order of each list represents the embedding. In algorithms
-$N(v)$ will refer to the adjacency list.
+The order of each list will represent the embedding. In algorithms
+$N(v)$ will refer to $v$'s adjacency list.
 
 Let $v\in G$ and $u\in N(v)$. Define $\nxt_v(u)\in N(v)$ to be
 the neighbor counter-clockwise from $u$ around $v$,
@@ -291,16 +289,17 @@ adjacency list;
 define $\nxt(\adj{v}{u})=\adj{v}{(\nxt_v(u))}$ and
 $\prv(\adj{v}{u})=\adj{v}{(\prv_v(u))}$.
 
-Adjacency lists naturally allow $\nxt(\adj{v}{u})$ to be computed
-in constant time.
-However, the $\mathcal{O}(n)$ time complexity of the algorithm discussed
-in Section~\ref{S:path_choose} depends on the ability, given any $\adj{v}{u}$,
-to compute $\prv(\adj{v}{u})$, and the \defterm{back reference} $\adj{u}{v}$,
-in $\mathcal{O}(1)$ time.
+An adjacency list representation naturally allows
+$\nxt(\adj{v}{u})$ to be computed
+from $\adj{v}{u}$ in $\mathcal{O}(1)$ time.
+However, the $\mathcal{O}(n)$ time complexity of the path list-coloring algorithm
+in Section~\ref{S:path_choose} depends on a representation that, given any adjacency list entry $\adj{v}{u}$,
+can compute $\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and the \defterm{back reference} $\adj{u}{v}$,
+all in $\mathcal{O}(1)$ time.
 Representing $N(v)$ via an array or
 doubly linked list solves computing both $\nxt(\adj{v}{u})$ and
 $\prv(\adj{v}{u})$, but
-back references require more information.
+back references require additional information.
 We define an \defterm{augmented adjacency list} to be an adjacency
 list that stores the pair $(u,\adj{u}{v})$ for each neighbor $u$ of $v$.
 Given an adjacency list representation, an augmented
@@ -367,7 +366,7 @@ we define $P[u,v]$ to be the $u,v$-path in $P$.
 We also define $\graphintc(P)=P$ and $\graphinto(P)$ to be empty.
 
 \begin{lemma}[Poh 1990]\label{L:planar3c}
-Let $G$ be a biconnected, weakly triangulated plane graph with outer face
+Let $G$ be a biconnected, weakly triangulated plane graph with outer cycle
 $C$. Let $c:V(C)\to S\subsetneq\{1,2,3\}$ be a $2$-coloring of $C$ such
 that each color class induces a nonempty path. There exists an extension of
 $c$ to a path $3$-coloring $c:V(G)\to\{1,2,3\}$ such that for each $v\in G-C$, if $vu\in
@@ -468,8 +467,8 @@ to produce a triangulated plane graph $G'$. Theorem~\ref{T:planar3c}
 follows immediately as any path coloring of
 $G'$ is also a path coloring of $G$.
 
-Let $G$, $C$, $P_1$, and $P_2$ be as in Lemma~\ref{L:planar3c},
-and assume that $C$ is induced in $G$.
+Let $G$, $C$, $P_1$, and $P_2$ be as in the proof of Lemma~\ref{L:planar3c},
+and assume $C$ is induced in $G$.
 For a subgraph $H$ of $G$, let $N(H)$ be the set of
 vertices in $G-H$ that have a neighbor in $H$.
 Let $G_1$ be the subgraph of $\graphintc(C)$ induced by
@@ -481,11 +480,11 @@ Observe that $P_3$ is induced in $G$: $G_1$ is induced, so there is no chord of
 $P_3$ exterior to $C_1$,
 and each $v\in P_3$ has a neighbor in $P_1$, so there is no chord of $P_3$
 interior to $C_1$.
-To compute $P_3$ in the algorithm, we'll mark the vertices of $G_1$,
+To compute $P_3$ in the algorithm: we'll mark the vertices in $G_1$,
 then walk counter-clockwise from $u_3$ to $w_3$ along the outer face $C_1$.
 
 Define $p_1:N(P_1)\to V(P_1)$ to be the map sending each $v\in N(P_1)$
-to its neighbor in $P_1$ that is closest to $w_1$,
+to its neighbor in $P_1=C[u_1,w_1]$ that is closest to $w_1$,
 i.e. $V(C[p_1(v),w_1])\cap N(v)=\{p_1(v)\}$.
 
 \begin{figure}
@@ -1110,7 +1109,7 @@ to be $\text{deg}(v)$ in the subgraph induced by $c(v)$'s color class,
 i.e. the number of neighbors that share $v$'s color.
 
 \begin{lemma}\label{L:hartman3}
-Let $G$ be a biconnected, weakly triangulated plane graph with outer face
+Let $G$ be a biconnected, weakly triangulated plane graph with outer cycle
 $C$. Let $x,y,z\in C$ be vertices (not necessarily distinct) such that
 $z\in C[x,y]$. Let $L$ be a list assignment of $G$ such that
 \begin{align*}
@@ -1144,6 +1143,19 @@ from $z$ around $C$, and $u_k$ is the vertex clockwise from $z$ around $C$.
 In each of the subsequent cases we will apply the lemma separately
 to one or two subgraphs $G_1,G_2$ of $G$, with corresponding labeled
 outer face vertices $x_i,y_i,z_i\in G_i$ for $i=1,2$.
+
+\textbf{Case~1.}
+Suppose that $u_1=y$. Note that $z=x$ since $z\in C[x,y]$. Therefore
+$V(C[z,y])=V(C)$, so $|V(C[z,y])|\ge 3$ and $C[z,y]\ne z,y$.
+Apply the lemma to find a path $L$-list-coloring $c$ of $G_1=G$ with
+$x_1=y$, $y_1=x$, and $z_1=y$, see Figure~\ref{F:hartman_1} (left).
+
+\textbf{Case~2.}
+Suppose that $u_1\ne y$ and $z=x$. Then $u_1\in C-C[x,z]$
+and $|L(u_1)|\ge 2$. Pick $d\in L(u_1)- L(z)$. Define
+$L'(u_1)=\{d\}$ and $L'(v)=L(v)$ for each $v\in G-u_1$.
+Find a path $L'$-list-coloring of $G_1=G$ with $x_1=u_1$,
+$y_1=y$, and $z_1=z$, see Figure~\ref{F:hartman_1} (middle).
 
 \begin{figure}
 \begin{center}
@@ -1242,19 +1254,6 @@ $\quad$
     \label{F:hartman_1}
 \end{center}
 \end{figure}
-
-\textbf{Case~1.}
-Suppose that $u_1=y$. Note that $z=x$ since $z\in C[x,y]$. Therefore
-$V(C[z,y])=V(C)$ and $|V(C[z,y])|\ge 3$, so $C[z,y]\ne z,y$.
-Apply the lemma to find a path $L$-list-coloring $c$ of $G_1=G$ with
-$x_1=y$, $y_1=x$, and $z_1=y$, see Figure~\ref{F:hartman_1} (left).
-
-\textbf{Case~2.}
-Suppose that $u_1\ne y$ and $z=x$. Then $u_1\in C-C[x,z]$
-and $|L(u_1)|\ge 2$. Pick $d\in L(u_1)- L(z)$. Define
-$L'(u_1)=\{d\}$ and $L'(v)=L(v)$ for each $v\in G-u_1$.
-Find a path $L'$-list-coloring of $G_1=G$ with $x_1=u_1$,
-$y_1=y$, and $z_1=z$, see Figure~\ref{F:hartman_1} (middle).
 
 \textbf{Case~3.}
 Suppose that $u_1\ne y$ and $z\ne x$. 
@@ -1418,7 +1417,7 @@ $\text{deg}_{c_2}(u_2)\le 1$, $c$ is a path $L$-list-coloring of $G$.
 Since $\text{deg}_c(x)=\text{deg}_{c_1}(x_1)$,
 $\text{deg}_c(y)=\text{deg}_{c_2}(y_2)$, and
 $\text{deg}_c(z)=\text{deg}_{c_2}(z_2)$, the $\text{deg}_c$ constraints
-again follow from the inductive hyptotheses.
+again follow from the inductive hypotheses.
 
 \begin{figure}
 \begin{center}
@@ -1513,7 +1512,7 @@ There are two cases to consider, see Figure~\ref{F:hartman_3_2_3}.
 
 \textbf{Case~3.2.3.1.} Suppose that $L(z)\cap L(u_2)\ne\emptyset$. Then 
 either $u_2=y$ and $L(z)=L(y)$, or $C[z,y]\ne z,y$.
-Define $L'(u_2)=L(z)$
+Define $L'(u_2)=L(z)$,
 and $L'(v)=L(v)$ for each $v\in G-u_2$. Find a path $L'$-list-coloring $c_1$ of $G_1$
 with $x_1=x$, $y_1=y$, and $z_1=u_2$. Then find a path $L'$-list-coloring $c_2$ of
 $G_2$ with $x_2=u_2$, $y_2=z$, and $z_2=u_2$. Since
@@ -2394,7 +2393,7 @@ Create a length $2m+2$ array of integers $M$ and initialize
 $M(i)\leftarrow i$ for each $i\in\{0,1,2\}$.
 Finally, apply Algorithm~\ref{A:hartman_impl} with the input $G$, $L$,
 $A$, $B$, $S$, $M$, and $(u, u, u)$. The remaining color in each
-list in $L$ will represent a path $L$-list-coloring of $G$.
+list $L(v)$ will represent a path $L$-list-coloring of $G$.
 
 Each case in Algorithm~\ref{A:hartman_impl} performs a fixed number
 of constant time operations. Case~3 removes an edge
@@ -2444,8 +2443,8 @@ each frame, then the recursive calls in
 Case~3.2.1 with $u_2=x$, Case~3.2.2,
 Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$ become order independent.
 However, in Case~3.2.1 with $u_2\ne x$, and Case~3.2.3.2 with $u_2\ne y$,
-the second call will always depend on the color of $u_2$ (the color
-remaining in $L(u_2)$)
+the second call will always depend on the color of $u_2$ (the
+remaining color in $L(u_2)$)
 computed by the first.
 
 \begin{figure}

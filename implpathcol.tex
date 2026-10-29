@@ -188,7 +188,7 @@ A \defterm{(combinatorial) embedding} is an equivalence
 class of drawings determined by the circular ordering of edges
 around each vertex. A \defterm{plane graph} is a planar graph
 with a fixed embedding. Subgraphs of a plane graph are
-plane graphs with the inherited embedding.
+also plane graphs, with the inherited embedding.
 
 A \defterm{path coloring}
 is a (vertex) coloring where each color class induces a disjoint union of
@@ -258,7 +258,7 @@ discusses how each algorithm may be modified to benefit from parallelism.
 \section{Graph Representations and Time Complexity}\label{S:representation}
 
 A plane graph $G$ is \defterm{triangulated}
-if each of its faces is a
+if each of its faces is
 a $3$-cycle, and \defterm{weakly triangulated}
 if each interior (bounded) face is a $3$-cycle.
 The input for each algorithm will be a weakly triangulated
@@ -289,17 +289,18 @@ adjacency list;
 define $\nxt(\adj{v}{u})=\adj{v}{(\nxt_v(u))}$ and
 $\prv(\adj{v}{u})=\adj{v}{(\prv_v(u))}$.
 
-An adjacency list representation naturally allows
+A counter-clockwise embedding-ordered adjacency list allows
 $\nxt(\adj{v}{u})$ to be computed
-from $\adj{v}{u}$ in $\mathcal{O}(1)$ time.
-However, the $\mathcal{O}(n)$ time complexity of the path list-coloring algorithm
-in Section~\ref{S:path_choose} depends on the ability, given any adjacency list entry $\adj{v}{u}$,
+from $\adj{v}{u}$ in $\mathcal{O}(1)$ time; this is all that is
+required for the linear time algorithm in Section~\ref{S:path_color}.
+However, the linear time complexity of the algorithm
+in Section~\ref{S:path_choose} depends on the ability
 to compute $\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and the \defterm{back reference} $\adj{u}{v}$,
 all in $\mathcal{O}(1)$ time.
 Representing $N(v)$ via an array or
 doubly linked list solves computing both $\nxt(\adj{v}{u})$ and
 $\prv(\adj{v}{u})$, but
-back references require additional information.
+back references require more information.
 We define an \defterm{augmented adjacency list} to be an adjacency
 list that stores the pair $(u,\adj{u}{v})$ for each neighbor $u$ of $v$.
 Given an adjacency list representation, an augmented
@@ -350,8 +351,9 @@ $(w,\adj{w}{u})$ where $w\le v$.
 
 \section{Path Coloring}\label{S:path_color}
 
-In this section we describe a path $3$-coloring algorithm
-based on Poh's proof of \cite[Thm.~1]{Poh1990}.
+In this section we describe a linear time algorithm to path $3$-color
+a plane graph,
+based on Poh's constructive proof of Theorem~\ref{T:planar3c}.
 
 Let $C$ be a cycle in a connected plane graph $G$. If $u,v\in C$, then we define
 $C[u,v]$ to be the clockwise $u,v$-path
@@ -883,13 +885,10 @@ $\mathcal{O}(n)$.
 
 \section{Path List-Coloring}\label{S:path_choose}
 
-In this section we describe an algorithm to path color
-plane graphs such that each vertex receives a color from a specified list.
-Hartman showed that this is always possible when each vertex is given a
-list of $3$ colors~\cite[Thm.~4.1]{Har1997}. Around the same
-time \v{S}krekovski proved a
-weaker result using the same coloring
-strategy~\cite[Thm.~2.2b]{Skr1999}.
+In this section we describe a linear time algorithm to path color
+a plane graph such that each vertex receives a color from a specified list
+of three colors,
+based on Hartman's constructive proof of Theorem~\ref{T:planar3}.
 
 Hartman's algorithm takes as its input a
 weakly triangulated plane

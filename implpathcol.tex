@@ -306,7 +306,7 @@ list that stores the pair $(u,\adj{u}{v})$ for each neighbor $u$ of $v$.
 Given an adjacency list representation, an augmented
 representation may be constructed in $\mathcal{O}(m)$ time. 
 
-\begin{algorithm}\label{A:augment} Augment Adjacency Lists
+\begin{algorithm}\label{A:augment} \emph{Augment}$(N)$
 
 \textbf{Input.} An adjacency list representation $N$ of a graph $G$.
 
@@ -376,7 +376,7 @@ E(G)$ with $u\in C$, then $c(v)\ne c(u)$.
 \end{lemma}
 
 \begin{proof}
-If $n(G)\le 3$, then $G=C$. We proceed by induction on the order of $G$. 
+If $|V(G)|\le 3$, then $G=C$. We proceed by induction on the order of $G$. 
 
 Suppose that $G\ne C$. Let $P_1,P_2$ be the two paths induced by the $2$-coloring
 of the outer face
@@ -597,7 +597,7 @@ Algorithm~\ref{A:poh_linear} (right).}\label{F:poh_linear_0}
 \end{center}
 \end{figure}
 
-\begin{algorithm}\label{A:poh_linear} Path $3$-Color% (Neighborhood Walk)
+\begin{algorithm}\label{A:poh_linear} \emph{Path3Color}$(u_1, \adj{{u_1}}{u_2}, \ell_1)$% (Neighborhood Walk)
 
 \textbf{Input.} Let $C$ be an induced cycle
 in a weakly triangulated plane
@@ -666,8 +666,10 @@ where $y\in P_1$.
 $z$ from
 $\nxt_{z}(a)$ to $p_1(z)$ counter-clockwise. Each iteration
 will handle one neighbor $\adj{z}{v}$.
-We'll make a recursive call for each
-induced cycle $C'$ we discover with $V(C')\subseteq V(P_2)\cup V(P_3)$.
+We'll make a recursive call on each
+induced cycle $C'$ in $G$ that satisfies
+$V(C')\subseteq V(P_2)\cup V(P_3)$ and
+$C'\cap P_3[z,w_3]=z$.
 
 \textbf{Case~2.1.1.} Suppose that $c(v)=0$, i.e. $v\in\graphinto(C)$.
 If $S(v)=\ell_1$ and $b=\text{NULL}$, then $v\in P_3$ and we set
@@ -675,8 +677,8 @@ $b\leftarrow v$. Set $S(v)\leftarrow \ell_3$ and
 $\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$.
 Repeat Loop~2.1.
 
-\textbf{Case~2.1.2.} Suppose that $c(v)=c(u_2)$, i.e. $v\in P_2$.
-If $t\ne\text{NULL}$, make a recursive call with input $(t, \adj{t}{x}, \ell_3)$
+\textbf{Case~2.1.2.} Suppose $c(v)=c(u_2)$, i.e. $v\in P_2$.
+If $t\ne\text{NULL}$, call \emph{Path3Color}$(t, \adj{t}{x}, \ell_3)$
 to color $\graphintc(C')$, where
 $C'=P_3[t,z]\cup C[v,x]\cup tx\cup zv$;
 refer to Figure~\ref{F:poh_linear_1} (left).
@@ -691,17 +693,17 @@ and proceed to Loop~2.2.
 \textbf{Loop~2.2.} We'll now consider the
 neighbors of $z$ from $\nxt_{z}(p_1(z))$ to $a$ counter-clockwise.
 Each iteration will handle one neighbor $\adj{z}{v}$.
-We'll make a recursive call for each
-induced cycle $C'$ we discover with $V(C')\subseteq V(P_1)\cup V(P_3)$.
-Observe that $\adj{z}{y}\ne\text{NULL}$.
+We'll make a recursive call on each
+induced cycle $C'$ that satisfies $V(C')\subseteq V(P_1)\cup V(P_3)$
+and $C'\cap P_3[z,w_3]=z$.
 
 \textbf{Case~2.2.1.} Suppose that $c(v)=0$, i.e. $v\in\graphinto(C_1)$.
 Assign $S(v)\leftarrow \ell_3$ and $\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$.
 Repeat Loop~2.2.
 
 \textbf{Case~2.2.2.} Suppose that $c(v)\ne 0$ and $v\ne a$,
-i.e. $v\in P_1$. Make a recursive
-call with input $(z, \adj{z}{y}, \ell_3)$ to color $\graphintc(C')$,
+i.e. $v\in P_1$. Call \emph{Path3Color}$(z, \adj{z}{y}, \ell_3)$
+to color $\graphintc(C')$,
 where $C'=C[v,y]\cup z\cup zy\cup zv$;
 see Figure~\ref{F:poh_linear_1} (middle).
 Set $\adj{z}{y}\leftarrow\adj{z}{v}$ and
@@ -709,11 +711,11 @@ $\adj{z}{v}\leftarrow\nxt(\adj{z}{v})$, then
 repeat Loop~2.2.
 
 \textbf{Case~2.2.3.} 
-Suppose that $v=a$. Make a recursive
-call with input $(z, \adj{z}{y}, \ell_3)$ to color $\graphintc(C')$,
+Suppose $v=a$. Call \emph{Path3Color}$(z, \adj{z}{y}, \ell_3)$
+to color $\graphintc(C')$,
 where $C'=C[p_1(v),y]\cup P_3[v,z]\cup vp_1(v)\cup zy$;
 see Figure~\ref{F:poh_linear_1} (right).
-Break Loop~2.2 and proceed to Step~2.3.
+Break Loop~2.2 and go to Step~2.3.
 
 \textbf{Step~2.3.} If $b\ne\text{NULL}$, then
 assign $a\leftarrow z$, $z\leftarrow b$, and
@@ -871,9 +873,8 @@ Color $c(v_1)\leftarrow 1$, $c(v_2)\leftarrow 2$, and
 $c(v_3)\leftarrow 2$.
 Iterate through $N(v_1)$ and mark $S(v)\leftarrow 1$ for each
 neighbor $v$ of $v_1$.
-Then $G$, $c$, $S$,
-$(v_1, \adj{v_1}{v_3}, 1)$ form a valid input for
-Algorithm~\ref{A:poh_linear}.
+Then call \emph{Path3Color}$(v_1, \adj{v_1}{v_3}, 1)$
+with $G$, $c$, and $S$.
 
 During Algorithm~\ref{A:poh_linear} we iterate through
 $N(v)$ for each $v\in G$ exactly twice: once
@@ -1124,24 +1125,24 @@ then $\text{deg}_c(z)=0$.
 \end{lemma}
 
 \begin{proof}
-Suppose that $m=e(G)\le 1$. Then $G=C$. We define a path
-$L$-list-coloring $c$ of $G$ as follows.
+Suppose that $m=|E(G)|\le 1$. We define the path
+$L$-list-coloring $c$ of $G=C$ as follows.
 Let $c(x)\in L(x)$ and $c(y)\in L(y)$ be the color in
 each respective list.
-If $m=0$, then $n(G)=1$ and $c$ trivially satisfies the lemma.
-Otherwise $m=1$ and $n(G)= 2$. If $x\ne y$, then $c$ is a
-path $L$-list-coloring of $G$ with the constraints of the lemma.
-Otherwise the remaining
-$v\in G-y$ satisfies $|L(v)|\ge 2$, and we pick
-$c(v)\in L(v)-\{c(y)\}$.
+If $m=0$, then $|V(G)|=1$ and $c$ trivially satisfies the lemma.
+Otherwise $m=1$ and $|V(G)|=2$. If $x=y$, then the vertex
+$v\in G-y$ satisfies $|L(v)|\ge 2$, so define
+$c(v)\in L(v)-L(y)$. Note that $\text{deg}_c(v)\le 1$
+for each $v\in G$, with $\text{deg}_c(z)=1$ only if $z\ne y$
+and $L(z)=L(y)$.
 
 We proceed by induction on $m$, the number of edges. Let
 $u_1,u_2,\ldots,u_k$ label the neighbors of $z$ in counter-clockwise
 order such that $u_1$ is the vertex immediately counter-clockwise
 from $z$ around $C$, and $u_k$ is the vertex clockwise from $z$ around $C$.
 In each of the subsequent cases we will apply the lemma separately
-to one or two subgraphs $G_1,G_2$ of $G$, with corresponding labeled
-outer face vertices $x_i,y_i,z_i\in G_i$ for $i=1,2$.
+to one or two subgraphs $G_1,G_2$ of $G$, with corresponding
+outer face vertices labeled $x_i,y_i,z_i\in G_i$ for $i=1,2$.
 
 \textbf{Case~1.}
 Suppose that $u_1=y$. Note that $z=x$ since $z\in C[x,y]$. Therefore
@@ -1558,7 +1559,7 @@ $\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and $\adj{u}{v}$ can be
 computed in constant time from $\adj{v}{u}$,
 see augmented adjacency lists in Section~\ref{S:representation}.
 
-\begin{algorithm}\label{A:hartman_impl} Path $3$-Choose
+\begin{algorithm}\label{A:hartman_impl} \emph{Path3Choose}$(x,y,z)$
 
 \textbf{Input.} Let $C$ be a cycle or length $1$ path in a
 weakly triangulated plane graph $G$ represented via augmented
@@ -1572,7 +1573,7 @@ or three, and for $v\in \graphinto(C)$ each list
 $L(v)$ has length three. Furthermore, for each $v\in C[x,z] - z$, assume
 that $L(v)$ does not contain the color in $L(z)$.
 
-Let $A,B$ be length $n$ arrays such that for each $v\in C$ we have
+Let $A,B$ be length $n$ arrays such that for each vertex $v\in C$ we have
 $A(v)=\adj{v}{a}$ and $B(v)=\adj{v}{b}$, where
 $a$ is the vertex
 immediately clockwise from $v$ around $C$, and
@@ -1583,28 +1584,29 @@ Let $S$ be a length $n$ integer array such
 that, for $v\in\graphintc(C)$, $S(v)\ne 0$ if and only if $v\in C$, and
 $S(v)=S(x)$ if and only if $v\in C[x,z]-z$ (or $v=x=z$).
 
-Let $\text{max}(S)=\text{max}_{v\in G} S(v)$ and
-$m_C=e(\graphintc(C))$. Define $\ell=\text{max}(S)+r$, where $r$
-is determined by the procedure case below that the input satisfies.
-If $m_C=1$ (Base case) or $z\ne x$ (Case~3), then $r=0$.
-If $z=x$ and $C[y,x]\ne y,x$ (Case~2), then $r=1$.
-Otherwise $z=x$ and $C[y,x]=y,x$ (Case~1), and $r=2$. Assume that
-$\ell < 2(m-m_C+1) + 2$.
+We'll write $m_C=|E(\graphintc(C))|$ and
+$\text{max}(S)=\text{max}_{v\in G} S(v)$.
+Define $\ell=\text{max}(S)+r$, with $r$
+determined by the case below that the input satisfies:
+if $m_C=1$ (Base case) or $z\ne x$ (Case~3), then $r=0$;
+if $z=x$ and $C[y,x]\ne y,x$ (Case~2), then $r=1$;
+otherwise $z=x$ and $C[y,x]=y,x$ (Case~1), and $r=2$.
+We'll assume that $\ell < 2(m-m_C+1) + 2$.
 
 Let $M$
 be a length $2m+2$ integer array such that if $v\in C$,
 then $M(S(v))=S(y)$ if and only if $v\in C[z,y]$.
 
 The concrete input will be $G$, $L$,
-$A$, $B$, $S$, $M$, and the tuple $(x,y,z)$.
+$A$, $B$, $S$, $M$, along with the tuple $(x,y,z)$.
 
 \textbf{Output.} For each $v\in\graphintc(C)$, all but one color will be
 removed from the list $L(v)$. The remaining color in each list will represent
 a path $L$-list-coloring of $\graphintc(C)$
 such that $\text{deg}_c(x)\le1$, $\text{deg}_c(y)\le1$, and
-$\text{deg}_c(z)\le1$. If $z=y$, or if $C[z,y]=z,y$ and $L(z)$ did
-not contain the color in $L(y)$, then $\text{deg}_c(z)=0$. Moreover,
-afterwards $\text{max}(S)\le\ell+2(m_C-1)$.
+$\text{deg}_c(z)\le1$. If $z=y$, or if $C[z,y]=z,y$ and $L(z)$ did not
+contain the color in $L(y)$, then $\text{deg}_c(z)=0$.
+We'll also guarantee $\text{max}(S)\le\ell+2(m_C-1)$.
 
 \textbf{Procedure.} Let $\adj{z}{u_1}:= B(z)$. Our strategy
 will follow the proof of Lemma~\ref{L:hartman3}.
@@ -1613,7 +1615,7 @@ will follow the proof of Lemma~\ref{L:hartman3}.
 is a length $1$ path. If $u_1\ne x$ and $u_1\ne y$, remove the
 color in $L(z)$ from $L(u_1)$, if it exists, then remove further colors
 until one color remains. Note that
-$m_C=1$ and $\text{max}(S)\le\ell+ 2(m_C-1)=\ell$ by definition.
+$m_C=1$ and $\text{max}(S)=\ell + 2(m_C-1)$ by definition.
 
 \textbf{Recursive case.} Suppose that $A(z)\ne B(z)$.
 Let $\adj{z}{u_2}:=\nxt(\adj{z}{u_1})$. It follows from the
@@ -1629,14 +1631,14 @@ Figures~\ref{F:hartman_1}, \ref{F:hartman_3_2}, and
 Set $S(x)\leftarrow \text{max}(S)+1$ and
 $S(y)\leftarrow S(x)$.
 Assign $M(S(x))\leftarrow S(x)$.
-Make a recursive call with the input $(y, x, y)$.
+Call \emph{Path3Choose}$(y, x, y)$.
 
 \textbf{Case~2.} Suppose that $z=x$ and $u_1\ne y$. 
 Remove the color in $L(z)$ from $L(u_1)$, if it exists, then remove
 further colors until one color remains.
 Assign $S(u_1)\leftarrow \text{max}(S)+1$
 and $M(S(u_1))\leftarrow S(u_1)$,
-and make a recursive call with input $(u_1, y, z)$.
+and call \emph{Path3Choose}$(u_1, y, z)$.
 
 \textbf{Case~3.} Suppose that $z\ne x$ and $u_1\ne y$.
 Remove $zu_1$ by assigning $A(u_1)\leftarrow\prv(\adj{u_1}{z})$
@@ -1648,13 +1650,12 @@ $B(u_2)\leftarrow\adj{u_2}{u_1}=\nxt(\adj{u_2}{z})$ and
 $A(u_2)\leftarrow\adj{u_2}{z}$,
 see Figure~\ref{F:hartman_1} (right).
 Remove the color in $L(z)$ from
-$L(u_2)$.
-Make a recursive call with the same input $(x, y, z)$.
+$L(u_2)$. Call \emph{Path3Choose}$(x, y, z)$.
 
 \textbf{Case~3.2.} Suppose that $S(u_2)\ne 0$, i.e. $u_2\in C$. Just as in
 Case~3.2 of the proof of Lemma~\ref{L:hartman3}, we will separately consider
 the two blocks $G_1$ and $G_2$ of $\graphintc(C)-zu_1$.
-Note that $m_C-1=e(G_1)+e(G_2)$.
+Note that $m_C-1=|E(G_1)|+|E(G_2)|$.
 
 As we've already removed the edge $zu_1$ by
 adjusting $B(z)$ and $A(u_1)$, it remains
@@ -1668,35 +1669,37 @@ to Figure~\ref{F:hartman_3_2} and
 Figure~\ref{F:hartman_3_2_3}.
 
 Let $\adj{u_2}{a}:= A(u_2)$ and $\adj{u_2}{b}:= B(u_2)$.
-To represent $G_1$, assign 
+To represent $G_1$, we will assign 
 $A(u_2)\leftarrow\adj{u_2}{a}$ and
 $B(u_2)\leftarrow\nxt(\adj{u_2}{z})$.
-To represent $G_2$,
+To represent $G_2$, we'll
 assign
 $A(u_2)\leftarrow\adj{u_2}{z}$ and
 $B(u_2)\leftarrow\adj{u_2}{b}$
 
-\textbf{Case~3.2.1.} Suppose that $S(u_2)=S(x)$, i.e. $u_2\in C[x,z]$. Make a
-recursive call on $G_2$ with input $(x, y, z)$;
-afterwards $\text{max}(S)\le\ell + 2e(G_1)-2$.
+\textbf{Case~3.2.1.} Suppose that $S(u_2)=S(x)$, i.e. $u_2\in C[x,z]$.
+Call \emph{Path3Choose}$(x, y, z)$ on $G_2$ (by modifying $A(u_2)$
+and $B(u_2)$ as above).
+Afterwards $\text{max}(S)\le\ell + 2|E(G_1)|-2$.
 Assign $S(u_2)\leftarrow\text{max}(S)+1$ and
-$M(S(u_2))\leftarrow S(u_2)$, and make a recursive call
-on $G_1$ with input $(u_2, u_2, u_2)$.
+$M(S(u_2))\leftarrow S(u_2)$, and call
+\emph{Path3Choose}$(u_2, u_2, u_2)$ on $G_1$.
 Finally, observe that
-$\text{max}(S)\le\ell + 2e(G_1)-2 + 1 + 2e(G_2)-1<\ell+2(m_C-1)$.
+$\text{max}(S)\le\ell + 2|E(G_1)|-2 + 1 + 2|E(G_2)|-1<\ell+2(m_C-1)$.
 
 \textbf{Case~3.2.2.} Suppose that $S(u_2)\ne 0$, but
 $S(u_2)\ne S(x)$ and $M(S(u_2))\ne S(y)$. In other words, suppose that
 $u_2\in C[y,x]-x-y$.
 First remove the color in $L(z)$ from $L(u_2)$, if it exists, then remove
 colors until only one remains. Set $S(u_2)\leftarrow S(x)$.
-Make a recursive call on $G_1$ with input $(x, u_2, x)$;
-afterwards $\text{max}(S)\le\ell +2e(G_1)$.
+Call \emph{Path3Choose}$(x, u_2, x)$ on $G_1$.
+Afterwards $\text{max}(S)\le\ell +2|E(G_1)|$.
 Set $S(u_2)\leftarrow\text{max}(S)+1$ and
 $M(S(u_2))\leftarrow S(u_2)$, and
-make a recursive call on $G_2$ with input $(u_2, y, z)$.
+call \emph{Path3Choose}$(u_2, y, z)$
+on $G_2$.
 Finally, observe that
-$\text{max}(S)\le\ell + 2e(G_1) + 1 + 2e(G_2)-2<\ell+2(m_C-1)$.
+$\text{max}(S)\le\ell + 2|E(G_1)| + 1 + 2|E(G_2)|-2<\ell+2(m_C-1)$.
 
 \textbf{Case~3.2.3.} Suppose that $M(S(u_2))=S(y)$, i.e.
 $u_2\in C[z,y]$. There are
@@ -1704,21 +1707,21 @@ two cases to consider, see Figure~\ref{F:hartman_3_2_3}.
 
 \textbf{Case~3.2.3.1.} Suppose that the color in $L(z)$ is in $L(u_2)$. Remove
 all colors from $L(u_2)$ except for the color in $L(z)$.
-Make a recursive call on $G_1$ with input $(x, y, u_2)$;
-afterwards $\text{max}(S)\le\ell + 2e(G_1)-2$.
+Call \emph{Path3Choose}$(x, y, u_2)$ on $G_1$.
+Afterwards $\text{max}(S)\le\ell + 2|E(G_1)|-2$.
 Assign
 $S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$,
-and $M(S(z))\leftarrow S(z)$. Make a
-recursive call on $G_2$ with input $(u_2, z, u_2)$. Finally, observe that
-$\text{max}(S)\le\ell + 2e(G_1)-2 + 1 + 2e(G_2) - 1<\ell+2(m_C-1)$.
+and $M(S(z))\leftarrow S(z)$. Call
+\emph{Path3Choose}$(u_2, z, u_2)$ on $G_2$. Finally, observe that
+$\text{max}(S)\le\ell + 2|E(G_1)|-2 + 1 + 2|E(G_2)| - 1<\ell+2(m_C-1)$.
 
-\textbf{Case~3.2.3.2.} Suppose that the color in $L(z)$ is not in $L(u_2)$.
-Assign $M(S(x))\leftarrow S(y)$. Make a recursive call on $G_1$
-with input $(x, y, x)$; afterwards $\text{max}(S)\le\ell + 2e(G_1)$.
+\textbf{Case~3.2.3.2.} Suppose the color in $L(z)$ is not in $L(u_2)$.
+Assign $M(S(x))\leftarrow S(y)$. Call \emph{Path3Choose}$(x, y, x)$ on
+$G_1$. Afterwards $\text{max}(S)\le\ell + 2|E(G_1)|$.
 Assign $S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$, and
-$M(S(z))\leftarrow S(z)$. Make a
-recursive call on $G_2$ with input $(u_2, z, u_2)$. Observe
-$\text{max}(S)\le\ell + 2e(G_1) + 1 + 2e(G_2) - 1=\ell+2(m_C-1)$.
+$M(S(z))\leftarrow S(z)$. Call \emph{Path3Choose}$(u_2, z, u_2)$ on
+$G_2$. Observe that
+$\text{max}(S)\le\ell + 2|E(G_1)| + 1 + 2|E(G_2)| - 1=\ell+2(m_C-1)$.
 
 Note that this is the only case where
 $M(S(v))$ is set a value other than $S(v)$.
@@ -2390,8 +2393,8 @@ $S(v)\leftarrow 0$ for each $v\in G-C$. Pick any $u\in C$,
 assign $S(u)\leftarrow 2$, and remove all but one color from $L(u)$.
 Create a length $2m+2$ array of integers $M$ and initialize
 $M(i)\leftarrow i$ for each $i\in\{0,1,2\}$.
-Finally, apply Algorithm~\ref{A:hartman_impl} with the input $G$, $L$,
-$A$, $B$, $S$, $M$, and $(u, u, u)$. The remaining color in each
+Finally, call \emph{Path3Choose}$(u, u, u)$ with $G$, $L$,
+$A$, $B$, $S$, and $M$. The remaining color in each
 list $L(v)$ will represent a path $L$-list-coloring of $G$.
 
 Each case in Algorithm~\ref{A:hartman_impl} performs a fixed number

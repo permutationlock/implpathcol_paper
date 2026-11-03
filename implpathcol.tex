@@ -177,10 +177,8 @@ All graphs will be finite and simple. See West~\cite{Wes2000}
 for graph theoretic terms.
 
 A graph is
-\defterm{planar} if it may be \defterm{embedded} in the plane by mapping
-each vertex to a point, and each edge to a simple arc between
-its incident vertices, such that the arcs intersect only at their
-endpoints.
+\defterm{planar} if it may drawn in the plane without edge
+crossings, and such a drawing is called an \defterm{embedding}.
 A \defterm{plane graph} is a planar graph with a fixed embedding.
 
 A \defterm{path coloring}
@@ -252,25 +250,25 @@ discusses how each algorithm may be modified to benefit from parallelism.
 
 A \defterm{rotation scheme} for a graph
 is a circular ordering of the incident edges
-around each vertex. The combinatorial information of an embedding
-is completely described
+around each vertex. The combinatorial information contained in an
+embedding is completely described
 by the associated clockwise (or counter-clockwise) rotation scheme.
 
-A \defterm{face} of a plane graph is a maximal region of ``the plane minus
-the embedding.'' We'll always
-refer to a face by the subgraph on its border.
+A \defterm{face} of a plane graph is a maximal region of the plane
+that contains no point of the embedding. We'll always
+refer to a face by the subgraph drawn on its border.
 A plane graph is \defterm{triangulated}
 if each face is
 a $3$-cycle, and \defterm{weakly triangulated}
 if each interior (bounded) face is a $3$-cycle.
 A planar graph may be
-embedded (by finding a rotation scheme) and triangulated
-(by adding edges) in $\mathcal{O}(n)$ time,
-see Hopcroft
+embedded (by finding a rotation scheme associated to an embedding) and
+triangulated (by adding edges across non $3$-cycle faces)
+in $\mathcal{O}(n)$ time, see e.g. Hopcroft
 and Tarjan~\cite{Hop1974} or Boyer and
 Myrvold~\cite{BoMy2004}.
 
-The input for each algorithm will be a weakly triangulated
+The input to each algorithm will be a weakly triangulated
 plane graph $G$ with $n$ vertices and $m$ edges.
 The input size will be $n$, but it is equivalent to take
 $m$ to be the input size:
@@ -280,12 +278,12 @@ We will represent $G$ via \textit{adjacency lists}:
 a list, for each vertex $v$, of the neighbors of $v$, ordered by
 the counter-clockwise rotation scheme.
 A vertex will be represented by an integer $0\dots n-1$.
-In algorithms $N(v)$ will refer to $v$'s adjacency list.
+In algorithms, $N(v)$ will refer to $v$'s adjacency list.
 
 Let $v\in G$ and $u\in N(v)$. Define $\nxt_v(u)\in N(v)$ to be
 the neighbor counter-clockwise from $u$ around $v$,
 and $\prv_v(u)\in N(V)$ to be the neighbor clockwise from $u$.
-In algorithms
+In algorithms,
 $\adj{v}{u}$ will be a reference to $u$'s entry in $N(v)$, i.e.
 $\adj{v}{u}$ represents both $u$ and the position of $u$ within $v$'s
 adjacency list;
@@ -1524,7 +1522,7 @@ that $c$ is a path $L$-list-coloring of $G$. If $u_2=y$,
 then $z_1=y_1=y$ and $\text{deg}_{c_1}(y)=0$; thus
 $\text{deg}_c(y)=\text{deg}_{c_2}(u_2)=1$. If $u_2\ne y$, then
 $\text{deg}_c(y)=\text{deg}_{c_1}(y_1)\le 1$.
-Moreover, $\text{deg}_c(z)=\text{deg}_{c_2}(y_2)=1$ and
+In either case, $\text{deg}_c(z)=\text{deg}_{c_2}(y_2)=1$ and
 $\text{deg}_c(x)=\text{deg}_{c_1}(x_1)\le 1$.
 
 \textbf{Case~3.2.3.2.} Suppose that $L(z)\cap L(u_2)=\emptyset$. Find
@@ -1598,7 +1596,8 @@ We'll assume that $\ell < 2(m-m_C+1) + 2$.
 
 Let $M$
 be a length $2m+2$ integer array such that if $v\in C$,
-then $M(S(v))=S(y)$ if and only if $v\in C[z,y]$.
+then $M(S(v))=S(y)$ if and only if $v\in C[z,y]$. The
+purpose of the array $M$ is described below in Case~3.2.3.2.
 
 The concrete input will be $G$, $L$,
 $A$, $B$, $S$, $M$, along with the tuple $(x,y,z)$.
@@ -2401,7 +2400,8 @@ $A$, $B$, $S$, and $M$. The remaining color in each
 list $L(v)$ will represent a path $L$-list-coloring of $G$.
 
 Each case in Algorithm~\ref{A:hartman_impl} performs a fixed number
-of constant time operations. Case~3 removes an edge
+of constant time operations and makes up to two recursive
+calls. Case~3 removes an edge
 from the subgraph(s) under consideration.
 Case~1 makes a recursive call
 with an input that satisfies Case~2, and Case~2 makes a recursive

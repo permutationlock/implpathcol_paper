@@ -177,18 +177,11 @@ All graphs will be finite and simple. See West~\cite{Wes2000}
 for graph theoretic terms.
 
 A graph is
-\defterm{planar} if it may be drawn in the plane by mapping
+\defterm{planar} if it may be \defterm{embedded} in the plane by mapping
 each vertex to a point, and each edge to a simple arc between
-its incident vertices such that the arcs intersect only at their
-endpoints. A \defterm{face} is a region
-of the plane not containing any point of the drawing; we'll
-refer to each face by the subgraph drawn on
-its border. 
-A \defterm{(combinatorial) embedding} is an equivalence
-class of drawings determined by the circular ordering of edges
-around each vertex. A \defterm{plane graph} is a planar graph
-with a fixed embedding. Subgraphs of a plane graph are
-also plane graphs, with the inherited embedding.
+its incident vertices, such that the arcs intersect only at their
+endpoints.
+A \defterm{plane graph} is a planar graph with a fixed embedding.
 
 A \defterm{path coloring}
 is a (vertex) coloring where each color class induces a disjoint union of
@@ -250,34 +243,44 @@ and an assignment of a list of three colors to each vertex;
 it produces a path coloring of the given graph
 in which each vertex receives a color from its list.
 
-Section~\ref{S:performance} provides benchmark results for
+Section~\ref{S:performance} provides performance results for our
 implementations of each algorithm~\cite{Bro2017}. The section also
 discusses how each algorithm may be modified to benefit from parallelism.
 
 
 \section{Graph Representations and Time Complexity}\label{S:representation}
 
-A plane graph $G$ is \defterm{triangulated}
-if each of its faces is
+A \defterm{rotation scheme} for a graph
+is a circular ordering of the incident edges
+around each vertex. The combinatorial information of an embedding
+is completely described
+by the associated clockwise (or counter-clockwise) rotation scheme.
+
+A \defterm{face} of a plane graph is a maximal region of ``the plane minus
+the embedding.'' We'll always
+refer to a face by the subgraph on its border.
+A plane graph is \defterm{triangulated}
+if each face is
 a $3$-cycle, and \defterm{weakly triangulated}
 if each interior (bounded) face is a $3$-cycle.
+A planar graph may be
+embedded (by finding a rotation scheme) and triangulated
+(by adding edges) in $\mathcal{O}(n)$ time,
+see Hopcroft
+and Tarjan~\cite{Hop1974} or Boyer and
+Myrvold~\cite{BoMy2004}.
+
 The input for each algorithm will be a weakly triangulated
 plane graph $G$ with $n$ vertices and $m$ edges.
 The input size will be $n$, but it is equivalent to take
 $m$ to be the input size:
 if $n\ge 3$, then $m\le 3n-6$ by Euler's formula.
 
-Any planar graph may be plane
-embedded and triangulated (by adding edges) in $\mathcal{O}(n)$ time,
-see e.g. Hopcroft
-and Tarjan~\cite{Hop1974} or Boyer and
-Myrvold~\cite{BoMy2004}.
-
-We will represent $G$ for computation via \textit{adjacency lists}:
-a list, for each vertex $v$, of the neighbors of $v$.
+We will represent $G$ via \textit{adjacency lists}:
+a list, for each vertex $v$, of the neighbors of $v$, ordered by
+the counter-clockwise rotation scheme.
 A vertex will be represented by an integer $0\dots n-1$.
-The order of each list will represent the embedding. In algorithms
-$N(v)$ will refer to $v$'s adjacency list.
+In algorithms $N(v)$ will refer to $v$'s adjacency list.
 
 Let $v\in G$ and $u\in N(v)$. Define $\nxt_v(u)\in N(v)$ to be
 the neighbor counter-clockwise from $u$ around $v$,
@@ -289,30 +292,29 @@ adjacency list;
 define $\nxt(\adj{v}{u})=\adj{v}{(\nxt_v(u))}$ and
 $\prv(\adj{v}{u})=\adj{v}{(\prv_v(u))}$.
 
-A counter-clockwise embedding-ordered adjacency list allows
-$\nxt(\adj{v}{u})$ to be computed
+We may naturally compute $\nxt(\adj{v}{u})$
 from $\adj{v}{u}$ in $\mathcal{O}(1)$ time; this is all that is
-required for the linear time algorithm in Section~\ref{S:path_color}.
+required in Section~\ref{S:path_color}.
 However, the linear time complexity of the algorithm
-in Section~\ref{S:path_choose} depends on the ability
+in Section~\ref{S:path_choose} depends on our ability
 to compute $\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and the \defterm{back reference} $\adj{u}{v}$,
 all in $\mathcal{O}(1)$ time.
 Representing $N(v)$ via an array or
-doubly linked list solves computing both $\nxt(\adj{v}{u})$ and
+doubly linked list solves computing
 $\prv(\adj{v}{u})$, but
 back references require more information.
-We define an \defterm{augmented adjacency list} to be an adjacency
+We define an \defterm{augmented adjacency list} to be a
 list that stores the pair $(u,\adj{u}{v})$ for each neighbor $u$ of $v$.
 Given an adjacency list representation, an augmented
-representation may be constructed in $\mathcal{O}(m)$ time. 
+representation may be constructed in $\mathcal{O}(m)$ time, see
+Algorithm~\ref{A:augment}. 
 
 \begin{algorithm}\label{A:augment} \emph{Augment}$(N)$
 
 \textbf{Input.} An adjacency list representation $N$ of a graph $G$.
 
 \textbf{Output.} An augmented adjacency list representation $N^*$ of
-$G$ such that for each $v\in G$, the neighbors of $v$
-appear in $N^*(v)$ in the same order they appear in $N(v)$.
+$G$ with the same rotation scheme as $N$.
 
 \textbf{Step~1.} For each $v\in G$, construct an
 augmented adjacency list $N^*(v)$
@@ -2409,48 +2411,7 @@ overall time complexity,
 is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl} and
 \ref{F:hartman_impl_cont} for a concrete example.
 
-\section{Experimental Performance and Parallelism}\label{S:performance}
-
-A C implementation of each algorithm is available~\cite{Bro2017}.
-For each $i$ from $4\ldots 7$, a uniform random sample of $100$
-plane triangulations of order $10^i$ was
-generated using the method of
-Poulalhon and Schaeffer~\cite{Pou2006}. 
-Each algorithm, as well as a baseline $\mathcal{O}(n)$ breadth-first
-search (BFS), was run on the sample set; see Figure~\ref{F:plot}.
-
-In Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl}, it
-is possible to maintain a
-stack of independent recursive frames, and to have a pool of threads execute them
-concurrently. The amount of parallelism possible using this method
-greatly varies depending on the graph structure, but a
-2-3x average performance
-gain (2.8x for Alg.~\ref{A:poh_linear}, and 2.4x for Alg.~\ref{A:hartman_impl})
-was observed when using 4 threads to path color large random triangulations,
-see Figure~\ref{F:plot}.
-
-Our parallel implementation of Algorithm~\ref{A:poh_linear} maintains a
-shared lock-guarded stack which all threads may push/pop recursive
-frames to/from.
-To reduce lock contention, each thread also
-maintains a
-small local stack of frames, and only accesses the shared
-stack when their local stack is full or empty.
-
-Algorithm~\ref{A:hartman_impl} is trickier to adapt to
-parallel execution: the pairs of recursive calls in Case~3.2
-rely on a sequential execution order.
-If we save a local copy of
-$S(v), A(v), B(v)$ for each $v\in\{x, y,z\}$ alongside
-each frame, then the recursive calls in
-Case~3.2.1 with $u_2=x$, Case~3.2.2,
-Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$ become order independent.
-However, in Case~3.2.1 with $u_2\ne x$, and Case~3.2.3.2 with $u_2\ne y$,
-the second call will always depend on the color of $u_2$ (the
-remaining color in $L(u_2)$)
-computed by the first.
-
-\begin{figure}
+\begin{figure}[ht]
 \begin{center}
 \begin{tikzpicture}
   \draw[very thin,color=gray,xstep=4.5,ystep=1.75] (-0.1,-0.1) grid (3.0*4.5+0.1, 5.0*1.75+0.1);
@@ -2519,6 +2480,46 @@ computed by the first.
     \label{F:plot}
 \end{center}
 \end{figure}
+
+\section{Experimental Performance and Parallelism}\label{S:performance}
+
+A C implementation of each algorithm is available~\cite{Bro2017}.
+For each $i$ from $4\ldots 7$, a uniform random sample of $100$
+plane triangulations of order $10^i$ was
+generated using the method of
+Poulalhon and Schaeffer~\cite{Pou2006}. 
+Each algorithm, as well as a baseline $\mathcal{O}(n)$ breadth-first
+search (BFS), was run on the sample set; see Figure~\ref{F:plot}.
+
+In Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl}, it
+is possible to maintain a
+stack of independent recursive frames, and to have a pool of threads execute them
+concurrently. The amount of parallelism possible using this method
+greatly varies depending on the graph structure, but a
+2-3x average performance
+gain (2.8x for Alg.~\ref{A:poh_linear}, and 2.4x for Alg.~\ref{A:hartman_impl})
+was observed when using 4 threads to path color large random triangulations,
+see Figure~\ref{F:plot}.
+
+Our parallel implementation of Algorithm~\ref{A:poh_linear} maintains a
+shared lock-guarded stack which all threads may push/pop recursive
+frames to/from.
+% Each thread maintains a
+% small local stack of frames, and accesses the shared
+% stack only when their stack is full or empty.
+
+Algorithm~\ref{A:hartman_impl} is trickier to adapt to
+parallel execution: the pairs of recursive calls in Case~3.2
+rely on a sequential execution order.
+If we save a local copy of
+$S(v), A(v), B(v)$ for each $v\in\{x, y,z\}$ alongside
+each frame, then the recursive calls in
+Case~3.2.1 with $u_2=x$, Case~3.2.2,
+Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$ become order independent.
+However, in Case~3.2.1 with $u_2\ne x$, and Case~3.2.3.2 with $u_2\ne y$,
+the second call will always depend on the color of $u_2$ (the
+remaining color in $L(u_2)$)
+computed by the first.
 
 Our parallel implementation of Algorithm~\ref{A:hartman_impl}
 maintains a shared object pool

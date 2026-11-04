@@ -43,6 +43,7 @@
 \newcommand{\adj}[2]{{}^{#1}{#2}}
 \newcommand{\nxt}{\text{next}}
 \newcommand{\prv}{\text{prev}}
+\newcommand{\bck}{\text{back}}
 \newcommand{\graphinto}{\text{int}}
 \newcommand{\graphintc}{\overline{\text{int}}}
 
@@ -262,7 +263,7 @@ if each face is
 a $3$-cycle, and \defterm{weakly triangulated}
 if each interior (bounded) face is a $3$-cycle.
 A planar graph may be
-embedded (by finding a rotation scheme associated to an embedding) and
+embedded (by finding a rotation scheme associated with an embedding) and
 triangulated (by adding edges across non $3$-cycle faces)
 in $\mathcal{O}(n)$ time, see e.g. Hopcroft
 and Tarjan~\cite{Hop1974} or Boyer and
@@ -282,7 +283,7 @@ In algorithms, $N(v)$ will refer to $v$'s adjacency list.
 
 Let $v\in G$ and $u\in N(v)$. Define $\nxt_v(u)\in N(v)$ to be
 the neighbor counter-clockwise from $u$ around $v$,
-and $\prv_v(u)\in N(V)$ to be the neighbor clockwise from $u$.
+and $\prv_v(u)\in N(v)$ to be the neighbor clockwise from $u$.
 In algorithms,
 $\adj{v}{u}$ will be a reference to $u$'s entry in $N(v)$, i.e.
 $\adj{v}{u}$ represents both $u$ and the position of $u$ within $v$'s
@@ -291,20 +292,22 @@ define $\nxt(\adj{v}{u})=\adj{v}{(\nxt_v(u))}$ and
 $\prv(\adj{v}{u})=\adj{v}{(\prv_v(u))}$.
 
 We may naturally compute $\nxt(\adj{v}{u})$
-from $\adj{v}{u}$ in $\mathcal{O}(1)$ time; this is all that is
+from $\adj{v}{u}$ in $\mathcal{O}(1)$ time, and this is all that's
 required in Section~\ref{S:path_color}.
-However, the linear time complexity of the algorithm
+However, the $\mathcal{O}(n)$ time complexity of the algorithm
 in Section~\ref{S:path_choose} depends on our ability
-to compute $\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and the \defterm{back reference} $\adj{u}{v}$,
-all in $\mathcal{O}(1)$ time.
+to compute $\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and
+the \defterm{back reference} $\bck(\adj{v}{u})=\adj{u}{v}$,
+in $\mathcal{O}(1)$ time.
 Representing $N(v)$ via an array or
 doubly linked list solves computing
-$\prv(\adj{v}{u})$, but
-back references require more information.
+$\prv(\adj{v}{u})$, but efficiently computing
+$\bck(\adj{v}{u})$ requires additional information.
 We define an \defterm{augmented adjacency list} to be a
 list that stores the pair $(u,\adj{u}{v})$ for each neighbor $u$ of $v$.
-Given an adjacency list representation, an augmented
-representation may be constructed in $\mathcal{O}(m)$ time, see
+Given an adjacency list representation, an augmented adjacency list
+representation ordered by the same rotation scheme
+may be constructed in $\mathcal{O}(m)$ time, see
 Algorithm~\ref{A:augment}. 
 
 \begin{algorithm}\label{A:augment} \emph{Augment}$(N)$
@@ -1555,10 +1558,12 @@ Lemma~\ref{L:hartman3}.
 The proof of Lemma~\ref{L:hartman3} describes a linear time
 path list-coloring algorithm,
 see Algorithm~\ref{A:hartman_impl}.
-For $v\in G$ and $u\in N(v)$, we will assume that
-$\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and $\adj{u}{v}$ can be
-computed in constant time from $\adj{v}{u}$,
-see augmented adjacency lists in Section~\ref{S:representation}.
+For $v\in G$ and $u\in N(v)$, we'll assume that
+$\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and
+$\bck(\adj{v}{u})=\adj{u}{v}$ may be
+computed in constant time,
+see the discussion of augmented adjacency lists in
+Section~\ref{S:representation}.
 
 \begin{algorithm}\label{A:hartman_impl} \emph{Path3Choose}$(x,y,z)$
 
@@ -1643,7 +1648,9 @@ and $M(S(u_1))\leftarrow S(u_1)$,
 and call \emph{Path3Choose}$(u_1, y, z)$.
 
 \textbf{Case~3.} Suppose that $z\ne x$ and $u_1\ne y$.
-Remove $zu_1$ by assigning $A(u_1)\leftarrow\prv(\adj{u_1}{z})$
+Let $\adj{u_1}{z}:=\bck(\adj{z}{u_1})$ and
+$\adj{u_2}{z}:=\bck(\adj{z}{u_2})$.
+Remove the edge $zu_1$ by assigning $A(u_1)\leftarrow\prv(\adj{u_1}{z})$
 and $B(z)\leftarrow\nxt(\adj{z}{u_1})$.
 
 \textbf{Case~3.1.} Suppose that $S(u_2)=0$, i.e. $u_2\in
@@ -1654,7 +1661,8 @@ see Figure~\ref{F:hartman_1} (right).
 Remove the color in $L(z)$ from
 $L(u_2)$. Call \emph{Path3Choose}$(x, y, z)$.
 
-\textbf{Case~3.2.} Suppose that $S(u_2)\ne 0$, i.e. $u_2\in C$. Just as in
+\textbf{Case~3.2.} Suppose that $S(u_2)\ne 0$, i.e. $u_2\in C$.
+Just as in
 Case~3.2 of the proof of Lemma~\ref{L:hartman3}, we will separately consider
 the two blocks $G_1$ and $G_2$ of $\graphintc(C)-zu_1$.
 Note that $m_C-1=|E(G_1)|+|E(G_2)|$.
@@ -1662,7 +1670,7 @@ Note that $m_C-1=|E(G_1)|+|E(G_2)|$.
 As we've already removed the edge $zu_1$ by
 adjusting $B(z)$ and $A(u_1)$, it remains
 to ``split'' the
-neighborhood of $u_2$ at the edge $\adj{u_2}{z}$ such that the recursive
+neighborhood of $u_2$ at the edge $u_2z$ such that the recursive
 call on $G_1$ considers only the neighbors of $u_2$ counter-clockwise
 from $z$, and the call
 on $G_2$ considers $z$ and all neighbors clockwise from $z$;
@@ -2489,7 +2497,8 @@ plane triangulations of order $10^i$ was
 generated using the method of
 Poulalhon and Schaeffer~\cite{Pou2006}. 
 Each algorithm, as well as a baseline $\mathcal{O}(n)$ breadth-first
-search (BFS), was run on the sample set; see Figure~\ref{F:plot}.
+search (BFS), was run on each graph in the sample set;
+see Figure~\ref{F:plot}.
 
 In Algorithm~\ref{A:poh_linear} and Algorithm~\ref{A:hartman_impl}, it
 is possible to maintain a

@@ -42,7 +42,6 @@
 
 \newcommand{\adj}[2]{{}^{#1}{#2}}
 \newcommand{\nxt}{\text{next}}
-\newcommand{\prv}{\text{prev}}
 \newcommand{\bck}{\text{back}}
 \newcommand{\graphinto}{\text{int}}
 \newcommand{\graphintc}{\overline{\text{int}}}
@@ -276,37 +275,30 @@ $m$ to be the input size:
 if $n\ge 3$, then $m\le 3n-6$ by Euler's formula.
 
 We will represent $G$ via \textit{adjacency lists}:
-a list, for each vertex $v$, of the neighbors of $v$, ordered by
-the counter-clockwise rotation scheme.
+a list, for each vertex $v$, of the neighbors of $v$. Each
+list will be ordered according to
+the counter-clockwise rotation scheme associated with $G$'s embedding.
 A vertex will be represented by an integer $0\dots n-1$.
 In algorithms, $N(v)$ will refer to $v$'s adjacency list.
 
 Let $v\in G$ and $u\in N(v)$. Define $\nxt_v(u)\in N(v)$ to be
-the neighbor counter-clockwise from $u$ around $v$,
-and $\prv_v(u)\in N(v)$ to be the neighbor clockwise from $u$.
+the neighbor counter-clockwise from $u$ around $v$.
 In algorithms,
-$\adj{v}{u}$ will be a reference to $u$'s entry in $N(v)$, i.e.
-$\adj{v}{u}$ represents both $u$ and the position of $u$ within $v$'s
-adjacency list;
-define $\nxt(\adj{v}{u})=\adj{v}{(\nxt_v(u))}$ and
-$\prv(\adj{v}{u})=\adj{v}{(\prv_v(u))}$.
+$\adj{v}{u}$ will be a reference to $u$'s entry in the
+adjacency list $N(v)$. In this way,
+$\adj{v}{u}$ represents both $u$ and the relative position of
+the edge $uv$ around $v$ in the embedding.
+Define $\nxt(\adj{v}{u})=\adj{v}{(\nxt_v(u))}$ to be the next
+entry in the list $N(v)$.
 
-We may naturally compute $\nxt(\adj{v}{u})$
-from $\adj{v}{u}$ in $\mathcal{O}(1)$ time, and this is all that's
-required in Section~\ref{S:path_color}.
-However, the $\mathcal{O}(n)$ time complexity of the algorithm
+The $\mathcal{O}(n)$ time complexity of the algorithm
 in Section~\ref{S:path_choose} depends on our ability
-to compute $\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and
-the \defterm{back reference} $\bck(\adj{v}{u})=\adj{u}{v}$,
+to compute a \defterm{back reference} $\bck(\adj{v}{u})=\adj{u}{v}$
 in $\mathcal{O}(1)$ time.
-Representing $N(v)$ via an array or
-doubly linked list solves computing
-$\prv(\adj{v}{u})$, but efficiently computing
-$\bck(\adj{v}{u})$ requires additional information.
 We define an \defterm{augmented adjacency list} to be a
 list that stores the pair $(u,\adj{u}{v})$ for each neighbor $u$ of $v$.
 Given an adjacency list representation, an augmented adjacency list
-representation ordered by the same rotation scheme
+representation, ordered by the same rotation scheme,
 may be constructed in $\mathcal{O}(m)$ time, see
 Algorithm~\ref{A:augment}. 
 
@@ -880,12 +872,12 @@ neighbor $v$ of $v_1$.
 Then call \emph{Path3Color}$(v_1, \adj{v_1}{v_3}, 1)$
 with $G$, $c$, and $S$.
 
-During Algorithm~\ref{A:poh_linear} we iterate through
-$N(v)$ for each $v\in G$ exactly twice: once
-to locate $\adj{z}{a}$ when
-$z=v$ is colored at the start of Loop~2,
-and once to iterate through $N(z)$ in Loops~2.1 and 2.2.
-Therefore the time complexity is
+During Algorithm~\ref{A:poh_linear}, $N(z)$
+is iterated exactly twice for each $z\in G$:
+once to locate $\adj{z}{a}$
+at the start of Loop~2,
+and once in Loops~2.1 and 2.2.
+Thus its time complexity is
 $\mathcal{O}(n)$.
 
 \section{Path List-Coloring}\label{S:path_choose}
@@ -1559,9 +1551,9 @@ The proof of Lemma~\ref{L:hartman3} describes a linear time
 path list-coloring algorithm,
 see Algorithm~\ref{A:hartman_impl}.
 For $v\in G$ and $u\in N(v)$, we'll assume that
-$\nxt(\adj{v}{u})$, $\prv(\adj{v}{u})$, and
+$\nxt(\adj{v}{u})$ and
 $\bck(\adj{v}{u})=\adj{u}{v}$ may be
-computed in constant time,
+computed in $\mathcal{O}(1)$ time,
 see the discussion of augmented adjacency lists in
 Section~\ref{S:representation}.
 
@@ -1650,7 +1642,8 @@ and call \emph{Path3Choose}$(u_1, y, z)$.
 \textbf{Case~3.} Suppose that $z\ne x$ and $u_1\ne y$.
 Let $\adj{u_1}{z}:=\bck(\adj{z}{u_1})$ and
 $\adj{u_2}{z}:=\bck(\adj{z}{u_2})$.
-Remove the edge $zu_1$ by assigning $A(u_1)\leftarrow\prv(\adj{u_1}{z})$
+Remove the edge $zu_1$ by assigning
+$A(u_1)\leftarrow\bck(\nxt(\adj{u_2}{z}))$
 and $B(z)\leftarrow\nxt(\adj{z}{u_1})$.
 
 \textbf{Case~3.1.} Suppose that $S(u_2)=0$, i.e. $u_2\in
@@ -2415,10 +2408,11 @@ from the subgraph(s) under consideration.
 Case~1 makes a recursive call
 with an input that satisfies Case~2, and Case~2 makes a recursive
 call with an input that satisfies Case~3.
-Therefore the total number of recursive calls made, and thus the
-overall time complexity,
-is $\mathcal{O}(n)$. See Figures~\ref{F:hartman_impl} and
-\ref{F:hartman_impl_cont} for a concrete example.
+Therefore the total number of recursive calls made, and thus overall the
+time complexity, is $\mathcal{O}(n)$.
+
+See Figures~\ref{F:hartman_impl} and
+\ref{F:hartman_impl_cont} for a full example.
 
 \begin{figure}[ht]
 \begin{center}
@@ -2514,9 +2508,9 @@ see Figure~\ref{F:plot}.
 Our parallel implementation of Algorithm~\ref{A:poh_linear} maintains a
 shared lock-guarded stack which all threads may push/pop recursive
 frames to/from.
-% Each thread maintains a
-% small local stack of frames, and accesses the shared
-% stack only when their stack is full or empty.
+Each thread maintains a
+small local stack of frames, and accesses the shared
+stack only when their stack is full or empty.
 
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
 parallel execution: the pairs of recursive calls in Case~3.2

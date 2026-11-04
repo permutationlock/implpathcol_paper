@@ -292,14 +292,17 @@ Define $\nxt(\adj{v}{u})=\adj{v}{(\nxt_v(u))}$ to be the next
 entry in the list $N(v)$.
 
 The $\mathcal{O}(n)$ time complexity of the algorithm
-in Section~\ref{S:path_choose} depends on our ability
-to compute a \defterm{back reference} $\bck(\adj{v}{u})=\adj{u}{v}$
-in $\mathcal{O}(1)$ time.
-We define an \defterm{augmented adjacency list} to be a
-list that stores the pair $(u,\adj{u}{v})$ for each neighbor $u$ of $v$.
+in Section~\ref{S:path_choose} depends on our ability,
+given $v\in G$ and $\adj{v}{u}$ in $N(v)$,
+to compute the \defterm{back reference}
+$\bck(\adj{v}{u})=\adj{u}{v}$ in $N(u)$ in $\mathcal{O}(1)$ time.
+An \defterm{augmented adjacency list} for $v\in G$ is
+list that stores a pair $(u,\adj{u}{v})$ for each neighbor $u$ of $v$;
+here $\adj{u}{v}$ is a reference to the entry $(v,\adj{v}{u})$
+in $u$'s list, and vice versa.
 Given an adjacency list representation, an augmented adjacency list
 representation, ordered by the same rotation scheme,
-may be constructed in $\mathcal{O}(m)$ time, see
+may be built in $\mathcal{O}(m)$ time; see
 Algorithm~\ref{A:augment}. 
 
 \begin{algorithm}\label{A:augment} \emph{Augment}$(N)$
@@ -1550,10 +1553,10 @@ Lemma~\ref{L:hartman3}.
 The proof of Lemma~\ref{L:hartman3} describes a linear time
 path list-coloring algorithm,
 see Algorithm~\ref{A:hartman_impl}.
-For any $v\in G$ and $u\in N(v)$, we'll assume that
-$\bck(\adj{v}{u})=\adj{u}{v}$ may be
-computed in $\mathcal{O}(1)$ time,
-see the description of augmented adjacency lists in
+Given $v\in G$ and any entry $\adj{v}{u}$ in $N(v)$, we'll assume
+the entry $\bck(\adj{v}{u})=\adj{u}{v}$ in $N(u)$ may be
+computed in $\mathcal{O}(1)$ time;
+see augmented adjacency lists in
 Section~\ref{S:representation}.
 
 \begin{algorithm}\label{A:hartman_impl} \emph{Path3Choose}$(x,y,z)$

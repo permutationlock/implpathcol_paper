@@ -1642,7 +1642,7 @@ Call \emph{Path3Choose}$(y, x, y)$.
 
 \textbf{Case~2.} Suppose that $z=x$ and $u_1\ne y$. 
 Remove the color in $L(z)$ from $L(u_1)$, if it exists, then remove
-further colors until one color remains.
+further colors until only one color remains.
 Assign $S(u_1)\leftarrow \text{max}(S)+1$
 and $M(S(u_1))\leftarrow S(u_1)$,
 and call \emph{Path3Choose}$(u_1, y, z)$.
@@ -1701,7 +1701,7 @@ $\text{max}(S)\le\ell + 2|E(G_1)|-2 + 1 + 2|E(G_2)|-1<\ell+2(m_C-1)$.
 $S(u_2)\ne S(x)$ and $M(S(u_2))\ne S(y)$. In other words, suppose that
 $u_2\in C[y,x]-x-y$.
 First remove the color in $L(z)$ from $L(u_2)$, if it exists, then remove
-colors until only one remains. Set $S(u_2)\leftarrow S(x)$.
+further colors until only one remains. Set $S(u_2)\leftarrow S(x)$.
 Call \emph{Path3Choose}$(x, u_2, x)$ on $G_1$.
 Afterwards $\text{max}(S)\le\ell +2|E(G_1)|$.
 Set $S(u_2)\leftarrow\text{max}(S)+1$ and
@@ -1715,20 +1715,21 @@ $\text{max}(S)\le\ell + 2|E(G_1)| + 1 + 2|E(G_2)|-2<\ell+2(m_C-1)$.
 $u_2\in C[z,y]$. There are
 two cases to consider, see Figure~\ref{F:hartman_3_2_3}.
 
-\textbf{Case~3.2.3.1.} Suppose that the color in $L(z)$ is in $L(u_2)$. Remove
+\textbf{Case~3.2.3.1.} Suppose that the color in $L(z)$ is also in
+$L(u_2)$. Remove
 all colors from $L(u_2)$ except for the color in $L(z)$.
 Call \emph{Path3Choose}$(x, y, u_2)$ on $G_1$.
 Afterwards $\text{max}(S)\le\ell + 2|E(G_1)|-2$.
-Assign
+Set
 $S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$,
 and $M(S(z))\leftarrow S(z)$. Call
 \emph{Path3Choose}$(u_2, z, u_2)$ on $G_2$. Finally, observe that
 $\text{max}(S)\le\ell + 2|E(G_1)|-2 + 1 + 2|E(G_2)| - 1<\ell+2(m_C-1)$.
 
 \textbf{Case~3.2.3.2.} Suppose the color in $L(z)$ is not in $L(u_2)$.
-Assign $M(S(x))\leftarrow S(y)$. Call \emph{Path3Choose}$(x, y, x)$ on
+Set $M(S(x))\leftarrow S(y)$. Call \emph{Path3Choose}$(x, y, x)$ on
 $G_1$. Afterwards $\text{max}(S)\le\ell + 2|E(G_1)|$.
-Assign $S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$, and
+Set $S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$, and
 $M(S(z))\leftarrow S(z)$. Call \emph{Path3Choose}$(u_2, z, u_2)$ on
 $G_2$. Observe that
 $\text{max}(S)\le\ell + 2|E(G_1)| + 1 + 2|E(G_2)| - 1=\ell+2(m_C-1)$.

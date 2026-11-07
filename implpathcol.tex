@@ -287,6 +287,7 @@ plane graph $G$ with $n=|V(G)|$ vertices and $m=|E(G)|$ edges.
 The input size will be $n$, but it is equivalent to take
 $m$ to be the input size:
 if $n\ge 3$, then $m\le 3n-6$ by Euler's formula.
+The output of each algorithm will be a path coloring of $G$.
 
 A connected planar graph may be
 embedded (by finding a rotation scheme induced by an embedding) and
@@ -295,7 +296,8 @@ in $\mathcal{O}(n)$ time, see e.g. Hopcroft
 and Tarjan~\cite{Hop1974} or Boyer and
 Myrvold~\cite{BoMy2004}. Therefore, since the removal of any edges that
 were added
-to produce a triangulation will not invalidate a path coloring,
+to produce a triangulation will not invalidate the
+output path coloring,
 we may consider each algorithm
 to take an arbitrary planar graph with $n$ vertices as its input,
 with no change to the time complexity.

@@ -250,7 +250,7 @@ discusses how each algorithm may be modified to benefit from parallelism.
 
 A \defterm{face} of a plane graph is a subgraph that,
 as drawn in the embedding,
-forms the border of a region of the plain
+forms the border of a region of the plane
 that contains no point of the embedding.
 A plane graph is \defterm{triangulated}
 if each face is
@@ -266,10 +266,10 @@ edges appear around each vertex.
 The induced rotation scheme describes all of the combinatorial
 properties of an embedding. For example, the faces of the embedding
 correspond to the closed walks induced by the rotation
-scheme: the walks generated from $u\in V(G)$, $uv\in E(G)$ by
-following $uv$ from $u$ to $v$, then following the edge subsequent to
+scheme: for $u\in V(G)$, $uv\in E(G)$ the induced closed walk
+follows $uv$ from $u$ to $v$, then follows from $v$ the edge subsequent to
 $uv$ in the rotation scheme around $v$,
-and so on, until returning to $uv$ from $u$.
+and so on, until reaching $uv$ again from $u$.
 % Moreover,
 % triangulated embeddings are in
 % one-to-one correspondence with a class of rotation schemes:

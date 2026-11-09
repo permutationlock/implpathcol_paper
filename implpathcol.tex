@@ -2517,12 +2517,12 @@ See Figures~\ref{F:hartman_impl} and
 
 \section{Experimental Performance and Parallelism}\label{S:performance}
 
-A C implementation of each algorithm is available~\cite{Bro2017}.
-For each $i$ from $4\ldots 7$, a uniform random sample of $100$
+An implementation of each algorithm in the C programming language is available~\cite{Bro2017}.
+For $i$ from $4\ldots 7$, a uniform random sample of $100$
 plane triangulations of order $10^i$ was
 generated using the method of
 Poulalhon and Schaeffer~\cite{Pou2006}. 
-Each algorithm, as well as a baseline $\mathcal{O}(n)$ breadth-first
+Each algorithm, as well as an $\mathcal{O}(n)$ breadth-first
 search (BFS), was run on each graph in the sample set;
 see Figure~\ref{F:plot}.
 
@@ -2536,7 +2536,7 @@ gain (2.8x for Alg.~\ref{A:poh_linear}, and 2.4x for Alg.~\ref{A:hartman_impl})
 was observed when using 4 threads to path color large random triangulations,
 see Figure~\ref{F:plot}.
 
-Our parallel implementation of Algorithm~\ref{A:poh_linear} maintains a
+Our parallel implementation of Algorithm~\ref{A:poh_linear} simply maintains a
 shared lock-guarded stack which all threads may push/pop recursive
 frames to/from.
 % Each thread maintains a

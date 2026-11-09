@@ -256,7 +256,7 @@ forms the border of a region of the plane
 that contains no point of the embedding.
 A plane graph is \defterm{triangulated}
 if each face is
-a $3$-cycle, and \defterm{weakly triangulated}
+a $3$-cycle, and \defterm{weakly triangulated} (or a \defterm{near-triangulation})
 if it is connected and each interior (bounded) face is a $3$-cycle.
 
 A \defterm{rotation scheme} for a graph
@@ -284,12 +284,13 @@ and so on, until reaching $uv$ again from $u$.
 % surface (not necessarily the plane) where each face is a
 % $3$-cycle.
 
-The input to each algorithm we'll discuss will be a weakly triangulated
-plane graph $G$ with $n=|V(G)|$ vertices and $m=|E(G)|$ edges.
+The input to each algorithm will be a weakly triangulated
+plane graph $G$ with $n$ vertices and $m$ edges.
 The input size will be $n$, but it is equivalent to take
 $m$ to be the input size:
-if $n\ge 3$, then $m\le 3n-6$ by Euler's formula.
-The output of each algorithm will be a path coloring of $G$.
+if $n\ge 3$, then $m\le 3n-6$ by Euler's formula. We'll
+assume a word RAM model of computation,
+e.g. as in the C programmming language.
 
 A connected planar graph may be
 embedded (by finding a rotation scheme induced by an embedding) and
@@ -298,11 +299,11 @@ in $\mathcal{O}(n)$ time, see e.g. Hopcroft
 and Tarjan~\cite{Hop1974} or Boyer and
 Myrvold~\cite{BoMy2004}. Therefore, since the removal of any edges that
 were added
-to produce a triangulation will not invalidate the
-output path coloring,
+to produce a triangulation will not invalidate a
+path coloring,
 we may consider each algorithm
-to take an arbitrary planar graph with $n$ vertices as its input,
-with no change to the time complexity.
+to take an arbitrary planar graph with $n$ vertices as its input
+with no change to the overall time complexity.
 
 We will represent the input plane graph $G$ via \textit{adjacency lists}:
 a list, for each vertex $v$, of the neighbors of $v$. Each
@@ -906,7 +907,7 @@ is iterated exactly twice for each $z\in G$:
 once to locate $\adj{z}{a}$
 at the start of Loop~2,
 and once in Loops~2.1 and 2.2.
-Thus its time complexity is
+Thus the time complexity is
 $\mathcal{O}(n)$.
 
 \section{Path List-Coloring}\label{S:path_choose}
@@ -1724,14 +1725,14 @@ $S(u_2)\ne S(x)$ and $M(S(u_2))\ne S(y)$. In other words, suppose that
 $u_2\in C[y,x]-x-y$.
 Remove the color in $L(z)$ from $L(u_2)$, if it exists, then remove
 further colors until one remains. Set $S(u_2)\leftarrow S(x)$.
-Note $M(S(v))=S(u_2)$ for each $v\in C_1[x,u_2]$.
+Note that $M(S(v))=M(S(x))=S(u_2)$ for each $v\in C[x,u_1]$.
 Call \emph{Path3Choose}$(x, u_2, x)$ on $G_1$.
 Afterwards $\text{max}(S)\le\ell +2|E(G_1)|$.
 Set $S(u_2)\leftarrow\text{max}(S)+1$,
 $M(S(u_2))\leftarrow S(u_2)$, and
 call \emph{Path3Choose}$(u_2, y, z)$
 on $G_2$.
-Finally, observe that
+Finally, observe
 $\text{max}(S)\le\ell + 2|E(G_1)| + 1 + 2|E(G_2)|-2<\ell+2(m_C-1)$.
 
 \textbf{Case~3.2.3.} Suppose that $M(S(u_2))=S(y)$, i.e.
@@ -2442,7 +2443,7 @@ Therefore the total number of recursive calls made, and thus overall the
 time complexity, is $\mathcal{O}(n)$.
 
 See Figures~\ref{F:hartman_impl} and
-\ref{F:hartman_impl_cont} for a full example.
+\ref{F:hartman_impl_cont} for a full concrete example of Algorithm~\ref{A:hartman_impl}.
 
 \begin{figure}[ht]
 \begin{center}

@@ -180,6 +180,8 @@ A graph is
 \defterm{planar} if it may be drawn in the plane without edge
 crossings, and such a drawing is called an \defterm{embedding}.
 A \defterm{plane graph} is a planar graph with a fixed embedding.
+Subgraphs of a plane graph will themselves be plane graphs with
+the inherited embedding.
 
 A \defterm{path coloring}
 is a (vertex) coloring where each color class induces a disjoint union of
@@ -1552,7 +1554,7 @@ a path $L$-list-coloring $c_1$ of $G_1$ with
 $x_1=x$, $y_1=y$, and $z_1=x$. Define $L'(u_2)=\{c_1(u_2)\}$ and $L'(v)=L(v)$
 for each $v\in G_2-u_2$. Then find a path $L'$-list-coloring $c_2$ of $G_2$
 with $x_2=u_2$, $y_2=z$, and $z_2=u_2$. Because
-$C[z_2,y_2]=z_2,y_2$ and $L'(z_2)\cap L'(y_2)=\emptyset$, we must have
+$C_2[z_2,y_2]=z_2,y_2$ and $L'(z_2)\cap L'(y_2)=\emptyset$, we must have
 $\text{deg}_{c_2}(u_2)=\text{deg}_{c_2}(z_2)=0$. Thus
 $c$ is a path $L$-list-coloring of $G$. Moreover,
 $\text{deg}_c(x)=\text{deg}_{c_1}(x_1)\le 1$,
@@ -1619,7 +1621,8 @@ We'll assume that $\ell < 2(m-m_C+1) + 2$.
 
 Let $M$
 be a length $2m+2$ integer array such that if $v\in C$,
-then $M(S(v))=S(y)$ if and only if $v\in C[z,y]$. The
+then $M(S(v))=S(y)$ if and only if $v\in C[z,y]$. Moreover,
+if $x\ne z$, then assume that $M(S(x))=S(x)$. The
 purpose of the array $M$ is described below in Case~3.2.3.2.
 
 The concrete input will be $G$, $L$,
@@ -1709,21 +1712,22 @@ $B(u_2)\leftarrow\adj{u_2}{b}$
 \textbf{Case~3.2.1.} Suppose that $S(u_2)=S(x)$, i.e. $u_2\in C[x,z]$.
 Call \emph{Path3Choose}$(x, y, z)$ on $G_2$ (by modifying $A(u_2)$
 and $B(u_2)$ as above).
-Afterwards $\text{max}(S)\le\ell + 2|E(G_1)|-2$.
+Afterwards $\text{max}(S)\le\ell + 2|E(G_2)|-2$.
 Assign $S(u_2)\leftarrow\text{max}(S)+1$ and
 $M(S(u_2))\leftarrow S(u_2)$, and call
 \emph{Path3Choose}$(u_2, u_2, u_2)$ on $G_1$.
 Finally, observe that
-$\text{max}(S)\le\ell + 2|E(G_1)|-2 + 1 + 2|E(G_2)|-1<\ell+2(m_C-1)$.
+$\text{max}(S)\le\ell + 2|E(G_2)|-2 + 1 + 2|E(G_1)|-1<\ell+2(m_C-1)$.
 
 \textbf{Case~3.2.2.} Suppose that $S(u_2)\ne 0$, but
 $S(u_2)\ne S(x)$ and $M(S(u_2))\ne S(y)$. In other words, suppose that
 $u_2\in C[y,x]-x-y$.
-First remove the color in $L(z)$ from $L(u_2)$, if it exists, then remove
-further colors until only one remains. Set $S(u_2)\leftarrow S(x)$.
+Remove the color in $L(z)$ from $L(u_2)$, if it exists, then remove
+further colors until one remains. Set $S(u_2)\leftarrow S(x)$.
+Note $M(S(v))=S(u_2)$ for each $v\in C_1[x,u_2]$.
 Call \emph{Path3Choose}$(x, u_2, x)$ on $G_1$.
 Afterwards $\text{max}(S)\le\ell +2|E(G_1)|$.
-Set $S(u_2)\leftarrow\text{max}(S)+1$ and
+Set $S(u_2)\leftarrow\text{max}(S)+1$,
 $M(S(u_2))\leftarrow S(u_2)$, and
 call \emph{Path3Choose}$(u_2, y, z)$
 on $G_2$.

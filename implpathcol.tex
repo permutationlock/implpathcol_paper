@@ -186,12 +186,12 @@ the inherited embedding.
 A \defterm{path coloring}
 is a (vertex) coloring where each color class induces a disjoint union of
 paths.
-A graph $G$ is \defterm{path $k$-colorable} if $G$
+A graph is \defterm{path $k$-colorable} if it
 admits a path $k$-coloring (a path coloring using at most $k$ colors).
 A \defterm{list assignment}
 $L$ of a graph $G$ maps each $v\in V(G)$ to a finite set of colors $L(v)$.
 An \defterm{$L$-list-coloring} is a
-coloring $c$ such that $c(v)\in L(v)$ for each $v\in V(G)$.
+coloring $c$ of $G$ such that $c(v)\in L(v)$ for each $v\in V(G)$.
 A graph is \defterm{path $k$-choosable} if it admits a path $L$-list-coloring
 for every list assignment $L$ with at least $k$ colors in each list,
 i.e. $|L(v)|\ge k$ for each $v\in V(G)$.
@@ -268,7 +268,7 @@ edges appear around each vertex.
 The induced rotation scheme describes all of the combinatorial
 properties of an embedding. For example, the faces of the embedding
 correspond to the closed walks induced by the rotation
-scheme: for $u\in V(G)$, $uv\in E(G)$ the induced closed walk
+scheme: for $u\in V(G)$, $uv\in E(G)$ the induced walk
 follows $uv$ from $u$ to $v$, then follows from $v$ the edge subsequent to
 $uv$ in the rotation scheme around $v$,
 and so on, until reaching $uv$ again from $u$.
@@ -292,7 +292,7 @@ if $n\ge 3$, then $m\le 3n-6$ by Euler's formula. We'll
 assume a word RAM model of computation,
 e.g. as in the C programmming language.
 
-A connected planar graph may be
+Note that a connected planar graph may be
 embedded (by finding a rotation scheme induced by an embedding) and
 triangulated (by adding edges across faces that are not $3$-cycles)
 in $\mathcal{O}(n)$ time, see e.g. Hopcroft
@@ -301,9 +301,9 @@ Myrvold~\cite{BoMy2004}. Therefore, since the removal of any edges that
 were added
 to produce a triangulation will not invalidate a
 path coloring,
-we may consider each algorithm
+we could consider each algorithm
 to take an arbitrary planar graph with $n$ vertices as its input
-with no change to the overall time complexity.
+with no change to the overall $\mathcal{O}(n)$ time complexity.
 
 We will represent the input plane graph $G$ via \textit{adjacency lists}:
 a list, for each vertex $v$, of the neighbors of $v$. Each
@@ -659,8 +659,7 @@ $u_3=w_2$ or $u_3=w_1$. Thus $C$ is a face and we are done.
 Suppose that $c(u_3)=0$, i.e. $u_3\in\graphinto(C)$.
 Let $\ell_3:=\max_{v\in G}S(v)+1$.
 Let $d\in \{1,2,3\}-\{c(u_1),c(u_2)\}$.
-We'll
-walk the induced $u_3,w_3$-path $P_3=C_1-P_1$,
+We'll walk the induced $u_3,w_3$-path $P_3=C_1-P_1$,
 where $C_1$ is the outer face of the subgraph $G_1$
 of $\graphintc(C)$
 induced by $V(P_1)\cup N(P_1)-V(P_2)$.
@@ -1618,7 +1617,7 @@ determined by the case below that the input satisfies:
 if $m_C=1$ (Base case) or $z\ne x$ (Case~3), then $r=0$;
 if $z=x$ and $C[y,x]\ne y,x$ (Case~2), then $r=1$;
 otherwise $z=x$ and $C[y,x]=y,x$ (Case~1), and $r=2$.
-We'll assume that $\ell < 2(m-m_C+1) + 2$.
+We require that $\ell < 2(m-m_C+1) + 2$.
 
 Let $M$
 be a length $2m+2$ integer array such that if $v\in C$,

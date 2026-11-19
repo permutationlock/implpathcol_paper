@@ -915,6 +915,9 @@ In this section we describe a linear time algorithm to path color
 a plane graph such that each vertex receives a color from a specified list
 of three colors,
 based on Hartman's constructive proof of Theorem~\ref{T:planar3}.
+\v{S}krekovski independently described a similar algorithm in
+the proof of \cite[Thm.~2.2b]{Skr1999}, but we will only refer to
+the specifics of Hartman's proof.
 
 Hartman's algorithm takes as its input a
 weakly triangulated plane
@@ -2541,9 +2544,6 @@ see Figure~\ref{F:plot}.
 Our parallel implementation of Algorithm~\ref{A:poh_linear} simply maintains a
 shared lock-guarded stack which all threads may push/pop recursive
 frames to/from.
-% Each thread maintains a
-% small local stack of frames, and accesses the shared
-% stack only when their stack is full or empty.
 
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
 parallel execution: the pairs of recursive calls in Case~3.2

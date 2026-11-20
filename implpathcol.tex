@@ -634,7 +634,7 @@ respectively $P_1=C[u_1,w_1]$ and
 $P_2=C[w_2,u_2]$, where $u_1,u_2,w_1,w_2\in C$. Assume that $c(v)=0$
 for each $v\in\graphinto(C)$.
 Let $S$ be a length $n$ array, and $\ell_1$ an integer,
-such that for $v\in\graphinto(C)$, $S(v)=\ell_1$ if and only if
+such that for each $v\in\graphinto(C)$, $S(v)=\ell_1$ if and only if
 $v\in N(P_1)$.
 
 The concrete input will be $G$, $c$, and $S$,
@@ -1602,15 +1602,14 @@ or three, and for $v\in \graphinto(C)$ each list
 $L(v)$ has length three. Furthermore, for each $v\in C[x,z] - z$, assume
 that $L(v)$ does not contain the color in $L(z)$.
 
-Let $A,B$ be length $n$ arrays such that for each vertex $v\in C$ we have
-$A(v)=\adj{v}{a}$ and $B(v)=\adj{v}{b}$, where
-$a$ is the vertex
-immediately clockwise from $v$ around $C$, and
+Let $B$ be a length $n$ array such that for each vertex $v\in C$ we have
+$B(v)=\adj{v}{b}$, where
 $b$ is the vertex immediately counter clockwise
-from $v$ around $C$. If $C$ is a path, then $A(v)=B(v)$.
+from $v$ around $C$. If $C$ is a length $1$ path, then $b\in C-v$
+is the other vertex of the path.
 
 Let $S$ be a length $n$ integer array such
-that, for $v\in\graphintc(C)$, $S(v)\ne 0$ if and only if $v\in C$, and
+that, for each $v\in\graphintc(C)$, $S(v)\ne 0$ if and only if $v\in C$, and
 $S(v)=S(x)$ if and only if $v\in C[x,z]-z$ (or $v=x=z$).
 
 We'll write $m_C=|E(\graphintc(C))|$ and
@@ -1630,7 +1629,7 @@ motivation for using an additional array $M$ alongside $S$
 is described below in Case~3.2.3.2.
 
 The concrete input will be $G$, $L$,
-$A$, $B$, $S$, $M$, along with the tuple $(x,y,z)$.
+$B$, $S$, $M$, along with the tuple $(x,y,z)$.
 
 \textbf{Output.} For each $v\in\graphintc(C)$, all but one color will be
 removed from the list $L(v)$. The remaining color in each list will represent
@@ -1640,16 +1639,17 @@ $\text{deg}_c(z)\le1$. If $z=y$, or if $C[z,y]=z,y$ and $L(z)$ did not
 contain the color in $L(y)$, then $\text{deg}_c(z)=0$.
 We'll also guarantee $\text{max}(S)\le\ell+2(m_C-1)$.
 
-\textbf{Procedure.} Let $\adj{z}{u_1}:= B(z)$. Our strategy
+\textbf{Procedure.} Let $\adj{z}{u_1}:= B(z)$ and
+$\adj{u_1}{z}:=\bck(\adj{z}{u_1})$. Our strategy
 will follow the proof of Lemma~\ref{L:hartman3}.
 
-\textbf{Base case.} If $A(z)=B(z)$, then $C=z,u_1$
+\textbf{Base case.} If $\adj{u_1}{z}=B(u_1)$, then $C=z,u_1$
 is a length $1$ path. If $u_1\ne x$ and $u_1\ne y$, remove the
 color in $L(z)$ from $L(u_1)$, if it exists, then remove further colors
 until one color remains. Note that
 $m_C=1$ and $\text{max}(S)=\ell + 2(m_C-1)$ by definition.
 
-\textbf{Recursive case.} Suppose that $A(z)\ne B(z)$.
+\textbf{Recursive case.} Suppose that $\adj{u_1}{z}\ne B(u_1)$.
 Let $\adj{z}{u_2}:=\nxt(\adj{z}{u_1})$. It follows from the
 definition of $\ell$
 that $\text{max}(S)\le\ell+2(m_C-1)$ after Cases~1, 2,
@@ -1673,16 +1673,13 @@ and $M(S(u_1))\leftarrow S(u_1)$,
 and call \emph{Path3Choose}$(u_1, y, z)$.
 
 \textbf{Case~3.} Suppose that $z\ne x$ and $u_1\ne y$.
-Let $\adj{u_1}{z}:=\bck(\adj{z}{u_1})$ and
-$\adj{u_2}{z}:=\bck(\adj{z}{u_2})$.
-Remove the edge $zu_1$ by assigning
-$A(u_1)\leftarrow\bck(\nxt(\adj{u_2}{z}))$
-and $B(z)\leftarrow\nxt(\adj{z}{u_1})$.
+Let $\adj{u_2}{z}:=\bck(\adj{z}{u_2})$ and
+$\adj{u_2}{u_1}:=\nxt(\adj{u_2}{z})$.
+Remove the edge $zu_1$ by assigning $B(z)\leftarrow\adj{z}{u_2}$.
 
 \textbf{Case~3.1.} Suppose that $S(u_2)=0$, i.e. $u_2\in
 \graphinto(C)$. Assign $S(u_2)\leftarrow S(x)$, and initialize
-$B(u_2)\leftarrow\adj{u_2}{u_1}=\nxt(\adj{u_2}{z})$ and
-$A(u_2)\leftarrow\adj{u_2}{z}$,
+$B(u_2)\leftarrow\adj{u_2}{u_1}$;
 see Figure~\ref{F:hartman_1} (right).
 Remove the color in $L(z)$ from
 $L(u_2)$. Call \emph{Path3Choose}$(x, y, z)$.
@@ -1693,29 +1690,20 @@ Case~3.2 of the proof of Lemma~\ref{L:hartman3}, we will separately consider
 the two blocks $G_1$ and $G_2$ of $\graphintc(C)-zu_1$.
 Note that $m_C-1=|E(G_1)|+|E(G_2)|$.
 
-As we've already removed the edge $zu_1$ by
-adjusting $B(z)$ and $A(u_1)$, it remains
-to ``split'' the
-neighborhood of $u_2$ at the edge $u_2z$ such that the recursive
-call on $G_1$ considers only the neighbors of $u_2$ counter-clockwise
-from $z$, and the call
-on $G_2$ considers $z$ and all neighbors clockwise from $z$;
-refer
-to Figure~\ref{F:hartman_3_2} and
+Since we assigned $B(z)\leftarrow \adj{z}{u_2}$ above
+to remove $zu_1$, the array $B$ is already set up correctly to
+represent the
+block $G_2$; refer to Figure~\ref{F:hartman_3_2} and
 Figure~\ref{F:hartman_3_2_3}.
-
-Let $\adj{u_2}{a}:= A(u_2)$ and $\adj{u_2}{b}:= B(u_2)$.
-To represent $G_1$, we will assign 
-$A(u_2)\leftarrow\adj{u_2}{a}$ and
-$B(u_2)\leftarrow\nxt(\adj{u_2}{z})$.
-To represent $G_2$, we'll
-assign
-$A(u_2)\leftarrow\adj{u_2}{z}$ and
-$B(u_2)\leftarrow\adj{u_2}{b}$
+Let $\adj{u_2}{b}:= B(u_2)$.
+To represent the block $G_1$, we must assign
+$B(u_2)\leftarrow\adj{u_2}{u_1}$. If
+we then need to represent $G_2$ again, we'll simply re-assign
+$B(u_2)\leftarrow\adj{u_2}{b}$.
 
 \textbf{Case~3.2.1.} Suppose that $S(u_2)=S(x)$, i.e. $u_2\in C[x,z]$.
-Call \emph{Path3Choose}$(x, y, z)$ on $G_2$ (by modifying $A(u_2)$
-and $B(u_2)$ as above).
+Call \emph{Path3Choose}$(x, y, z)$ on $G_2$ (by modifying
+$B(u_2)$ as above).
 Afterwards $\text{max}(S)\le\ell + 2|E(G_2)|-2$.
 Assign $S(u_2)\leftarrow\text{max}(S)+1$ and
 $M(S(u_2))\leftarrow S(u_2)$, and call
@@ -1744,10 +1732,10 @@ two cases to consider, see Figure~\ref{F:hartman_3_2_3}.
 
 \textbf{Case~3.2.3.1.} Suppose that the color in $L(z)$ is also in
 $L(u_2)$. Remove
-all colors from $L(u_2)$ except for the color in $L(z)$.
+all of the colors from $L(u_2)$ except for the color in $L(z)$.
 Call \emph{Path3Choose}$(x, y, u_2)$ on $G_1$.
-Afterwards $\text{max}(S)\le\ell + 2|E(G_1)|-2$.
-Set
+Afterwards, observe that $\text{max}(S)\le\ell + 2|E(G_1)|-2$.
+Assign
 $S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$,
 and $M(S(z))\leftarrow S(z)$. Call
 \emph{Path3Choose}$(u_2, z, u_2)$ on $G_2$. Finally, observe that
@@ -1789,19 +1777,19 @@ $z$};
         \node (v8) [label=left:{0,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v0) edge [->, ultra thick] (v8);
-                \draw (v0) edge [ultra thick] (v3);
+                \draw (v0) edge [ultra thick] (v8);
+                \draw (v0) edge [->, ultra thick] (v3);
                 \draw (v0) edge [ultra thick] (v4);
                 \draw (v0) edge [ultra thick] (v5);
-                \draw (v0) edge [ultra thick] (v1);
+                \draw (v0) edge [<-,ultra thick] (v1);
                 \draw (v1) edge [ultra thick] (v5);
                 \draw (v1) edge [ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v2);
+                \draw (v1) edge [<-, ultra thick] (v2);
                 \draw (v2) edge [ultra thick] (v7);
                 \draw (v2) edge [ultra thick] (v5);
                 \draw (v2) edge [ultra thick] (v4);
                 \draw (v2) edge [ultra thick] (v6);
-                \draw (v2) edge [ultra thick] (v3);
+                \draw (v2) edge [<-, ultra thick] (v3);
                 \draw (v3) edge [ultra thick] (v6);
                 \draw (v3) edge [ultra thick] (v4);
                 \draw (v3) edge [ultra thick] (v8);
@@ -1828,21 +1816,21 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v0) edge [->, ultra thick] (v4);
-                \draw (v0) edge [ultra thick] (v8);
+                \draw (v0) edge [ultra thick] (v4);
+                \draw (v0) edge [->,ultra thick] (v8);
                 \draw (v0) edge [ultra thick] (v5);
-                \draw (v0) edge [ultra thick] (v1);
+                \draw (v0) edge [<-, ultra thick] (v1);
                 \draw (v1) edge [ultra thick] (v5);
                 \draw (v1) edge [ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v2);
+                \draw (v1) edge [<-, ultra thick] (v2);
                 \draw (v2) edge [ultra thick] (v7);
                 \draw (v2) edge [ultra thick] (v5);
                 \draw (v2) edge [ultra thick] (v4);
                 \draw (v2) edge [ultra thick] (v6);
-                \draw (v2) edge [ultra thick] (v3);
+                \draw (v2) edge [<-, ultra thick] (v3);
                 \draw (v3) edge [ultra thick] (v6);
                 \draw (v3) edge [ultra thick] (v4);
-                \draw (v3) edge [ultra thick] (v8);
+                \draw (v3) edge [<-, ultra thick] (v8);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v4) edge [ultra thick] (v5);
                 \draw (v4) edge [ultra thick] (v8);
@@ -1868,21 +1856,21 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v0) edge [->, ultra thick] (v5);
-                \draw (v0) edge [ultra thick] (v4);
-                \draw (v0) edge [ultra thick] (v1);
+                \draw (v0) edge [ultra thick] (v5);
+                \draw (v0) edge [->, ultra thick] (v4);
+                \draw (v0) edge [<-, ultra thick] (v1);
                 \draw (v1) edge [ultra thick] (v5);
                 \draw (v1) edge [ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v2);
+                \draw (v1) edge [<-, ultra thick] (v2);
                 \draw (v2) edge [ultra thick] (v7);
                 \draw (v2) edge [ultra thick] (v5);
                 \draw (v2) edge [ultra thick] (v4);
                 \draw (v2) edge [ultra thick] (v6);
-                \draw (v2) edge [ultra thick] (v3);
+                \draw (v2) edge [<-, ultra thick] (v3);
                 \draw (v3) edge [ultra thick] (v6);
                 \draw (v3) edge [ultra thick] (v4);
-                \draw (v3) edge [ultra thick] (v8);
-                \draw (v4) edge [ultra thick] (v8);
+                \draw (v3) edge [<-, ultra thick] (v8);
+                \draw (v4) edge [->, ultra thick] (v8);
                 \draw (v4) edge [ultra thick] (v6);
                 \draw (v4) edge [ultra thick] (v5);
                 \draw (v0) edge [dotted] (v3);
@@ -1906,22 +1894,22 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v0) edge [->, ultra thick] (v1);
-                \draw (v0) edge [ultra thick] (v5);
+                \draw (v0) edge [<-, ultra thick] (v1);
+                \draw (v0) edge [->, ultra thick] (v5);
                 \draw (v1) edge [ultra thick] (v5);
                 \draw (v1) edge [ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v2);
+                \draw (v1) edge [<-, ultra thick] (v2);
                 \draw (v2) edge [ultra thick] (v7);
                 \draw (v2) edge [ultra thick] (v5);
                 \draw (v2) edge [ultra thick] (v4);
                 \draw (v2) edge [ultra thick] (v6);
-                \draw (v2) edge [ultra thick] (v3);
+                \draw (v2) edge [<-, ultra thick] (v3);
                 \draw (v3) edge [ultra thick] (v6);
                 \draw (v3) edge [ultra thick] (v4);
-                \draw (v3) edge [ultra thick] (v8);
-                \draw (v4) edge [ultra thick] (v8);
+                \draw (v3) edge [<-, ultra thick] (v8);
+                \draw (v4) edge [->, ultra thick] (v8);
                 \draw (v4) edge [ultra thick] (v6);
-                \draw (v4) edge [ultra thick] (v5);
+                \draw (v4) edge [<-, ultra thick] (v5);
                 \draw (v5) edge [ultra thick] (v7);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v0) edge [dotted] (v8);
@@ -1946,21 +1934,21 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v3) edge [->, ultra thick] (v6);
+                \draw (v3) edge [ultra thick] (v6);
                 \draw (v3) edge [ultra thick] (v4);
-                \draw (v3) edge [ultra thick] (v8);
-                \draw (v4) edge [ultra thick] (v8);
+                \draw (v3) edge [<-, ultra thick] (v8);
+                \draw (v4) edge [->, ultra thick] (v8);
                 \draw (v4) edge [ultra thick] (v6);
-                \draw (v4) edge [ultra thick] (v5);
+                \draw (v4) edge [<-, ultra thick] (v5);
                 \draw (v5) edge [ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [->, ultra thick] (v5);
                 \draw (v1) edge [ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v2);
+                \draw (v1) edge [<-, ultra thick] (v2);
                 \draw (v2) edge [ultra thick] (v7);
                 \draw (v2) edge [ultra thick] (v5);
                 \draw (v2) edge [ultra thick] (v4);
                 \draw (v2) edge [ultra thick] (v6);
-                \draw (v2) edge [ultra thick] (v3);
+                \draw (v2) edge [<-, ultra thick] (v3);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v0) edge [dotted] (v8);
                 \draw (v0) edge [dotted] (v4);
@@ -1985,20 +1973,20 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v3) edge [->, ultra thick] (v4);
-                \draw (v3) edge [ultra thick] (v6);
-                \draw (v3) edge [ultra thick] (v8);
-                \draw (v4) edge [ultra thick] (v8);
+                \draw (v3) edge [->, ultra thick] (v6);
+                \draw (v3) edge [ultra thick] (v4);
+                \draw (v3) edge [<-, ultra thick] (v8);
+                \draw (v4) edge [->, ultra thick] (v8);
                 \draw (v4) edge [ultra thick] (v6);
-                \draw (v4) edge [ultra thick] (v5);
+                \draw (v4) edge [<-, ultra thick] (v5);
                 \draw (v5) edge [ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [->, ultra thick] (v5);
                 \draw (v1) edge [ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v2);
+                \draw (v1) edge [<-, ultra thick] (v2);
                 \draw (v2) edge [ultra thick] (v7);
                 \draw (v2) edge [ultra thick] (v5);
                 \draw (v2) edge [ultra thick] (v4);
-                \draw (v2) edge [ultra thick] (v6);
+                \draw (v2) edge [<-, ultra thick] (v6);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v0) edge [dotted] (v8);
                 \draw (v0) edge [dotted] (v4);
@@ -2025,16 +2013,17 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v4) edge [->, ultra thick] (v2);
-                \draw (v4) edge [ultra thick] (v6);
-                \draw (v4) edge [ultra thick] (v5);
+                \draw (v4) edge [->, ultra thick] (v6);
+                \draw (v4) edge [<-, ultra thick] (v5);
                 \draw (v5) edge [ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [->, ultra thick] (v5);
                 \draw (v1) edge [ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v2);
+                \draw (v1) edge [<-, ultra thick] (v2);
                 \draw (v2) edge [ultra thick] (v7);
                 \draw (v2) edge [ultra thick] (v5);
-                \draw (v2) edge [ultra thick] (v6);
+                \draw (v2) edge [ultra thick] (v4);
+                \draw (v2) edge [<-, ultra thick] (v6);
+                \draw (v4) edge [ultra thick] (v2);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2064,14 +2053,14 @@ $y$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v4) edge [->, ultra thick] (v5);
-                \draw (v5) edge [ultra thick](v7);
-                \draw (v1) edge [ultra thick](v5);
-                \draw (v1) edge [ultra thick](v7);
-                \draw (v1) edge [ultra thick](v2);
-                \draw (v2) edge [ultra thick](v7);
-                \draw (v2) edge [ultra thick](v5);
-                \draw (v2) edge [ultra thick](v4);
+                \draw (v4) edge [<-, ultra thick] (v5);
+                \draw (v5) edge [ultra thick] (v7);
+                \draw (v1) edge [->, ultra thick] (v5);
+                \draw (v1) edge [ultra thick] (v7);
+                \draw (v1) edge [<-, ultra thick] (v2);
+                \draw (v2) edge [ultra thick] (v7);
+                \draw (v2) edge [ultra thick] (v5);
+                \draw (v2) edge [<-, ultra thick] (v4);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2086,7 +2075,9 @@ $y$};
                 \draw (v4) edge [dotted] (v6);
         \end{pgfonlayer}
 \end{tikzpicture}
-\caption{An example of Algorithm~\ref{A:hartman_impl}. Each vertex $v\in G$ is labeled with $S(v),L(v)$.}
+\caption{An Algorithm~\ref{A:hartman_impl} example:
+labels are $S(v),L(v)$ while edge
+arrows show $B(v)$.}
 \label{F:hartman_impl}
 \end{center}
 \end{figure}
@@ -2113,12 +2104,12 @@ $y$};
         \node (M) [shape=rectangle, draw=none, fill=white] at (0.0cm, -2.4cm) {$M(4)\leftarrow 3$};
 
         \begin{pgfonlayer}{bg}
-                \draw (v2) edge [->, ultra thick] (v7);
-                \draw (v2) edge [ultra thick] (v5);
-                \draw (v5) edge [ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v5);
+                \draw (v1) edge [->, ultra thick] (v5);
                 \draw (v1) edge [ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v2);
+                \draw (v1) edge [<-, ultra thick] (v2);
+                \draw (v2) edge [ultra thick] (v7);
+                \draw (v2) edge [<-, ultra thick] (v5);
+                \draw (v5) edge [ultra thick] (v7);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2152,11 +2143,11 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v1) edge [->, ultra thick] (v7);
-                \draw (v1) edge [ultra thick] (v5);
-                \draw (v1) edge [ultra thick] (v2);
+                \draw (v1) edge [->, ultra thick] (v5);
+                \draw (v1) edge [ultra thick] (v7);
+                \draw (v1) edge [<-, ultra thick] (v2);
                 \draw (v2) edge [ultra thick] (v7);
-                \draw (v2) edge [ultra thick] (v5);
+                \draw (v2) edge [<-, ultra thick] (v5);
                 \draw (v5) edge [ultra thick] (v7);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
@@ -2192,11 +2183,11 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v1) edge [->, ultra thick] (v2);
-                \draw (v1) edge [ultra thick] (v7);
+                \draw (v1) edge [->, ultra thick] (v7);
+                \draw (v1) edge [<-, ultra thick] (v2);
                 \draw (v2) edge [ultra thick] (v7);
-                \draw (v2) edge [ultra thick] (v5);
-                \draw (v5) edge [ultra thick] (v7);
+                \draw (v2) edge [<-, ultra thick] (v5);
+                \draw (v5) edge [<-, ultra thick] (v7);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2231,9 +2222,9 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v2) edge [->, ultra thick] (v5);
-                \draw (v2) edge [ultra thick] (v7);
-                \draw (v5) edge [ultra thick] (v7);
+                \draw (v2) edge [->, ultra thick] (v7);
+                \draw (v2) edge [<-, ultra thick] (v5);
+                \draw (v5) edge [<-, ultra thick] (v7);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2272,7 +2263,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v5) edge [->, ultra thick] (v7);
+                \draw (v5) edge [<->, ultra thick] (v7);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2311,7 +2302,7 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v2) edge [->, ultra thick] (v6);
+                \draw (v2) edge [<->, ultra thick] (v6);
                 \draw (v4) edge [thin] (v8);
                 \draw (v3) edge [thin] (v4);
                 \draw (v3) edge [thin] (v8);
@@ -2351,9 +2342,9 @@ $z$};
         \node (v8) [label=left:{3,\{3,5,2\}}] at (-1.705649cm, -0.111242cm) {}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v4) edge [->, ultra thick] (v3);
-                \draw (v4) edge [ultra thick] (v8);
-                \draw (v3) edge [ultra thick] (v8);
+                \draw (v4) edge [<-, ultra thick] (v3);
+                \draw (v4) edge [->, ultra thick] (v8);
+                \draw (v3) edge [<-, ultra thick] (v8);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v0) edge [dotted] (v8);
                 \draw (v0) edge [dotted] (v4);
@@ -2389,7 +2380,7 @@ $z$};
         \node (v8) [label=left:{10,\{3\}}] at (-1.705649cm, -0.111242cm) {$x$}
 ;
         \begin{pgfonlayer}{bg}
-                \draw (v3) edge [->, ultra thick] (v8);
+                \draw (v3) edge [<->, ultra thick] (v8);
                 \draw (v0) edge [dotted] (v3);
                 \draw (v0) edge [dotted] (v8);
                 \draw (v0) edge [dotted] (v4);
@@ -2423,7 +2414,7 @@ lists. Let $L$ be a length $n$ array of color lists of length $3$,
 representing a list assignment of $G$. We may path $L$-color $G$ using
 Algorithm~\ref{A:hartman_impl} as follows.
 
-Create length $n$ arrays $A,B$ and initialize $A(v)$ and $B(v)$
+Create the length $n$ array $B$ and initialize $B(v)$
 for each $v\in C$ on the outer face of $G$.
 Create a length $n$ integer array
 $S$ and initialize $S(v)\leftarrow 1$ for each $v\in C$ and
@@ -2432,7 +2423,7 @@ assign $S(u)\leftarrow 2$, and remove all but one color from $L(u)$.
 Create a length $2m+2$ array of integers $M$ and initialize
 $M(i)\leftarrow i$ for each $i\in\{0,1,2\}$.
 Finally, call \emph{Path3Choose}$(u, u, u)$ with $G$, $L$,
-$A$, $B$, $S$, and $M$ (note that $r=1$ and
+$B$, $S$, and $M$ (note that $r=1$ and
 $m=m_C$, so $\ell=\max(S)+r=3<4=2(m-m_C+1)+2$).
 The remaining color in each
 list $L(v)$ will represent a path $L$-list-coloring of $G$.
@@ -2548,8 +2539,8 @@ frames to/from.
 Algorithm~\ref{A:hartman_impl} is trickier to adapt to
 parallel execution: the pairs of recursive calls in Case~3.2
 rely on a sequential execution order.
-If we save a local copy of
-$S(v), A(v), B(v)$ for each $v\in\{x, y,z\}$ alongside
+If a local copy of
+$S(v)$ and $B(v)$ for each $v\in\{x, y,z\}$ is stored alongside
 each frame, then the recursive calls in
 Case~3.2.1 with $u_2=x$, Case~3.2.2,
 Case~3.2.3.1, and Case~3.2.3.2 with $u_2=y$ become order independent.

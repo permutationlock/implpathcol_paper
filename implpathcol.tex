@@ -1586,7 +1586,10 @@ Given $v\in G$ and any entry $\adj{v}{u}$ in $N(v)$, we'll assume
 the entry $\bck(\adj{v}{u})=\adj{u}{v}$ in $N(u)$ may be
 computed in $\mathcal{O}(1)$ time;
 see augmented adjacency lists in
-Section~\ref{S:representation}.
+Section~\ref{S:representation}. Note Algorithm~\ref{A:hartman_impl}
+makes frequent use of back references to simplify
+the implementation, but the place where they are essential to $\mathcal{O}(n)$
+time is finding $\adj{u_2}{z}=\bck(\adj{z}{u_2})$ in Case~3.2.
 
 \begin{algorithm}\label{A:hartman_impl} \emph{Path3Choose}$(x,y,z)$
 
@@ -1596,17 +1599,17 @@ adjacency lists.
 Let $x,y,z\in C$ be such that $z\in C[x,y]$.
 
 Let $L$ be a length $n$ array of lists of colors
-such that for $v\in\{x,y,z\}$ each list $L(v)$ has length one,
-for $v\in C-\{x,y,z\}$ each list $L(v)$ has length two
-or three, and for $v\in \graphinto(C)$ each list
-$L(v)$ has length three. Furthermore, for each $v\in C[x,z] - z$, assume
+such that for each $v\in\{x,y,z\}$ the list $L(v)$ has length one,
+for each $v\in C-\{x,y,z\}$ the list $L(v)$ has length two
+or three, and for each $v\in \graphinto(C)$ the list
+$L(v)$ has length three. Furthermore, for each $v\in C[x,z] - z$, we require
 that $L(v)$ does not contain the color in $L(z)$.
 
-Let $B$ be a length $n$ array such that for each vertex $v\in C$ we have
-$B(v)=\adj{v}{b}$, where
+Let $B$ be a length $n$ array such that $B(v)=\adj{v}{b}$ for each $v\in C$, where
 $b$ is the vertex immediately counter clockwise
-from $v$ around $C$. If $C$ is a length $1$ path, then $b\in C-v$
-is the other vertex of the path.
+from $v$ around $C$; if $C$ is a length $1$ path, then $b$
+is the other vertex of $C$. Given any $v\in C$ (e.g. $z$),
+$B$ represents $C$ as a plane subgraph in $G$.
 
 Let $S$ be a length $n$ integer array such
 that, for each $v\in\graphintc(C)$, $S(v)\ne 0$ if and only if $v\in C$, and
@@ -1641,9 +1644,9 @@ We'll also guarantee $\text{max}(S)\le\ell+2(m_C-1)$.
 
 \textbf{Procedure.} Let $\adj{z}{u_1}:= B(z)$ and
 $\adj{u_1}{z}:=\bck(\adj{z}{u_1})$. Our strategy
-will follow the proof of Lemma~\ref{L:hartman3}.
+will closely follow the proof of Lemma~\ref{L:hartman3}.
 
-\textbf{Base case.} If $\adj{u_1}{z}=B(u_1)$, then $C=z,u_1$
+\textbf{Base case.} Suppose that $\adj{u_1}{z}=B(u_1)$, and thus $C=z,u_1$
 is a length $1$ path. If $u_1\ne x$ and $u_1\ne y$, remove the
 color in $L(z)$ from $L(u_1)$, if it exists, then remove further colors
 until one color remains. Note that
@@ -1653,9 +1656,9 @@ $m_C=1$ and $\text{max}(S)=\ell + 2(m_C-1)$ by definition.
 Let $\adj{z}{u_2}:=\nxt(\adj{z}{u_1})$. It follows from the
 definition of $\ell$
 that $\text{max}(S)\le\ell+2(m_C-1)$ after Cases~1, 2,
-and 3.1, so we will only argue why the bound
-holds after Case~3.2.
-It may be useful to see
+and 3.1, so we'll only argue for the bound
+after Case~3.2.
+It may be useful to look back at
 Figures~\ref{F:hartman_1}, \ref{F:hartman_3_2}, and
 \ref{F:hartman_3_2_3}.
 
@@ -1675,12 +1678,15 @@ and call \emph{Path3Choose}$(u_1, y, z)$.
 \textbf{Case~3.} Suppose that $z\ne x$ and $u_1\ne y$.
 Let $\adj{u_2}{z}:=\bck(\adj{z}{u_2})$ and
 $\adj{u_2}{u_1}:=\nxt(\adj{u_2}{z})$.
-Remove the edge $zu_1$ by assigning $B(z)\leftarrow\adj{z}{u_2}$.
+Assign $B(z)\leftarrow\adj{z}{u_2}$ to ``remove'' the
+edge $zu_1$ from $B$'s representation of the cycle $C$ (note
+$B$ doesn't
+represent the outer face of $\graphintc(C)-zu_1$ yet, since
+$B(u_2)$ may be uninitialized).
 
 \textbf{Case~3.1.} Suppose that $S(u_2)=0$, i.e. $u_2\in
-\graphinto(C)$. Assign $S(u_2)\leftarrow S(x)$, and initialize
-$B(u_2)\leftarrow\adj{u_2}{u_1}$;
-see Figure~\ref{F:hartman_1} (right).
+\graphinto(C)$. Assign $S(u_2)\leftarrow S(x)$ and initialize
+$B(u_2)\leftarrow\adj{u_2}{u_1}$.
 Remove the color in $L(z)$ from
 $L(u_2)$. Call \emph{Path3Choose}$(x, y, z)$.
 
@@ -1688,25 +1694,24 @@ $L(u_2)$. Call \emph{Path3Choose}$(x, y, z)$.
 Just as in
 Case~3.2 of the proof of Lemma~\ref{L:hartman3}, we will separately consider
 the two blocks $G_1$ and $G_2$ of $\graphintc(C)-zu_1$.
-Note that $m_C-1=|E(G_1)|+|E(G_2)|$.
+Note $m_C-1=|E(G_1)|+|E(G_2)|$. 
 
-Since we assigned $B(z)\leftarrow \adj{z}{u_2}$ above
-to remove $zu_1$, the array $B$ is already set up correctly to
-represent the
-block $G_2$; refer to Figure~\ref{F:hartman_3_2} and
+After assigning $B(z)\leftarrow \adj{z}{u_2}$ above,
+the array $B$ is already set up correctly to
+represent the outer face $C_2$ of the
+block $G_2$; refer back to Figure~\ref{F:hartman_3_2} and
 Figure~\ref{F:hartman_3_2_3}.
 Let $\adj{u_2}{b}:= B(u_2)$.
-To represent the block $G_1$, we must assign
-$B(u_2)\leftarrow\adj{u_2}{u_1}$. If
-we then need to represent $G_2$ again, we'll simply re-assign
+For $B$ to represent the outer face $C_1$ of the block $G_1$,
+we must assign $B(u_2)\leftarrow\adj{u_2}{u_1}$. If
+we then need to represent $G_2$ again, we'll simply reset
 $B(u_2)\leftarrow\adj{u_2}{b}$.
 
 \textbf{Case~3.2.1.} Suppose that $S(u_2)=S(x)$, i.e. $u_2\in C[x,z]$.
-Call \emph{Path3Choose}$(x, y, z)$ on $G_2$ (by modifying
-$B(u_2)$ as above).
+Call \emph{Path3Choose}$(x, y, z)$ on $G_2$.
 Afterwards $\text{max}(S)\le\ell + 2|E(G_2)|-2$.
 Assign $S(u_2)\leftarrow\text{max}(S)+1$ and
-$M(S(u_2))\leftarrow S(u_2)$, and call
+$M(S(u_2))\leftarrow S(u_2)$, then call
 \emph{Path3Choose}$(u_2, u_2, u_2)$ on $G_1$.
 Finally, observe that
 $\text{max}(S)\le\ell + 2|E(G_2)|-2 + 1 + 2|E(G_1)|-1<\ell+2(m_C-1)$.
@@ -1716,14 +1721,14 @@ $S(u_2)\ne S(x)$ and $M(S(u_2))\ne S(y)$. In other words, suppose that
 $u_2\in C[y,x]-x-y$.
 Remove the color in $L(z)$ from $L(u_2)$, if it exists, then remove
 further colors until one remains. Set $S(u_2)\leftarrow S(x)$.
-Note that $M(S(v))=M(S(x))=S(u_2)$ for each $v\in C[x,u_1]$.
+Note that $M(S(v))=M(S(x))=S(u_2)$ for each $v\in C_1[x,u_2]$.
 Call \emph{Path3Choose}$(x, u_2, x)$ on $G_1$.
-Afterwards $\text{max}(S)\le\ell +2|E(G_1)|$.
-Set $S(u_2)\leftarrow\text{max}(S)+1$,
-$M(S(u_2))\leftarrow S(u_2)$, and
+Afterwards, observe that $\text{max}(S)\le\ell +2|E(G_1)|$.
+Assign $S(u_2)\leftarrow\text{max}(S)+1$ and
+$M(S(u_2))\leftarrow S(u_2)$, then
 call \emph{Path3Choose}$(u_2, y, z)$
 on $G_2$.
-Finally, observe
+Finally, observe that
 $\text{max}(S)\le\ell + 2|E(G_1)| + 1 + 2|E(G_2)|-2<\ell+2(m_C-1)$.
 
 \textbf{Case~3.2.3.} Suppose that $M(S(u_2))=S(y)$, i.e.
@@ -1736,24 +1741,24 @@ all of the colors from $L(u_2)$ except for the color in $L(z)$.
 Call \emph{Path3Choose}$(x, y, u_2)$ on $G_1$.
 Afterwards, observe that $\text{max}(S)\le\ell + 2|E(G_1)|-2$.
 Assign
-$S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$,
-and $M(S(z))\leftarrow S(z)$. Call
+$S(z)\leftarrow\text{max}(S)+1$ and $S(u_2)\leftarrow S(z)$. Assign
+$M(S(z))\leftarrow S(z)$. Then call
 \emph{Path3Choose}$(u_2, z, u_2)$ on $G_2$. Finally, observe that
 $\text{max}(S)\le\ell + 2|E(G_1)|-2 + 1 + 2|E(G_2)| - 1<\ell+2(m_C-1)$.
 
 \textbf{Case~3.2.3.2.} Suppose the color in $L(z)$ is not in $L(u_2)$.
-Set $M(S(x))\leftarrow S(y)$. Call \emph{Path3Choose}$(x, y, x)$ on
-$G_1$. Afterwards $\text{max}(S)\le\ell + 2|E(G_1)|$.
-Set $S(z)\leftarrow\text{max}(S)+1$, $S(u_2)\leftarrow S(z)$, and
-$M(S(z))\leftarrow S(z)$. Call \emph{Path3Choose}$(u_2, z, u_2)$ on
-$G_2$. Observe that
+Set $M(S(x))\leftarrow S(y)$. Note that now $M(S(v))=S(y)$ for each
+$v\in C_1[x,y]$. Call \emph{Path3Choose}$(x, y, x)$ on
+$G_1$. Afterwards, observe $\text{max}(S)\le\ell + 2|E(G_1)|$.
+Set $S(z)\leftarrow\text{max}(S)+1$ and $S(u_2)\leftarrow S(z)$. Assign
+$M(S(z))\leftarrow S(z)$. Then call \emph{Path3Choose}$(u_2, z, u_2)$ on
+$G_2$. Finally, observe that
 $\text{max}(S)\le\ell + 2|E(G_1)| + 1 + 2|E(G_2)| - 1=\ell+2(m_C-1)$.
 
 Note that this is the only case where
-$M(S(v))$ is set a value other than $S(v)$.
+$M(S(v))$ is set to a value other than $S(v)$.
 Setting $M(S(x))\leftarrow S(y)$ effectively ``joins''
-$C[x,u_1]$ onto $C[u_2,y]$ to represent $C_1[z_1,y_1]$ in $G_1$,
-see Figure~8.
+$C[x,u_1]$ onto $C[u_2,y]$ to represent $C_1[z_1,y_1]$ in $G_1$.
 Without the array $M$, we'd need to re-mark each $v\in C[x,u_1]$ with
 $S(v)\leftarrow S(y)$.
 \end{algorithm}
@@ -2076,7 +2081,7 @@ $y$};
         \end{pgfonlayer}
 \end{tikzpicture}
 \caption{An Algorithm~\ref{A:hartman_impl} example:
-labels are $S(v),L(v)$ while edge
+labels show $S(v),L(v)$ and edge
 arrows show $B(v)$.}
 \label{F:hartman_impl}
 \end{center}
@@ -2425,18 +2430,15 @@ $M(i)\leftarrow i$ for each $i\in\{0,1,2\}$.
 Finally, call \emph{Path3Choose}$(u, u, u)$ with $G$, $L$,
 $B$, $S$, and $M$ (note that $r=1$ and
 $m=m_C$, so $\ell=\max(S)+r=3<4=2(m-m_C+1)+2$).
-The remaining color in each
-list $L(v)$ will represent a path $L$-list-coloring of $G$.
 
-Each case in Algorithm~\ref{A:hartman_impl} performs a fixed number
-of constant time operations and makes up to two recursive
-calls. Case~3 removes an edge
-from the subgraph(s) under consideration.
+The total number of recursive calls made, and thus overall the
+time complexity, is $\mathcal{O}(n)$:
+Case~3 removes an edge
+from the subgraph(s) under consideration,
+Case~2 makes a recursive
+call with an input that satisfies Case~3, and
 Case~1 makes a recursive call
-with an input that satisfies Case~2, and Case~2 makes a recursive
-call with an input that satisfies Case~3.
-Therefore the total number of recursive calls made, and thus overall the
-time complexity, is $\mathcal{O}(n)$.
+with an input that satisfies Case~2.
 
 See Figures~\ref{F:hartman_impl} and
 \ref{F:hartman_impl_cont} for a full concrete example of Algorithm~\ref{A:hartman_impl}.
